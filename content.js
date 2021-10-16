@@ -1,19 +1,10 @@
-const getElementByXpath = (path) => {
-  return document.evaluate(
-    path,
-    document,
-    null,
-    XPathResult.FIRST_ORDERED_NODE_TYPE,
-    null
-  ).singleNodeValue;
-};
+const selectElement = (query) => document.querySelectorAll(query)[0];
 
 function getAccountId() {
-  return getElementByXpath('//*[@data-testid="aws-my-account-details"]')
-    .innerText;
+  return selectElement('[data-testid="aws-my-account-details"]').innerText;
 }
 function getHeader() {
-  return getElementByXpath('//*[@id="awsc-nav-header"]');
+  return selectElement('[id="awsc-nav-header"]');
 }
 
 const getItem = async (key) =>
