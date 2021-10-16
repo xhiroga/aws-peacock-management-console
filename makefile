@@ -4,4 +4,4 @@ CHROME_PACKAGE = ./dist/aws-peacock-management-console_chrome.zip
 
 archive: $(CHROME_PACKAGE);
 $(CHROME_PACKAGE):
-	zip -r $(CHROME_PACKAGE) manifest.json *.html *.js icons/
+	zip -r $(CHROME_PACKAGE) manifest.json *.html *.css *.js icons/
