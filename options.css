@@ -1,0 +1,10 @@
+.Configuration {
+  box-sizing: border-box;
+  font-size: 14px;
+  font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
+  padding: 0.5ex;
+  white-space: pre;
+  width: 80%;
+  height: calc(75vh - 400px);
+  max-height: 800px;
+}

@@ -2,11 +2,21 @@
 <html>
   <head>
     <script src="options.js"></script>
+    <link rel="stylesheet" type="text/css" href="options.css" media="screen" />
     <title>AWS Peacock Management Console</title>
   </head>
 
   <body>
-    <textarea id="awsConfigTextArea" spellcheck="false"></textarea>
+    <p>Configuration</p>
+    <textarea
+      id="awsConfigTextArea"
+      class="Configuration"
+      spellcheck="false"
+    ></textarea>
+    <p>Sample</p>
+    <textarea readonly class="Configuration" spellcheck="false">
+[{"accountId": "123456789012","color": "#377d22"}]</textarea
+    >
     <button id="saveButton">Save</button>
   </body>
 </html>
