@@ -28,8 +28,10 @@ const applyColor = (accountId: string, configList: ConfigList): void => {
   )
   const header = getHeader()
   const footer = getFooter()
-  if (config && header && footer) {
+  if (config && header) {
     header.style.backgroundColor = config.color
+  }
+  if (config && footer) {
     footer.style.backgroundColor = config.color
   }
 }
@@ -37,10 +39,8 @@ const applyColor = (accountId: string, configList: ConfigList): void => {
 const run = async () => {
   const configList = await loadConfigList()
   const accountId = getAccountId()
-  if (accountId === undefined) {
-    console.error('Cannot detect account id.')
-    return
+  if (configList && accountId) {
+    applyColor(accountId, configList)
   }
-  applyColor(accountId, configList)
 }
 run()
