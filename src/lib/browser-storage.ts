@@ -1,7 +1,7 @@
 type StorageArea = 'local' | 'sync'
 type Item<T> = { [key: string]: T }
 
-export class StorageRepository {
+export class BrowserStorage {
   runtime: typeof chrome.runtime
   storageArea: chrome.storage.LocalStorageArea | chrome.storage.SyncStorageArea
   constructor(browser: typeof chrome, storageArea: StorageArea) {
@@ -9,9 +9,9 @@ export class StorageRepository {
     this.storageArea = browser.storage[storageArea]
   }
 
-  get = async <T>(key: string): Promise<Item<T>> => {
+  get = async <T>(key: string): Promise<T> => {
     return new Promise((resolve) => {
-      this.storageArea.get(key, resolve)
+      this.storageArea.get(key, (item) => resolve(item[key]))
     })
   }
 

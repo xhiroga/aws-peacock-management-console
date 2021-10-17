@@ -1,6 +1,8 @@
-import { StorageRepository } from './lib/storage'
+import { ConfigRepository } from './lib/config-repository'
+import { BrowserStorage } from './lib/browser-storage'
 
-const storage = new StorageRepository(chrome, 'local')
+const storage = new BrowserStorage(chrome, 'local')
+const configRepository = new ConfigRepository(storage)
 
 const elById = (id: string) => {
   return document.getElementById(id)
@@ -15,7 +17,7 @@ window.onload = () => {
 
   const onSave = () => {
     const config = textArea.value
-    storage.set('config', JSON.parse(config))
+    configRepository.set(JSON.parse(config))
   }
   saveButton.onclick = onSave
 }

@@ -1,11 +1,8 @@
-import { StorageRepository } from './lib/storage'
-export type Config = {
-  accounts?: string[]
-  regions?: string[]
-  color: string
-}
+import { ConfigRepository } from './lib/config-repository'
+import { BrowserStorage } from './lib/browser-storage'
 
-const storage = new StorageRepository(chrome, 'local')
+const storage = new BrowserStorage(chrome, 'local')
+const configRepository = new ConfigRepository(storage)
 
 const selectElement = (query: string): HTMLElement =>
   document.querySelectorAll<HTMLElement>(query)[0]
@@ -18,7 +15,7 @@ const getHeader = () => {
 }
 
 const loadConfig = async () => {
-  return (await storage.get<Config[]>('config')).config // ex. '[{"accountId": "123456789012","color": "#377d22"}]'
+  return await configRepository.get() // ex. '[{"accountId": "123456789012","color": "#377d22"}]'
 }
 
 const selectColor = (config: any, accountId: string) => {
