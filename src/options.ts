@@ -2,17 +2,18 @@ import { ConfigRepository } from './lib/config-repository'
 
 const configRepository = new ConfigRepository(chrome, 'local')
 
-const elById = (id: string) => {
-  return document.getElementById(id)
-}
+const example = [{ accounts: ['123456789012'], color: '#377d22' }]
 
 window.onload = async () => {
-  const textArea = <HTMLInputElement>elById('awsConfigTextArea')
-  const saveButton = elById('saveButton')
+  const textArea = <HTMLInputElement>(
+    document.getElementById('awsConfigTextArea')
+  )
+  const saveButton = document.getElementById('saveButton')
   if (textArea === null || saveButton === null) {
     return
   }
-  textArea.value = await configRepository.get()
+  textArea.value =
+    (await configRepository.get()) ?? JSON.stringify(example, null, 2)
 
   saveButton.onclick = () => configRepository.set(textArea.value)
 }

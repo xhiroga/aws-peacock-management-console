@@ -1,7 +1,7 @@
 import { Browser, BrowserStorage, StorageArea } from './browser-storage'
 
 export type Config = {
-  accounts?: string[]
+  accounts: string[]
   regions?: string[]
   color: string
 }

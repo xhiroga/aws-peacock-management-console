@@ -10,6 +10,10 @@ const getAccountId = (): string | undefined => {
   return selectElement('[data-testid="aws-my-account-details"]')?.innerText
 }
 
+const getRegion = () => {
+  return document.getElementById('awsc-mezz-region')?.getAttribute('content')
+}
+
 const getHeader = (): HTMLElement | undefined => {
   return selectElement('[data-testid="awsc-nav-header-viewport-shelf-inner"]')
 }
@@ -22,9 +26,15 @@ const loadConfigList = async (): Promise<ConfigList> => {
   return parse(await configRepository.get())
 }
 
-const applyColor = (accountId: string, configList: ConfigList): void => {
-  const config = configList.find((config: Config) =>
-    config.accounts?.includes(accountId)
+const applyColor = (
+  configList: ConfigList,
+  accountId: string,
+  region: string
+): void => {
+  const config = configList.find(
+    (config: Config) =>
+      config.accounts.includes(accountId) &&
+      (config.regions ? config.regions.includes(region) : true)
   )
   const header = getHeader()
   const footer = getFooter()
@@ -39,8 +49,9 @@ const applyColor = (accountId: string, configList: ConfigList): void => {
 const run = async () => {
   const configList = await loadConfigList()
   const accountId = getAccountId()
-  if (configList && accountId) {
-    applyColor(accountId, configList)
+  const region = getRegion()
+  if (configList && accountId && region) {
+    applyColor(configList, accountId, region)
   }
 }
 run()
