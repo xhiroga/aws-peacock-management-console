@@ -18,7 +18,7 @@ const getHeader = () => {
 }
 
 const loadConfig = async () => {
-  return (await storage.get<Config>('config')).config // ex. '[{"accountId": "123456789012","color": "#377d22"}]'
+  return (await storage.get<Config[]>('config')).config // ex. '[{"accountId": "123456789012","color": "#377d22"}]'
 }
 
 const selectColor = (config: any, accountId: string) => {
