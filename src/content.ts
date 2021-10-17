@@ -1,5 +1,5 @@
 import { parse } from 'jsonc-parser'
-import { ConfigRepository } from './lib/config-repository'
+import { Config, ConfigList, ConfigRepository } from './lib/config-repository'
 
 const configRepository = new ConfigRepository(chrome, 'local')
 
@@ -13,29 +13,27 @@ const getHeader = (): HTMLElement | undefined => {
   return selectElement('[id="awsc-nav-header"]')
 }
 
-const loadConfig = async () => {
+const loadConfigList = async (): Promise<ConfigList> => {
   return parse(await configRepository.get())
 }
 
-const selectColor = (config: any, accountId: string) => {
-  return config.find((color: any) => color.accountId === accountId)
-}
-
-const patchColor = (color: any) => {
+const applyColor = (accountId: string, configList: ConfigList): void => {
+  const config = configList.find((config: Config) =>
+    config.accounts?.includes(accountId)
+  )
   const headerElement = getHeader()
-  if (headerElement !== undefined) {
-    headerElement.style.backgroundColor = color.color
+  if (config && headerElement) {
+    headerElement.style.backgroundColor = config.color
   }
 }
 
 const run = async () => {
-  const config = await loadConfig()
+  const configList = await loadConfigList()
   const accountId = getAccountId()
   if (accountId === undefined) {
     console.error('Cannot detect account id.')
     return
   }
-  const color = selectColor(config, accountId)
-  patchColor(color)
+  applyColor(accountId, configList)
 }
 run()
