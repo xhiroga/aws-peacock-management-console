@@ -9,8 +9,13 @@ const selectElement = (query: string): HTMLElement | undefined =>
 const getAccountId = (): string | undefined => {
   return selectElement('[data-testid="aws-my-account-details"]')?.innerText
 }
+
 const getHeader = (): HTMLElement | undefined => {
-  return selectElement('[id="awsc-nav-header"]')
+  return selectElement('[data-testid="awsc-nav-header-viewport-shelf-inner"]')
+}
+
+const getFooter = (): HTMLElement | undefined => {
+  return selectElement('[id="console-nav-footer-inner"]')
 }
 
 const loadConfigList = async (): Promise<ConfigList> => {
@@ -21,9 +26,11 @@ const applyColor = (accountId: string, configList: ConfigList): void => {
   const config = configList.find((config: Config) =>
     config.accounts?.includes(accountId)
   )
-  const headerElement = getHeader()
-  if (config && headerElement) {
-    headerElement.style.backgroundColor = config.color
+  const header = getHeader()
+  const footer = getFooter()
+  if (config && header && footer) {
+    header.style.backgroundColor = config.color
+    footer.style.backgroundColor = config.color
   }
 }
 
