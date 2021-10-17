@@ -9,6 +9,9 @@
     "clean": "node -e 'fs.rmSync(`dist`, {recursive:true, force:true})'"
   },
   "license": "MIT",
+  "dependencies": {
+    "jsonc-parser": "^3.0.0"
+  },
   "devDependencies": {
     "@types/chrome": "^0.0.159",
     "@types/copy-webpack-plugin": "^8.0.1",

@@ -1,25 +1,19 @@
-const setItem = async (key: string, value: string) =>
-  new Promise((_, reject) => {
-    chrome.storage['local'].set({ [key]: value }, () => {
-      const { lastError } = chrome.runtime
-      if (lastError) return reject(lastError)
-    })
-  })
+import { ConfigRepository } from './lib/config-repository'
 
-const elById = (id: string) => {
-  return document.getElementById(id)
-}
+const configRepository = new ConfigRepository(chrome, 'local')
 
-window.onload = () => {
-  const saveButton = elById('saveButton')
-  const textArea = <HTMLInputElement>elById('awsConfigTextArea')
-  if (saveButton === null || textArea === null) {
+const example = [{ accounts: ['123456789012'], color: '#377d22' }]
+
+window.onload = async () => {
+  const textArea = <HTMLInputElement>(
+    document.getElementById('awsConfigTextArea')
+  )
+  const saveButton = document.getElementById('saveButton')
+  if (textArea === null || saveButton === null) {
     return
   }
+  textArea.value =
+    (await configRepository.get()) ?? JSON.stringify(example, null, 2)
 
-  const onSave = () => {
-    const config = textArea.value
-    setItem('config', config)
-  }
-  saveButton.onclick = onSave
+  saveButton.onclick = () => configRepository.set(textArea.value)
 }

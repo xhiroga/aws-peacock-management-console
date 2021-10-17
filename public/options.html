@@ -1,22 +1,44 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="options.js"></script>
     <link rel="stylesheet" type="text/css" href="options.css" media="screen" />
-    <title>AWS Peacock Management Console</title>
+    <title>AWS Peacock Management Console - Configuration</title>
   </head>
 
   <body>
-    <p>Configuration</p>
-    <textarea
-      id="awsConfigTextArea"
-      class="Configuration"
-      spellcheck="false"
-    ></textarea>
-    <p>Sample</p>
-    <textarea readonly class="Configuration" spellcheck="false">
-[{"accountId": "123456789012","color": "#377d22"}]</textarea
-    >
-    <button id="saveButton">Save</button>
+    <script src="options.js"></script>
+    <div class="twoColumnLayout">
+      <div class="column configurationColumn">
+        <h1>Configuration</h1>
+        <textarea
+          id="awsConfigTextArea"
+          class="configuration"
+          spellcheck="false"
+        ></textarea>
+        <button id="saveButton">Save</button>
+      </div>
+      <div class="column howToColumn">
+        <h1>Example</h1>
+        <textarea readonly class="configuration" spellcheck="false">
+[
+  /**
+   * JSON with comment format
+   *
+   * When multiple rules match, the first matching rule will be applied.
+   *
+  */
+
+  // sandbox
+  {"accounts": ["123456789012"], "regions": ["ap-northeast-3"], "color": "yellow"},
+  
+  // dev
+  {"accounts": ["123456789012"], "color": "#377d22"},
+  
+  // prod
+  {"accounts": ["987654321098"], "color": "#E63629"}
+]</textarea
+        >
+      </div>
+    </div>
   </body>
 </html>

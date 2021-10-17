@@ -1,36 +1,57 @@
-const selectElement = (query: string): HTMLElement =>
+import { parse } from 'jsonc-parser'
+import { Config, ConfigList, ConfigRepository } from './lib/config-repository'
+
+const configRepository = new ConfigRepository(chrome, 'local')
+
+const selectElement = (query: string): HTMLElement | undefined =>
   document.querySelectorAll<HTMLElement>(query)[0]
 
-const getAccountId = (): string => {
-  return selectElement('[data-testid="aws-my-account-details"]').innerText
-}
-const getHeader = () => {
-  return selectElement('[id="awsc-nav-header"]')
+const getAccountId = (): string | undefined => {
+  return selectElement('[data-testid="aws-my-account-details"]')?.innerText
 }
 
-const getItem = async (key: string): Promise<any> =>
-  new Promise((resolve) => {
-    chrome.storage['local'].get(key, resolve)
-  })
-
-const loadConfig = async () => {
-  const config = (await getItem('config')).config // ex. '[{"accountId": "123456789012","color": "#377d22"}]'
-  return JSON.parse(config)
+const getRegion = () => {
+  return document.getElementById('awsc-mezz-region')?.getAttribute('content')
 }
 
-const selectColor = (config: any, accountId: string) => {
-  return config.find((color: any) => color.accountId === accountId)
+const getHeader = (): HTMLElement | undefined => {
+  return selectElement('[data-testid="awsc-nav-header-viewport-shelf-inner"]')
 }
 
-const patchColor = (color: any) => {
-  const headerElement = getHeader()
-  headerElement.style.backgroundColor = color.color
+const getFooter = (): HTMLElement | undefined => {
+  return selectElement('[id="console-nav-footer-inner"]')
+}
+
+const loadConfigList = async (): Promise<ConfigList> => {
+  return parse(await configRepository.get())
+}
+
+const applyColor = (
+  configList: ConfigList,
+  accountId: string,
+  region: string
+): void => {
+  const config = configList.find(
+    (config: Config) =>
+      config.accounts.includes(accountId) &&
+      (config.regions ? config.regions.includes(region) : true)
+  )
+  const header = getHeader()
+  const footer = getFooter()
+  if (config && header) {
+    header.style.backgroundColor = config.color
+  }
+  if (config && footer) {
+    footer.style.backgroundColor = config.color
+  }
 }
 
 const run = async () => {
-  const config = await loadConfig()
+  const configList = await loadConfigList()
   const accountId = getAccountId()
-  const color = selectColor(config, accountId)
-  patchColor(color)
+  const region = getRegion()
+  if (configList && accountId && region) {
+    applyColor(configList, accountId, region)
+  }
 }
 run()
