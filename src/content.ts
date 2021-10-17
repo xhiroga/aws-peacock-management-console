@@ -1,8 +1,6 @@
 import { ConfigRepository } from './lib/config-repository'
-import { BrowserStorage } from './lib/browser-storage'
 
-const storage = new BrowserStorage(chrome, 'local')
-const configRepository = new ConfigRepository(storage)
+const configRepository = new ConfigRepository(chrome, 'local')
 
 const selectElement = (query: string): HTMLElement =>
   document.querySelectorAll<HTMLElement>(query)[0]

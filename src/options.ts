@@ -1,8 +1,6 @@
 import { ConfigRepository } from './lib/config-repository'
-import { BrowserStorage } from './lib/browser-storage'
 
-const storage = new BrowserStorage(chrome, 'local')
-const configRepository = new ConfigRepository(storage)
+const configRepository = new ConfigRepository(chrome, 'local')
 
 const elById = (id: string) => {
   return document.getElementById(id)
