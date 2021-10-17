@@ -7,16 +7,25 @@
   </head>
 
   <body>
-    <p>Configuration</p>
-    <textarea
-      id="awsConfigTextArea"
-      class="Configuration"
-      spellcheck="false"
-    ></textarea>
-    <p>Sample</p>
-    <textarea readonly class="Configuration" spellcheck="false">
-[{"accountId": "123456789012","color": "#377d22"}]</textarea
-    >
-    <button id="saveButton">Save</button>
+    <div class="twoColumnLayout">
+      <div class="column configurationColumn">
+        <h1>Configuration</h1>
+        <textarea
+          id="awsConfigTextArea"
+          class="configuration"
+          spellcheck="false"
+        ></textarea>
+        <div class="bottons">
+          <button id="formatButton">Format</button>
+          <button id="saveButton">Save</button>
+        </div>
+      </div>
+      <div class="column howToColumn">
+        <h1>Example</h1>
+        <textarea readonly class="configuration" spellcheck="false">
+  [{"accountId": "123456789012","color": "#377d22"}]</textarea
+        >
+      </div>
+    </div>
   </body>
 </html>
