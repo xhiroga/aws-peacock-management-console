@@ -1,4 +1,4 @@
-import { StorageRepository } from './lib/storage-repository'
+import { StorageRepository } from './lib/storage'
 
 const storage = new StorageRepository(chrome, 'local')
 

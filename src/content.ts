@@ -1,4 +1,4 @@
-import { StorageRepository } from './lib/storage-repository'
+import { StorageRepository } from './lib/storage'
 export type Config = {
   accounts?: string[]
   regions?: string[]
