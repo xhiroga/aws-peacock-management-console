@@ -15,6 +15,5 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint', 'prettier'],
-  ignorePatterns: ['webpack.config.js'],
   rules: {},
 }
