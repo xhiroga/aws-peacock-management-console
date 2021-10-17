@@ -7,16 +7,12 @@ const elById = (id: string) => {
 }
 
 window.onload = async () => {
-  const saveButton = elById('saveButton')
   const textArea = <HTMLInputElement>elById('awsConfigTextArea')
-  if (saveButton === null || textArea === null) {
+  const saveButton = elById('saveButton')
+  if (textArea === null || saveButton === null) {
     return
   }
   textArea.value = await configRepository.get()
 
-  const onSave = () => {
-    const configList = textArea.value
-    configRepository.set(configList)
-  }
-  saveButton.onclick = onSave
+  saveButton.onclick = () => configRepository.set(textArea.value)
 }

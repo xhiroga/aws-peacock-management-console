@@ -34,7 +34,3 @@ body {
   width: 100%;
   height: calc(75vh - 400px);
 }
-
-.buttons {
-  display: flex;
-}
