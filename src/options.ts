@@ -1,10 +1,6 @@
-const setItem = async (key: string, value: string) =>
-  new Promise((_, reject) => {
-    chrome.storage['local'].set({ [key]: value }, () => {
-      const { lastError } = chrome.runtime
-      if (lastError) return reject(lastError)
-    })
-  })
+import { StorageRepository } from './lib/storage-repository'
+
+const storage = new StorageRepository(chrome, 'local')
 
 const elById = (id: string) => {
   return document.getElementById(id)
@@ -19,7 +15,7 @@ window.onload = () => {
 
   const onSave = () => {
     const config = textArea.value
-    setItem('config', config)
+    storage.set('config', JSON.parse(config))
   }
   saveButton.onclick = onSave
 }

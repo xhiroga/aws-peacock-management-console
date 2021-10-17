@@ -1,3 +1,12 @@
+import { StorageRepository } from './lib/storage-repository'
+export type Config = {
+  accounts?: string[]
+  regions?: string[]
+  color: string
+}
+
+const storage = new StorageRepository(chrome, 'local')
+
 const selectElement = (query: string): HTMLElement =>
   document.querySelectorAll<HTMLElement>(query)[0]
 
@@ -8,14 +17,8 @@ const getHeader = () => {
   return selectElement('[id="awsc-nav-header"]')
 }
 
-const getItem = async (key: string): Promise<any> =>
-  new Promise((resolve) => {
-    chrome.storage['local'].get(key, resolve)
-  })
-
 const loadConfig = async () => {
-  const config = (await getItem('config')).config // ex. '[{"accountId": "123456789012","color": "#377d22"}]'
-  return JSON.parse(config)
+  return (await storage.get<Config>('config')).config // ex. '[{"accountId": "123456789012","color": "#377d22"}]'
 }
 
 const selectColor = (config: any, accountId: string) => {
