@@ -6,12 +6,13 @@ const elById = (id: string) => {
   return document.getElementById(id)
 }
 
-window.onload = () => {
+window.onload = async () => {
   const saveButton = elById('saveButton')
   const textArea = <HTMLInputElement>elById('awsConfigTextArea')
   if (saveButton === null || textArea === null) {
     return
   }
+  textArea.value = JSON.stringify(await configRepository.get())
 
   const onSave = () => {
     const config = textArea.value
