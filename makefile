@@ -1,7 +1,7 @@
-CHROME_PACKAGE = ./dist/aws-peacock-management-console_chrome.zip
+CHROME_PACKAGE = ./archives/aws-peacock-management-console_chrome.zip
 
 .PHONY: archive
 
 archive: $(CHROME_PACKAGE);
 $(CHROME_PACKAGE):
-	zip -r $(CHROME_PACKAGE) manifest.json *.html *.css *.js icons/
+	zip -r $(CHROME_PACKAGE) dist/*
