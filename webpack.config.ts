@@ -12,12 +12,6 @@ const config: Configuration = {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
   },
-  optimization: {
-    splitChunks: {
-      name: 'vendor',
-      chunks: 'initial',
-    },
-  },
   module: {
     rules: [
       {
