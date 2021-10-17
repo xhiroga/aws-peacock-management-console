@@ -1,19 +1,20 @@
+import { parse } from 'jsonc-parser'
 import { ConfigRepository } from './lib/config-repository'
 
 const configRepository = new ConfigRepository(chrome, 'local')
 
-const selectElement = (query: string): HTMLElement =>
+const selectElement = (query: string): HTMLElement | undefined =>
   document.querySelectorAll<HTMLElement>(query)[0]
 
-const getAccountId = (): string => {
-  return selectElement('[data-testid="aws-my-account-details"]').innerText
+const getAccountId = (): string | undefined => {
+  return selectElement('[data-testid="aws-my-account-details"]')?.innerText
 }
-const getHeader = () => {
+const getHeader = (): HTMLElement | undefined => {
   return selectElement('[id="awsc-nav-header"]')
 }
 
 const loadConfig = async () => {
-  return await configRepository.get() // ex. '[{"accountId": "123456789012","color": "#377d22"}]'
+  return parse(await configRepository.get())
 }
 
 const selectColor = (config: any, accountId: string) => {
@@ -22,12 +23,18 @@ const selectColor = (config: any, accountId: string) => {
 
 const patchColor = (color: any) => {
   const headerElement = getHeader()
-  headerElement.style.backgroundColor = color.color
+  if (headerElement !== undefined) {
+    headerElement.style.backgroundColor = color.color
+  }
 }
 
 const run = async () => {
   const config = await loadConfig()
   const accountId = getAccountId()
+  if (accountId === undefined) {
+    console.error('Cannot detect account id.')
+    return
+  }
   const color = selectColor(config, accountId)
   patchColor(color)
 }

@@ -12,11 +12,11 @@ window.onload = async () => {
   if (saveButton === null || textArea === null) {
     return
   }
-  textArea.value = JSON.stringify(await configRepository.get())
+  textArea.value = await configRepository.get()
 
   const onSave = () => {
-    const config = textArea.value
-    configRepository.set(JSON.parse(config))
+    const configList = textArea.value
+    configRepository.set(configList)
   }
   saveButton.onclick = onSave
 }
