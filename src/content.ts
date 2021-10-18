@@ -18,6 +18,12 @@ const getRegion = () => {
   return document.getElementById('awsc-mezz-region')?.getAttribute('content')
 }
 
+const getAwsLogoType = () =>
+  <SVGElement>(
+    document.getElementById('nav-home-link')?.getElementsByTagName('g')[0]
+      .firstChild
+  )
+
 const loadConfigList = async (): Promise<ConfigList> => {
   return parse(await configRepository.get())
 }
@@ -59,11 +65,26 @@ const isLuminant = (color: string): boolean | undefined => {
   return undefined
 }
 
-const overwriteStyle = (style: Config['style']) => {
+const insertStyleTag = (css: string) => {
+  const head = document.head || document.getElementsByTagName('head')[0]
+  const styleElement = document.createElement('style')
+  head.appendChild(styleElement)
+  styleElement.appendChild(document.createTextNode(css))
+}
+
+const updateAwsLogo = (color: string) => {
+  const awsLogoType = getAwsLogoType()
+  awsLogoType && awsLogoType.setAttribute('fill', color)
+}
+
+const updateStyle = (style: Config['style']) => {
   const headerBackground = style.navigationBackgroundColor ?? AWS_SQUID_INK
   const headerForeground = isLuminant(headerBackground)
     ? AWSUI_COLOR_GRAY_900
     : AWSUI_COLOR_GRAY_300
+  const awsLogoTypeColor = isLuminant(headerBackground)
+    ? AWS_SQUID_INK
+    : '#ffffff'
   const footerBackground = style.navigationBackgroundColor ?? AWS_SQUID_INK
   const footerForeground = isLuminant(footerBackground)
     ? AWSUI_COLOR_GRAY_900
@@ -92,10 +113,8 @@ const overwriteStyle = (style: Config['style']) => {
     color: ${footerForeground} !important;
   }
   `
-  const head = document.head || document.getElementsByTagName('head')[0]
-  const styleElement = document.createElement('style')
-  head.appendChild(styleElement)
-  styleElement.appendChild(document.createTextNode(css))
+  insertStyleTag(css)
+  updateAwsLogo(awsLogoTypeColor)
 }
 
 const run = async () => {
@@ -106,6 +125,6 @@ const run = async () => {
     return
   }
   const config = findConfig(configList, accountId, region)
-  config?.style && overwriteStyle(config?.style)
+  config?.style && updateStyle(config?.style)
 }
 run()
