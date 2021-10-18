@@ -5,7 +5,7 @@ export type Config = {
   regions?: string[]
   style: {
     navigationBackgroundColor?: string
-    menuButtonBackgroundColor?: string
+    accountMenuButtonBackgroundColor?: string
   }
 }
 export type ConfigList = Config[]
