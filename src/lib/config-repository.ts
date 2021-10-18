@@ -3,8 +3,10 @@ import { Browser, BrowserStorage, StorageArea } from './browser-storage'
 export type Config = {
   accounts: string[]
   regions?: string[]
-  navigationBackgroundColor?: string
-  menuButtonBackgroundColor?: string
+  style: {
+    navigationBackgroundColor?: string
+    menuButtonBackgroundColor?: string
+  }
 }
 export type ConfigList = Config[]
 

@@ -1,6 +1,10 @@
 import { parse } from 'jsonc-parser'
 import { Config, ConfigList, ConfigRepository } from './lib/config-repository'
 
+const AWS_SQUID_INK = '#232f3e'
+const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
+const AWSUI_COLOR_GRAY_900 = '#16191f'
+
 const configRepository = new ConfigRepository(chrome, 'local')
 
 const selectElement = (query: string): HTMLElement | undefined =>
@@ -12,14 +16,6 @@ const getAccountId = (): string | undefined => {
 
 const getRegion = () => {
   return document.getElementById('awsc-mezz-region')?.getAttribute('content')
-}
-
-const getHeader = (): HTMLElement | undefined => {
-  return selectElement('[data-testid="awsc-nav-header-viewport-shelf-inner"]')
-}
-
-const getFooter = (): HTMLElement | undefined => {
-  return selectElement('[id="console-nav-footer-inner"]')
 }
 
 const loadConfigList = async (): Promise<ConfigList> => {
@@ -41,7 +37,7 @@ const findConfig = (
 const getLuminance = (r: number, g: number, b: number) =>
   (0.299 * r + 0.587 * g + 0.114 * b) / 255
 
-const isLuminanceEnough = (color: string): boolean | undefined => {
+const isLuminant = (color: string): boolean | undefined => {
   const rrggbb = color.match(
     /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/
   )
@@ -63,25 +59,43 @@ const isLuminanceEnough = (color: string): boolean | undefined => {
   return undefined
 }
 
-const createStyleTagInvertText = () => {
-  const css =
-    'header#awsc-nav-header * :not(div[class^="globalNav-search"] *), div#console-nav-footer-inner * { color: #16191F !important; }'
-  const head = document.head || document.getElementsByTagName('head')[0]
-  const style = document.createElement('style')
-  head.appendChild(style)
-  style.appendChild(document.createTextNode(css))
-}
+const overwriteStyle = (style: Config['style']) => {
+  const headerBackground = style.navigationBackgroundColor ?? AWS_SQUID_INK
+  const headerForeground = isLuminant(headerBackground)
+    ? AWSUI_COLOR_GRAY_900
+    : AWSUI_COLOR_GRAY_300
+  const footerBackground = style.navigationBackgroundColor ?? AWS_SQUID_INK
+  const footerForeground = isLuminant(footerBackground)
+    ? AWSUI_COLOR_GRAY_900
+    : AWSUI_COLOR_GRAY_300
 
-const applyNavigationBackgroundColor = (color: string): void => {
-  const header = getHeader()
-  const footer = getFooter()
-  if (color && header && footer) {
-    header.style.backgroundColor = color
-    footer.style.backgroundColor = color
-    if (isLuminanceEnough(color)) {
-      createStyleTagInvertText()
-    }
+  const css = `
+  div[data-testid="awsc-nav-header-viewport-shelf-inner"] {
+    background-color: ${headerBackground} !important;
   }
+  button[data-testid="aws-services-list-button"],
+  button[data-testid="aws-services-list-button"] *,
+  button[data-testid="awsc-phd__bell-icon"] *,
+  button[data-testid="more-menu__awsc-nav-account-menu-button"] *,
+  button[data-testid="more-menu__awsc-nav-regions-menu-button"] *,
+  button[data-testid="more-menu__awsc-nav-support-menu-button"] * {
+    color: ${headerForeground} !important;
+  }
+  div#awsc-nav-footer-content {
+    background-color: ${footerBackground} !important;
+  }
+  div#awsc-feedback,
+  button[data-testid="awsc-footer-language-selector-button"],
+  a[data-testid="awsc-footer-privacy-policy"],
+  a[data-testid="awsc-footer-terms-of-use"],
+  button[data-testid="awsc-footer-cookie-preferences"] {
+    color: ${footerForeground} !important;
+  }
+  `
+  const head = document.head || document.getElementsByTagName('head')[0]
+  const styleElement = document.createElement('style')
+  head.appendChild(styleElement)
+  styleElement.appendChild(document.createTextNode(css))
 }
 
 const run = async () => {
@@ -92,7 +106,6 @@ const run = async () => {
     return
   }
   const config = findConfig(configList, accountId, region)
-  config?.navigationBackgroundColor &&
-    applyNavigationBackgroundColor(config?.navigationBackgroundColor)
+  config?.style && overwriteStyle(config?.style)
 }
 run()
