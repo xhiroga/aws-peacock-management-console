@@ -66,10 +66,11 @@ const isLuminant = (color: string): boolean | undefined => {
 }
 
 const insertStyleTag = (css: string) => {
+  const style = document.createElement('style')
+  style.setAttribute('type', 'text/css')
+  style.appendChild(document.createTextNode(css))
   const head = document.head || document.getElementsByTagName('head')[0]
-  const styleElement = document.createElement('style')
-  head.appendChild(styleElement)
-  styleElement.appendChild(document.createTextNode(css))
+  head.appendChild(style)
 }
 
 const updateAwsLogo = (color: string) => {
@@ -77,44 +78,79 @@ const updateAwsLogo = (color: string) => {
   awsLogoType && awsLogoType.setAttribute('fill', color)
 }
 
-const updateStyle = (style: Config['style']) => {
-  const headerBackground = style.navigationBackgroundColor ?? AWS_SQUID_INK
-  const headerForeground = isLuminant(headerBackground)
-    ? AWSUI_COLOR_GRAY_900
-    : AWSUI_COLOR_GRAY_300
-  const awsLogoTypeColor = isLuminant(headerBackground)
-    ? AWS_SQUID_INK
-    : '#ffffff'
-  const footerBackground = style.navigationBackgroundColor ?? AWS_SQUID_INK
-  const footerForeground = isLuminant(footerBackground)
+const insertAccountMenuButtonBackground = (
+  accountMenuButtonBackgroundColor: string
+) => {
+  const accountMenuButtonBackground = document.createElement('span')
+  accountMenuButtonBackground.setAttribute(
+    'style',
+    `background-color: ${accountMenuButtonBackgroundColor}; position: absolute; left: 0; right: 0; top: 0; bottom: 0; border-radius: 24px; height: 24px; z-index: 1;`
+  )
+  selectElement('[data-testid="awsc-nav-account-menu-button"]')?.prepend(
+    accountMenuButtonBackground
+  )
+}
+
+const updateNavigationStyle = (navigationBackgroundColor: string) => {
+  const foregroundColor = isLuminant(navigationBackgroundColor)
     ? AWSUI_COLOR_GRAY_900
     : AWSUI_COLOR_GRAY_300
 
+  const awsLogoTypeColor = isLuminant(navigationBackgroundColor)
+    ? AWS_SQUID_INK
+    : '#ffffff'
+
   const css = `
   div[data-testid="awsc-nav-header-viewport-shelf-inner"] {
-    background-color: ${headerBackground} !important;
+    background-color: ${navigationBackgroundColor} !important;
   }
   button[data-testid="aws-services-list-button"],
   button[data-testid="aws-services-list-button"] *,
   button[data-testid="awsc-phd__bell-icon"] *,
   button[data-testid="more-menu__awsc-nav-account-menu-button"] *,
   button[data-testid="more-menu__awsc-nav-regions-menu-button"] *,
-  button[data-testid="more-menu__awsc-nav-support-menu-button"] * {
-    color: ${headerForeground} !important;
+  button[data-testid="more-menu__awsc-nav-support-menu-button"] *,
+  button[data-testid="awsc-nav-more-menu"] {
+    color: ${foregroundColor} !important;
   }
   div#awsc-nav-footer-content {
-    background-color: ${footerBackground} !important;
+    background-color: ${navigationBackgroundColor} !important;
   }
   div#awsc-feedback,
   button[data-testid="awsc-footer-language-selector-button"],
   a[data-testid="awsc-footer-privacy-policy"],
   a[data-testid="awsc-footer-terms-of-use"],
   button[data-testid="awsc-footer-cookie-preferences"] {
-    color: ${footerForeground} !important;
-  }
-  `
+    color: ${foregroundColor} !important;
+  }`
   insertStyleTag(css)
   updateAwsLogo(awsLogoTypeColor)
+}
+
+const updateAccountMenuButtonStyle = (
+  accountMenuButtonBackgroundColor: string
+) => {
+  const foregroundColor = isLuminant(accountMenuButtonBackgroundColor)
+    ? AWSUI_COLOR_GRAY_900
+    : AWSUI_COLOR_GRAY_300
+
+  const css = `
+  button[data-testid="more-menu__awsc-nav-account-menu-button"] {
+    color: ${foregroundColor} !important;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 24px;
+    border-radius: 24px;
+  }`
+  insertStyleTag(css)
+  insertAccountMenuButtonBackground(accountMenuButtonBackgroundColor)
+}
+
+const updateStyle = (style: Config['style']) => {
+  style.navigationBackgroundColor &&
+    updateNavigationStyle(style.navigationBackgroundColor)
+  style.accountMenuButtonBackgroundColor &&
+    updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor)
 }
 
 const run = async () => {

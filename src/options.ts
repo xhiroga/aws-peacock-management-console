@@ -5,7 +5,10 @@ const configRepository = new ConfigRepository(chrome, 'local')
 const example: ConfigList = [
   {
     accounts: ['123456789012'],
-    style: { navigationBackgroundColor: '#377d22' },
+    style: {
+      navigationBackgroundColor: '#2f7c47',
+      accountMenuButtonBackgroundColor: '#422c74',
+    },
   },
 ]
 
