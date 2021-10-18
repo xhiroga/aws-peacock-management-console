@@ -91,7 +91,10 @@ const insertAccountMenuButtonBackground = (
   )
 }
 
-const updateNavigationStyle = (navigationBackgroundColor: string) => {
+const updateNavigationStyle = (
+  navigationBackgroundColor: string,
+  accountMenuButtonBackgroundColorEnabled: boolean
+) => {
   const foregroundColor = isLuminant(navigationBackgroundColor)
     ? AWSUI_COLOR_GRAY_900
     : AWSUI_COLOR_GRAY_300
@@ -107,7 +110,11 @@ const updateNavigationStyle = (navigationBackgroundColor: string) => {
   button[data-testid="aws-services-list-button"],
   button[data-testid="aws-services-list-button"] *,
   button[data-testid="awsc-phd__bell-icon"] *,
-  button[data-testid="more-menu__awsc-nav-account-menu-button"] *,
+  ${
+    accountMenuButtonBackgroundColorEnabled
+      ? ''
+      : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
+  }
   button[data-testid="more-menu__awsc-nav-regions-menu-button"] *,
   button[data-testid="more-menu__awsc-nav-support-menu-button"] *,
   button[data-testid="awsc-nav-more-menu"] {
@@ -147,10 +154,13 @@ const updateAccountMenuButtonStyle = (
 }
 
 const updateStyle = (style: Config['style']) => {
-  style.navigationBackgroundColor &&
-    updateNavigationStyle(style.navigationBackgroundColor)
   style.accountMenuButtonBackgroundColor &&
     updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor)
+  style.navigationBackgroundColor &&
+    updateNavigationStyle(
+      style.navigationBackgroundColor,
+      style.accountMenuButtonBackgroundColor !== undefined
+    )
 }
 
 const run = async () => {
