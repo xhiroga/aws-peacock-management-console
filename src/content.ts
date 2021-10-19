@@ -1,5 +1,10 @@
 import { parse } from 'jsonc-parser'
-import { Config, ConfigList, ConfigRepository } from './lib/config-repository'
+import {
+  Config,
+  ConfigList,
+  ConfigRepository,
+  Environment,
+} from './lib/config-repository'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
@@ -28,17 +33,21 @@ const loadConfigList = async (): Promise<ConfigList> => {
   return parse(await configRepository.get())
 }
 
+const isEnvMatch = (env: Environment, accountId: string, region: string) =>
+  env.account === accountId && (env.region ? env.region === region : true)
+
 const findConfig = (
   configList: ConfigList,
   accountId: string,
   region: string
-): Config | undefined => {
-  return configList.find(
-    (config: Config) =>
-      config.accounts.includes(accountId) &&
-      (config.regions ? config.regions.includes(region) : true)
-  )
-}
+): Config | undefined =>
+  configList.find((config: Config) => {
+    if (Array.isArray(config.env)) {
+      return config.env.some((e) => isEnvMatch(e, accountId, region))
+    } else {
+      return isEnvMatch(config.env, accountId, region)
+    }
+  })
 
 const getLuminance = (r: number, g: number, b: number) =>
   (0.299 * r + 0.587 * g + 0.114 * b) / 255

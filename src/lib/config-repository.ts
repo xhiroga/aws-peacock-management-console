@@ -1,8 +1,11 @@
 import { Browser, BrowserStorage, StorageArea } from './browser-storage'
 
+export type Environment = {
+  account: string
+  region?: string
+}
 export type Config = {
-  accounts: string[]
-  regions?: string[]
+  env: Environment | Environment[]
   style: {
     navigationBackgroundColor?: string
     accountMenuButtonBackgroundColor?: string
