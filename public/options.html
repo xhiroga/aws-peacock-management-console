@@ -30,7 +30,10 @@
 
   // prod
   {
-    "accounts": ["123456789334"],
+    "env": {
+      "account": "111111111111",
+      "region": "us-east-1"
+    }
     "style": {
       "navigationBackgroundColor": "#d04649",
       "accountMenuButtonBackgroundColor": "#37cb34",
@@ -39,19 +42,20 @@
 
   // dev
   {
-    "accounts": ["987654321098"],
+    // env can be array.
+    "env": [
+      {
+        "account": "222222222222",
+        // region is optional property
+      },
+      {
+        "account": "333333333333",
+      }
+    ]
     "style": {
+      // navigationBackgroundColor and accountMenuButtonBackgroundColor are optional properties.
       "navigationBackgroundColor": "#377d22",
       "accountMenuButtonBackgroundColor": "#422c74",
-    }
-  },
-
-  // sandbox
-  {
-    "accounts": ["123456789334"],
-    "regions": ["ap-northeast-3"],
-    "style": {
-      "navigationBackgroundColor": "#1accff"
     }
   }
 ]</textarea
