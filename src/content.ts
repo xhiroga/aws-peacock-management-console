@@ -84,7 +84,7 @@ const insertStyleTag = (css: string) => {
 
 const updateAwsLogo = (color: string) => {
   const awsLogoType = getAwsLogoType()
-  awsLogoType && awsLogoType.setAttribute('fill', color)
+  awsLogoType?.setAttribute('fill', color)
 }
 
 const insertAccountMenuButtonBackground = (
@@ -163,13 +163,15 @@ const updateAccountMenuButtonStyle = (
 }
 
 const updateStyle = (style: Config['style']) => {
-  style.accountMenuButtonBackgroundColor &&
+  if (style.accountMenuButtonBackgroundColor) {
     updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor)
-  style.navigationBackgroundColor &&
+  }
+  if (style.navigationBackgroundColor) {
     updateNavigationStyle(
       style.navigationBackgroundColor,
       style.accountMenuButtonBackgroundColor !== undefined
     )
+  }
 }
 
 const run = async () => {
@@ -180,6 +182,8 @@ const run = async () => {
     return
   }
   const config = findConfig(configList, accountId, region)
-  config?.style && updateStyle(config?.style)
+  if (config?.style) {
+    updateStyle(config?.style)
+  }
 }
 run()
