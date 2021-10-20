@@ -6,7 +6,9 @@
   "scripts": {
     "watch": "webpack --devtool inline-source-map --mode development --watch",
     "build": "webpack --mode production",
-    "clean": "node -e 'fs.rmSync(`dist`, {recursive:true, force:true})'"
+    "clean": "node -e 'fs.rmSync(`dist`, {recursive:true, force:true})'",
+    "archive": "mkdir -p packages && cd dist && zip -r ../packages/aws-peacock-management-console_chrome.zip *",
+    "package": "yarn clean && yarn build && yarn archive"
   },
   "license": "MIT",
   "dependencies": {
