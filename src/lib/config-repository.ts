@@ -15,7 +15,9 @@ export type ConfigList = Config[]
 
 export class ConfigRepository {
   key = 'config'
+
   storage: BrowserStorage<string>
+
   constructor(browser: Browser, storageArea: StorageArea) {
     this.storage = new BrowserStorage<string>(browser, storageArea)
   }

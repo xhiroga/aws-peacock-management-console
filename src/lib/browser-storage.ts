@@ -3,7 +3,9 @@ export type StorageArea = 'local' | 'sync'
 
 export class BrowserStorage<T> {
   runtime: typeof chrome.runtime
+
   storageArea: chrome.storage.LocalStorageArea | chrome.storage.SyncStorageArea
+
   constructor(browser: Browser, storageArea: StorageArea) {
     this.runtime = browser.runtime
     this.storageArea = browser.storage[storageArea]
