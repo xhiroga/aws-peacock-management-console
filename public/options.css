@@ -32,5 +32,5 @@ body {
   padding: 0.5ex;
   white-space: pre;
   width: 100%;
-  height: calc(75vh - 400px);
+  height: 75vh;
 }
