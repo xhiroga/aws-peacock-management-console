@@ -16,6 +16,10 @@
         "https://*.console.amazonaws-us-gov.com/*",
         "https://*.console.amazonaws.cn/*"
       ]
+    },
+    {
+      "js": ["scraping.js"],
+      "matches": ["https://*.awsapps.com/*"]
     }
   ],
   "options_ui": {
