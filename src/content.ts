@@ -29,8 +29,9 @@ const getAwsLogoType = () =>
       .firstChild
   )
 
-const loadConfigList = async (): Promise<ConfigList> => {
-  return parse(await configRepository.get())
+const loadConfigList = async (): Promise<ConfigList | undefined> => {
+  const configList = await configRepository.get()
+  return configList ? parse(configList) : undefined
 }
 
 const isEnvMatch = (env: Environment, accountId: string, region: string) =>
