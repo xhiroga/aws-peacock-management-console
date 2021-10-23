@@ -36,11 +36,15 @@ body {
   height: 75vh;
 }
 
-.saveArea {
+.menuBar {
   display: flex;
   flex-direction: row;
   gap: 10px;
   align-items: center;
+}
+
+.menuBar :last-child {
+  margin-left: auto;
 }
 
 #saveButton {
