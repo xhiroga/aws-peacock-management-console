@@ -96,6 +96,11 @@ const insertStyleTag = (css: string) => {
   head.appendChild(style)
 }
 
+const updateCloudShellIcon = (color: string) => {
+  const cloudShellIcon = document.getElementById('CLI_icon_white')
+  cloudShellIcon?.setAttribute('stroke', color)
+}
+
 const updateAwsLogo = (color: string) => {
   const awsLogoType = getAwsLogoType()
   awsLogoType?.setAttribute('fill', color)
@@ -154,6 +159,7 @@ const updateNavigationStyle = (
     color: ${foregroundColor} !important;
   }`
   insertStyleTag(css)
+  updateCloudShellIcon(foregroundColor)
   updateAwsLogo(awsLogoTypeColor)
 }
 
