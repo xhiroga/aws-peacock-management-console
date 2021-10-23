@@ -13,6 +13,10 @@ const onAwsAccountSelected = (callback: () => void) => {
   if (!isAwsAccountSelected()) {
     return
   }
+  Array.prototype.filter.call(
+    document.getElementsByClassName('instance-section'),
+    console.log
+  )
   callback()
 }
 
