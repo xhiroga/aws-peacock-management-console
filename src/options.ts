@@ -1,4 +1,4 @@
-import { ConfigList, ConfigRepository } from './lib/config-repository'
+import { ConfigRepository } from './lib/config-repository'
 
 const configRepository = new ConfigRepository(chrome, 'local')
 
@@ -13,12 +13,11 @@ const sampleConfig = `[
   // prod
   {
     "env": {
-      "account": "111111111111",
-      "region": "us-east-1"
-    }
+      "account": "111111111111"
+    },
     "style": {
-      "navigationBackgroundColor": "#d04649",
-      "accountMenuButtonBackgroundColor": "#37cb34",
+      "navigationBackgroundColor": "#65c89b",
+      "accountMenuButtonBackgroundColor": "#945bc4",
     }
   },
 
@@ -28,7 +27,7 @@ const sampleConfig = `[
     "env": [
       {
         "account": "222222222222",
-        // region is optional property
+        "region": "us-east-1" // region is optional property
       },
       {
         "account": "333333333333",
@@ -36,8 +35,8 @@ const sampleConfig = `[
     ]
     "style": {
       // navigationBackgroundColor and accountMenuButtonBackgroundColor are optional properties.
-      "navigationBackgroundColor": "#377d22",
-      "accountMenuButtonBackgroundColor": "#422c74",
+      "navigationBackgroundColor": "#3399ff",
+      "accountMenuButtonBackgroundColor": "#bf0060",
     }
   }
 ]
