@@ -12,8 +12,21 @@ const AWSUI_COLOR_GRAY_900 = '#16191f'
 
 const configRepository = new ConfigRepository(chrome, 'local')
 
-const selectElement = (query: string): HTMLElement | undefined =>
-  document.querySelectorAll<HTMLElement>(query)[0]
+const selectElement = (query: string): HTMLElement | null =>
+  document.querySelector<HTMLElement>(query)
+
+const getAccountMenuButtonTitle = () => {
+  return selectElement(
+    '[data-testid="more-menu__awsc-nav-account-menu-button"] span[title]'
+  )
+}
+
+const noEllipsisInAccountMenuButton = () => {
+  const accountMenuButtonTitle = getAccountMenuButtonTitle()
+  if (accountMenuButtonTitle) {
+    accountMenuButtonTitle.innerText = accountMenuButtonTitle.title
+  }
+}
 
 const getAccountId = (): string | undefined => {
   return selectElement('[data-testid="aws-my-account-details"]')?.innerText
@@ -176,6 +189,8 @@ const updateStyle = (style: Config['style']) => {
 }
 
 const run = async () => {
+  noEllipsisInAccountMenuButton()
+
   const configList = await loadConfigList()
   const accountId = getAccountId()
   const region = getRegion()
