@@ -17,11 +17,18 @@ window.onload = async () => {
     document.getElementById('awsConfigTextArea')
   )
   const saveButton = document.getElementById('saveButton')
-  if (textArea === null || saveButton === null) {
+  const savedMessage = document.getElementById('savedMessage')
+  if (textArea === null || saveButton === null || savedMessage === null) {
     return
   }
   textArea.value =
     (await configRepository.get()) ?? JSON.stringify(example, null, 2)
 
-  saveButton.onclick = () => configRepository.set(textArea.value)
+  saveButton.onclick = () => {
+    configRepository.set(textArea.value)
+    savedMessage.hidden = false
+  }
+  textArea.oninput = () => {
+    savedMessage.hidden = true
+  }
 }
