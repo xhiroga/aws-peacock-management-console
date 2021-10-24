@@ -1,10 +1,10 @@
-# aws-peacock-management-console
+# AWS Peacock Management Console ![Peacock](./public/icons/128.png)
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/bknjjajglapfhbdcfgmhgkgfomkkaidj.svg)](https://chrome.google.com/webstore/detail/aws-peacock-management-co/bknjjajglapfhbdcfgmhgkgfomkkaidj?utm_source=github)
 
 Browser Extension to show account alias and change color of AWS Management Console, even if AWS SSO.
 
-![](images/aws-peacock-mc.png)
+![Screenshot](images/aws-peacock-mc.png)
 
 AWS Peacock Management Console store configuration which maps environment(Account ID and Region) to style(color). In AWS Management Console, it modify HTML tags to change color and show account alias.
 
