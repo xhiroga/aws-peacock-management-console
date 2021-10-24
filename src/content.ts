@@ -28,8 +28,12 @@ const noEllipsisInAccountMenuButton = () => {
   }
 }
 
-const getAccountId = (): string | undefined => {
-  return selectElement('[data-testid="aws-my-account-details"]')?.innerText
+const getAccountId = (): string | null | undefined => {
+  return (
+    selectElement('div[data-testid="aws-my-account-details"]')?.innerText ??
+    document.querySelectorAll('div[data-testid="account-menu-title"]')[1]
+      ?.nextSibling?.textContent // When Role Switched
+  )
 }
 
 const getRegion = () => {
@@ -106,6 +110,15 @@ const updateAwsLogo = (color: string) => {
   awsLogoType?.setAttribute('fill', color)
 }
 
+const whiteSearchBox = () => {
+  const css = `
+  input[data-testid="awsc-concierge-input"] {
+    color: ${AWSUI_COLOR_GRAY_900} !important;
+    background-color: #ffffff !important;
+  }`
+  insertStyleTag(css)
+}
+
 const insertAccountMenuButtonBackground = (
   accountMenuButtonBackgroundColor: string
 ) => {
@@ -161,6 +174,7 @@ const updateNavigationStyle = (
   insertStyleTag(css)
   updateCloudShellIcon(foregroundColor)
   updateAwsLogo(awsLogoTypeColor)
+  whiteSearchBox()
 }
 
 const updateAccountMenuButtonStyle = (
