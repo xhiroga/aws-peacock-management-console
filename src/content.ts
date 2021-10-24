@@ -21,6 +21,10 @@ const getAccountMenuButtonTitle = () => {
   )
 }
 
+const getOriginalAccountMenuButtonBackground = () => {
+  return selectElement('span[data-testid="account-menu-button__background"]')
+}
+
 const noEllipsisInAccountMenuButton = () => {
   const accountMenuButtonTitle = getAccountMenuButtonTitle()
   if (accountMenuButtonTitle) {
@@ -30,7 +34,7 @@ const noEllipsisInAccountMenuButton = () => {
 
 const getAccountId = (): string | null | undefined => {
   return (
-    selectElement('div[data-testid="aws-my-account-details"]')?.innerText ??
+    selectElement('span[data-testid="aws-my-account-details"]')?.innerText ??
     document.querySelectorAll('div[data-testid="account-menu-title"]')[1]
       ?.nextSibling?.textContent // When Role Switched
   )
@@ -132,6 +136,11 @@ const insertAccountMenuButtonBackground = (
   )
 }
 
+const hideOriginalAccountMenuButtonBackground = () => {
+  const originalAccountMenuBackground = getOriginalAccountMenuButtonBackground()
+  originalAccountMenuBackground?.setAttribute('hidden', 'true')
+}
+
 const updateNavigationStyle = (
   navigationBackgroundColor: string,
   accountMenuButtonBackgroundColorEnabled: boolean
@@ -152,7 +161,8 @@ const updateNavigationStyle = (
   button[data-testid="aws-services-list-button"] *,
   button[data-testid="awsc-phd__bell-icon"] *,
   ${
-    accountMenuButtonBackgroundColorEnabled
+    accountMenuButtonBackgroundColorEnabled ||
+    getOriginalAccountMenuButtonBackground()
       ? ''
       : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
   }
@@ -172,9 +182,9 @@ const updateNavigationStyle = (
     color: ${foregroundColor} !important;
   }`
   insertStyleTag(css)
-  updateCloudShellIcon(foregroundColor)
   updateAwsLogo(awsLogoTypeColor)
   whiteSearchBox()
+  updateCloudShellIcon(foregroundColor)
 }
 
 const updateAccountMenuButtonStyle = (
@@ -194,6 +204,7 @@ const updateAccountMenuButtonStyle = (
   }`
   insertStyleTag(css)
   insertAccountMenuButtonBackground(accountMenuButtonBackgroundColor)
+  hideOriginalAccountMenuButtonBackground()
 }
 
 const updateStyle = (style: Config['style']) => {
