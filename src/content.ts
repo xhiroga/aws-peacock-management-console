@@ -215,6 +215,11 @@ const run = async () => {
   const accountId = getAccountId()
   const region = getRegion()
   if (!(configList && accountId && region)) {
+    console.error(
+      `Properties must not be empty. configList: ${JSON.stringify(
+        configList
+      )}, accountId: ${accountId}, region: ${region}`
+    )
     return
   }
   const config = findConfig(configList, accountId, region)
