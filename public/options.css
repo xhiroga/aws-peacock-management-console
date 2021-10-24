@@ -5,6 +5,7 @@ html {
 body {
   background-color: #666;
   height: 100%;
+  margin: 0px;
 }
 
 .twoColumnLayout {
@@ -33,4 +34,26 @@ body {
   white-space: pre;
   width: 100%;
   height: 75vh;
+}
+
+.menuBar {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.menuBar :last-child {
+  margin-left: auto;
+}
+
+#saveButton {
+  height: 28px;
+  padding: 4px 20px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+#savedMessage {
+  color: green;
 }

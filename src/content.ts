@@ -21,6 +21,10 @@ const getAccountMenuButtonTitle = () => {
   )
 }
 
+const getOriginalAccountMenuButtonBackground = () => {
+  return selectElement('span[data-testid="account-menu-button__background"]')
+}
+
 const noEllipsisInAccountMenuButton = () => {
   const accountMenuButtonTitle = getAccountMenuButtonTitle()
   if (accountMenuButtonTitle) {
@@ -28,8 +32,12 @@ const noEllipsisInAccountMenuButton = () => {
   }
 }
 
-const getAccountId = (): string | undefined => {
-  return selectElement('[data-testid="aws-my-account-details"]')?.innerText
+const getAccountId = (): string | null | undefined => {
+  return (
+    selectElement('span[data-testid="aws-my-account-details"]')?.innerText ??
+    document.querySelectorAll('div[data-testid="account-menu-title"]')[1]
+      ?.nextSibling?.textContent // When Role Switched
+  )
 }
 
 const getRegion = () => {
@@ -96,9 +104,23 @@ const insertStyleTag = (css: string) => {
   head.appendChild(style)
 }
 
+const updateCloudShellIcon = (color: string) => {
+  const cloudShellIcon = document.getElementById('CLI_icon_white')
+  cloudShellIcon?.setAttribute('stroke', color)
+}
+
 const updateAwsLogo = (color: string) => {
   const awsLogoType = getAwsLogoType()
   awsLogoType?.setAttribute('fill', color)
+}
+
+const whiteSearchBox = () => {
+  const css = `
+  input[data-testid="awsc-concierge-input"] {
+    color: ${AWSUI_COLOR_GRAY_900} !important;
+    background-color: #ffffff !important;
+  }`
+  insertStyleTag(css)
 }
 
 const insertAccountMenuButtonBackground = (
@@ -112,6 +134,11 @@ const insertAccountMenuButtonBackground = (
   selectElement('[data-testid="awsc-nav-account-menu-button"]')?.prepend(
     accountMenuButtonBackground
   )
+}
+
+const hideOriginalAccountMenuButtonBackground = () => {
+  const originalAccountMenuBackground = getOriginalAccountMenuButtonBackground()
+  originalAccountMenuBackground?.setAttribute('hidden', 'true')
 }
 
 const updateNavigationStyle = (
@@ -134,7 +161,8 @@ const updateNavigationStyle = (
   button[data-testid="aws-services-list-button"] *,
   button[data-testid="awsc-phd__bell-icon"] *,
   ${
-    accountMenuButtonBackgroundColorEnabled
+    accountMenuButtonBackgroundColorEnabled ||
+    getOriginalAccountMenuButtonBackground()
       ? ''
       : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
   }
@@ -155,6 +183,8 @@ const updateNavigationStyle = (
   }`
   insertStyleTag(css)
   updateAwsLogo(awsLogoTypeColor)
+  whiteSearchBox()
+  updateCloudShellIcon(foregroundColor)
 }
 
 const updateAccountMenuButtonStyle = (
@@ -174,6 +204,7 @@ const updateAccountMenuButtonStyle = (
   }`
   insertStyleTag(css)
   insertAccountMenuButtonBackground(accountMenuButtonBackgroundColor)
+  hideOriginalAccountMenuButtonBackground()
 }
 
 const updateStyle = (style: Config['style']) => {
@@ -195,6 +226,11 @@ const run = async () => {
   const accountId = getAccountId()
   const region = getRegion()
   if (!(configList && accountId && region)) {
+    console.error(
+      `Properties must not be empty. configList: ${JSON.stringify(
+        configList
+      )}, accountId: ${accountId}, region: ${region}`
+    )
     return
   }
   const config = findConfig(configList, accountId, region)
