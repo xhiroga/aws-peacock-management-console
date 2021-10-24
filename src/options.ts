@@ -8,8 +8,7 @@ const sampleConfig = `[
    *
    * When multiple rules match, the first matching rule will be applied.
    *
-  */
-
+   */
   // prod
   {
     "env": {
@@ -17,10 +16,9 @@ const sampleConfig = `[
     },
     "style": {
       "navigationBackgroundColor": "#65c89b",
-      "accountMenuButtonBackgroundColor": "#945bc4",
+      "accountMenuButtonBackgroundColor": "#945bc4"
     }
   },
-
   // dev
   {
     // env can be array.
@@ -30,13 +28,13 @@ const sampleConfig = `[
         "region": "us-east-1" // region is optional property
       },
       {
-        "account": "333333333333",
+        "account": "333333333333"
       }
-    ]
+    ],
     "style": {
       // navigationBackgroundColor and accountMenuButtonBackgroundColor are optional properties.
       "navigationBackgroundColor": "#3399ff",
-      "accountMenuButtonBackgroundColor": "#bf0060",
+      "accountMenuButtonBackgroundColor": "#bf0060"
     }
   }
 ]
