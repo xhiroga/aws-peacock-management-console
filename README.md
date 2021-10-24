@@ -8,6 +8,10 @@ Browser Extension to show account alias and change color of AWS Management Conso
 
 AWS Peacock Management Console store configuration which maps environment(Account ID and Region) to style(color). In AWS Management Console, it modify HTML tags to change color and show account alias.
 
+## Disclaimer
+
+While effort has been made to ensure the accuracy of the program, developers assumes no responsibility for any problem caused by this extension.
+
 ## Development
 
 ```shell
