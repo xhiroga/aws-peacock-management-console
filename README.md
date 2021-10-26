@@ -12,6 +12,10 @@ AWS Peacock Management Console store configuration which maps environment(Accoun
 
 While effort has been made to ensure the accuracy of the program, developers assumes no responsibility for any problem caused by this extension.
 
+## Install
+
+- [AWS Peacock Management Console \- Chrome Web Store](https://chrome.google.com/webstore/detail/aws-peacock-management-co/bknjjajglapfhbdcfgmhgkgfomkkaidj?utm_source=github)
+
 ## Development
 
 ```shell
