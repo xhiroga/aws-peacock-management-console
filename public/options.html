@@ -15,51 +15,22 @@
           class="configuration"
           spellcheck="false"
         ></textarea>
-        <button id="saveButton">Save</button>
+        <div class="menuBar">
+          <button id="saveButton">Save</button>
+          <span id="savedMessage" hidden>Saved!</span>
+          <a href="https://color.adobe.com/" target="_blank" rel="noopener"
+            >Color Palette
+          </a>
+        </div>
       </div>
       <div class="column howToColumn">
         <h1>Example</h1>
-        <textarea readonly class="configuration" spellcheck="false">
-[
-  /**
-   * JSON with comment format
-   *
-   * When multiple rules match, the first matching rule will be applied.
-   *
-  */
-
-  // prod
-  {
-    "env": {
-      "account": "111111111111",
-      "region": "us-east-1"
-    }
-    "style": {
-      "navigationBackgroundColor": "#d04649",
-      "accountMenuButtonBackgroundColor": "#37cb34",
-    }
-  },
-
-  // dev
-  {
-    // env can be array.
-    "env": [
-      {
-        "account": "222222222222",
-        // region is optional property
-      },
-      {
-        "account": "333333333333",
-      }
-    ]
-    "style": {
-      // navigationBackgroundColor and accountMenuButtonBackgroundColor are optional properties.
-      "navigationBackgroundColor": "#377d22",
-      "accountMenuButtonBackgroundColor": "#422c74",
-    }
-  }
-]</textarea
-        >
+        <textarea
+          readonly
+          id="awsConfigTextAreaSample"
+          class="configuration"
+          spellcheck="false"
+        ></textarea>
       </div>
     </div>
   </body>
