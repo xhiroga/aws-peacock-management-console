@@ -10,7 +10,10 @@ const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
 const AWSUI_COLOR_GRAY_900 = '#16191f'
 
-const configRepository = new ConfigRepository(chrome, 'local')
+const configRepository = new ConfigRepository({
+  browser: chrome,
+  storageArea: 'local',
+})
 
 const selectElement = (query: string): HTMLElement | null =>
   document.querySelector<HTMLElement>(query)

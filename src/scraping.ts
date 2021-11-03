@@ -1,3 +1,10 @@
+import { AccountNameRepository } from './lib/account-name-repository'
+
+const accountNameRepository = new AccountNameRepository({
+  browser: chrome,
+  storageArea: 'local',
+})
+
 const getPortalApplicationList = () =>
   document.getElementsByTagName('portal-application-list')[0]
 
