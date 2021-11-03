@@ -1,4 +1,7 @@
-import { AccountNameRepository } from './lib/account-name-repository'
+import {
+  AccountName,
+  AccountNameRepository,
+} from './lib/account-name-repository'
 
 const accountNameRepository = new AccountNameRepository({
   browser: chrome,
@@ -8,13 +11,6 @@ const accountNameRepository = new AccountNameRepository({
 const getPortalApplicationList = () =>
   document.getElementsByTagName('portal-application-list')[0]
 
-const isAwsAccountSelected = (): boolean => {
-  const appAwsAccount = document.querySelectorAll(
-    'portal-application[title="AWS Account"]'
-  )[0]
-  return appAwsAccount.classList.contains('selected')
-}
-
 type OnAwsAccountApplicationSelected = (stopObserve: () => void) => void
 
 const observePortalApplicationList = (
@@ -22,10 +18,9 @@ const observePortalApplicationList = (
 ) => {
   const portalApplicationList = getPortalApplicationList()
   const mutationCallback = (
-    mutationList: MutationRecord[],
+    _: MutationRecord[],
     observer: MutationObserver
   ) => {
-    console.log(mutationList)
     onAwsAccountApplicationSelected(() => observer.disconnect())
   }
   const config = { attributes: false, childList: true, subtree: false }
@@ -33,20 +28,47 @@ const observePortalApplicationList = (
   observer.observe(portalApplicationList, config)
 }
 
+const isAwsAccountSelected = (): boolean => {
+  const appAwsAccount = document.querySelectorAll(
+    'portal-application[title="AWS Account"]'
+  )[0]
+  return appAwsAccount.classList.contains('selected')
+}
+
+const toAccountNameAndId = (
+  portalInstanceSection: HTMLDivElement
+): AccountName | null => {
+  const accountName =
+    portalInstanceSection.querySelector<HTMLDivElement>('div.name')?.textContent
+  const accountId =
+    portalInstanceSection.querySelector<HTMLSpanElement>(
+      'span.accountId'
+    )?.textContent
+  if (accountName && accountId) {
+    return { accountName, accountId }
+  } else {
+    return null
+  }
+}
+
 const saveAccountName = (callback: () => void) => {
   if (!isAwsAccountSelected()) {
     return
   }
-  Array.prototype.filter.call(
-    document.getElementsByClassName('portal-instance-section'),
-    console.log
+  const portalInstanceSection = document.querySelectorAll<HTMLDivElement>(
+    'div.portal-instance-section'
   )
+  if (portalInstanceSection === null) {
+    console.error('portal-instance-section is not detected.')
+    return
+  }
+  console.log(Array.from(portalInstanceSection).map(toAccountNameAndId))
   callback()
 }
 
 window.onload = async () => {
   window.setTimeout(
     () => observePortalApplicationList(saveAccountName),
-    1 * 1000
+    0.5 * 1000
   )
 }

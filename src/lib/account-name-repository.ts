@@ -1,7 +1,7 @@
 import { Repository, RepositoryProps } from './repository'
 
 export type AccountName = {
-  name: string
+  accountName: string
   accountId: string
 }
 
