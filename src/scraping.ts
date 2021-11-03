@@ -15,20 +15,10 @@ const isAwsAccountSelected = (): boolean => {
   return appAwsAccount.classList.contains('selected')
 }
 
-type OnAwsAccountSelected = (stopObserve: () => void) => void
-const onAwsAccountSelected = (callback: () => void) => {
-  if (!isAwsAccountSelected()) {
-    return
-  }
-  Array.prototype.filter.call(
-    document.getElementsByClassName('instance-section'),
-    console.log
-  )
-  callback()
-}
+type OnAwsAccountApplicationSelected = (stopObserve: () => void) => void
 
 const observePortalApplicationList = (
-  onAwsAccountSelected: OnAwsAccountSelected
+  onAwsAccountApplicationSelected: OnAwsAccountApplicationSelected
 ) => {
   const portalApplicationList = getPortalApplicationList()
   const mutationCallback = (
@@ -36,16 +26,27 @@ const observePortalApplicationList = (
     observer: MutationObserver
   ) => {
     console.log(mutationList)
-    onAwsAccountSelected(() => observer.disconnect())
+    onAwsAccountApplicationSelected(() => observer.disconnect())
   }
   const config = { attributes: false, childList: true, subtree: false }
   const observer = new MutationObserver(mutationCallback)
   observer.observe(portalApplicationList, config)
 }
 
+const saveAccountName = (callback: () => void) => {
+  if (!isAwsAccountSelected()) {
+    return
+  }
+  Array.prototype.filter.call(
+    document.getElementsByClassName('portal-instance-section'),
+    console.log
+  )
+  callback()
+}
+
 window.onload = async () => {
   window.setTimeout(
-    () => observePortalApplicationList(onAwsAccountSelected),
+    () => observePortalApplicationList(saveAccountName),
     1 * 1000
   )
 }
