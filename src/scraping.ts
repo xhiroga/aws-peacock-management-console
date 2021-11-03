@@ -62,7 +62,9 @@ const saveAccountName = (callback: () => void) => {
     console.error('portal-instance-section is not detected.')
     return
   }
-  console.log(Array.from(portalInstanceSection).map(toAccountNameAndId))
+  accountNameRepository.set(
+    JSON.stringify(Array.from(portalInstanceSection).map(toAccountNameAndId))
+  )
   callback()
 }
 
