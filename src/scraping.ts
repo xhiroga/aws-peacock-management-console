@@ -8,32 +8,31 @@ const accountNameRepository = new AccountNameRepository({
   storageArea: 'local',
 })
 
-const getPortalApplicationList = () =>
-  document.getElementsByTagName('portal-application-list')[0]
-
 type OnAwsAccountApplicationSelected = (stopObserve: () => void) => void
 
-const observePortalApplicationList = (
+const observeApp = (
   onAwsAccountApplicationSelected: OnAwsAccountApplicationSelected
 ) => {
-  const portalApplicationList = getPortalApplicationList()
+  const app = document.querySelector<HTMLElement>('app')
+  if (!app) {
+    console.error('AWS SSO page has no <app>.')
+    return
+  }
   const mutationCallback = (
     _: MutationRecord[],
     observer: MutationObserver
   ) => {
     onAwsAccountApplicationSelected(() => observer.disconnect())
   }
-  const config = { attributes: false, childList: true, subtree: false }
+  const config = { attributes: false, childList: true, subtree: true }
   const observer = new MutationObserver(mutationCallback)
-  observer.observe(portalApplicationList, config)
+  observer.observe(app, config)
 }
 
-const isAwsAccountSelected = (): boolean => {
-  const appAwsAccount = document.querySelectorAll(
-    'portal-application[title="AWS Account"]'
-  )[0]
-  return appAwsAccount.classList.contains('selected')
-}
+const isAwsAccountSelected = (): boolean =>
+  document
+    .querySelector<HTMLElement>('portal-application[title="AWS Account"]')
+    ?.classList.contains('selected') ?? false
 
 const toAccountNameAndId = (
   portalInstanceSection: HTMLDivElement
@@ -44,11 +43,7 @@ const toAccountNameAndId = (
     .querySelector<HTMLSpanElement>('span.accountId')
     ?.textContent?.replace('#', '')
   console.log(accountId)
-  if (accountName && accountId) {
-    return { accountName, accountId }
-  } else {
-    return null
-  }
+  return accountName && accountId ? { accountName, accountId } : null
 }
 
 const saveAccountName = (callback: () => void) => {
@@ -68,9 +63,4 @@ const saveAccountName = (callback: () => void) => {
   callback()
 }
 
-window.onload = async () => {
-  window.setTimeout(
-    () => observePortalApplicationList(saveAccountName),
-    0.5 * 1000
-  )
-}
+observeApp(saveAccountName)

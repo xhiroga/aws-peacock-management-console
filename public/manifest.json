@@ -19,7 +19,7 @@
     },
     {
       "js": ["scraping.js"],
-      "matches": ["https://*.awsapps.com/*"]
+      "matches": ["https://*.awsapps.com/start*"]
     }
   ],
   "options_ui": {
