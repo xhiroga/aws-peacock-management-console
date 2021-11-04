@@ -42,7 +42,6 @@ const toAccountNameAndId = (
   const accountId = portalInstanceSection
     .querySelector<HTMLSpanElement>('span.accountId')
     ?.textContent?.replace('#', '')
-  console.log(accountId)
   return accountName && accountId ? { accountName, accountId } : null
 }
 
@@ -53,7 +52,7 @@ const saveAccountName = (callback: () => void) => {
   const portalInstanceSection = document.querySelectorAll<HTMLDivElement>(
     'div.portal-instance-section'
   )
-  if (portalInstanceSection === null) {
+  if (!portalInstanceSection) {
     console.error('portal-instance-section is not detected.')
     return
   }

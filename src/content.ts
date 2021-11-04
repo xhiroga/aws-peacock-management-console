@@ -243,7 +243,6 @@ const updateUserName = (accountName: AccountName) => {
   } else {
     userName = accountMenuButtonTitle.title
   }
-  console.log(userName)
   accountMenuButtonTitle.innerText = userName
 }
 
@@ -253,11 +252,9 @@ const run = async () => {
   const accountId = getAccountId()
   const region = getRegion()
   if (accountNameList && accountId) {
-    console.log(accountNameList)
     const accountName = accountNameList.find(
       (accountName) => accountName.accountId === accountId
     )
-    console.log(accountName)
     if (accountName) {
       updateUserName(accountName)
     }
