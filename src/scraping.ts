@@ -40,10 +40,10 @@ const toAccountNameAndId = (
 ): AccountName | null => {
   const accountName =
     portalInstanceSection.querySelector<HTMLDivElement>('div.name')?.textContent
-  const accountId =
-    portalInstanceSection.querySelector<HTMLSpanElement>(
-      'span.accountId'
-    )?.textContent
+  const accountId = portalInstanceSection
+    .querySelector<HTMLSpanElement>('span.accountId')
+    ?.textContent?.replace('#', '')
+  console.log(accountId)
   if (accountName && accountId) {
     return { accountName, accountId }
   } else {
