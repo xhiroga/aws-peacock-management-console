@@ -239,11 +239,11 @@ const patchAccountNameIfAwsSso = (accountName: AccountName) => {
   }
 
   const awsSsoDisplayNameRe = new RegExp(
-    `(${
+    `^(${
       AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
     }/${AWS_SSO_USR_NAME_PATTERN.source} @ )(${
       AWS_ACCOUNT_ALIAS_PATTERN.source
-    })`
+    })$`
   )
   const displayName = accountMenuButtonTitle.title.replace(
     awsSsoDisplayNameRe,
