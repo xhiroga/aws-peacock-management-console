@@ -43,7 +43,7 @@ const toAccountNameAndId = (
   return accountName && accountId ? { accountName, accountId } : null
 }
 
-const saveAwsAccountName = () => {
+const saveAccountName = () => {
   const portalInstanceSection = document.querySelectorAll<HTMLDivElement>(
     'div.portal-instance-section'
   )
@@ -60,7 +60,7 @@ const saveAccountNameIfAwsAccountSelected = (callback: () => void) => {
   if (!isAwsAccountSelected()) {
     return
   }
-  saveAwsAccountName()
+  saveAccountName()
   callback()
 }
 
