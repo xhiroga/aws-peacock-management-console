@@ -15,6 +15,11 @@ const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
 const AWSUI_COLOR_GRAY_900 = '#16191f'
 
+const AWS_SERVICE_ROLE_FOR_SSO_PREFIX = /AWSReservedSSO_/ // https://docs.aws.amazon.com/singlesignon/latest/userguide/using-service-linked-roles.html
+const AWS_IAM_ROLE_NAME_PATTERN = /[\w+=,.@-]+/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html
+const AWS_SSO_USR_NAME_PATTERN = /[\w+=,.@-]+/ // Username can contain alphanumeric characters, or any of the following: +=,.@-
+const AWS_ACCOUNT_ALIAS_PATTERN = /[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccountAlias.html
+
 const repositoryProps: RepositoryProps = {
   browser: chrome,
   storageArea: 'local',
@@ -227,23 +232,24 @@ const updateStyle = (style: Config['style']) => {
   }
 }
 
-const updateUserName = (accountName: AccountName) => {
+const patchAccountNameIfAwsSso = (accountName: AccountName) => {
   const accountMenuButtonTitle = getAccountMenuButtonTitle()
   if (!accountMenuButtonTitle) {
     return
   }
 
-  let userName: string
-  if (accountName) {
-    const re = /([a-zA-Z0-9\-_/]+\s@\s)([a-zA-Z0-9\-_/]+)/
-    userName = accountMenuButtonTitle.title.replace(
-      re,
-      `$1 ${accountName.accountName}`
-    )
-  } else {
-    userName = accountMenuButtonTitle.title
-  }
-  accountMenuButtonTitle.innerText = userName
+  const awsSsoDisplayNameRe = new RegExp(
+    `(${
+      AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
+    }/${AWS_SSO_USR_NAME_PATTERN.source} @ )(${
+      AWS_ACCOUNT_ALIAS_PATTERN.source
+    })`
+  )
+  const displayName = accountMenuButtonTitle.title.replace(
+    awsSsoDisplayNameRe,
+    `$1 ${accountName.accountName}`
+  )
+  accountMenuButtonTitle.innerText = displayName
 }
 
 const run = async () => {
@@ -251,18 +257,18 @@ const run = async () => {
   const configList = await loadConfigList()
   const accountId = getAccountId()
   const region = getRegion()
+  if (configList && accountId && region) {
+    const config = findConfig(configList, accountId, region)
+    if (config?.style) {
+      updateStyle(config?.style)
+    }
+  }
   if (accountNameList && accountId) {
     const accountName = accountNameList.find(
       (accountName) => accountName.accountId === accountId
     )
     if (accountName) {
-      updateUserName(accountName)
-    }
-  }
-  if (configList && accountId && region) {
-    const config = findConfig(configList, accountId, region)
-    if (config?.style) {
-      updateStyle(config?.style)
+      patchAccountNameIfAwsSso(accountName)
     }
   }
 }
