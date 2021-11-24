@@ -1,16 +1,31 @@
 import { parse } from 'jsonc-parser'
 import {
+  AccountName,
+  AccountNameRepository,
+} from './lib/account-name-repository'
+import {
   Config,
   ConfigList,
   ConfigRepository,
   Environment,
 } from './lib/config-repository'
+import { RepositoryProps } from './lib/repository'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
 const AWSUI_COLOR_GRAY_900 = '#16191f'
 
-const configRepository = new ConfigRepository(chrome, 'local')
+const AWS_SERVICE_ROLE_FOR_SSO_PREFIX = /AWSReservedSSO_/ // https://docs.aws.amazon.com/singlesignon/latest/userguide/using-service-linked-roles.html
+const AWS_IAM_ROLE_NAME_PATTERN = /[\w+=,.@-]+/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html
+const AWS_SSO_USR_NAME_PATTERN = /[\w+=,.@-]+/ // Username can contain alphanumeric characters, or any of the following: +=,.@-
+const AWS_ACCOUNT_ALIAS_PATTERN = /[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccountAlias.html
+
+const repositoryProps: RepositoryProps = {
+  browser: chrome,
+  storageArea: 'local',
+}
+const configRepository = new ConfigRepository(repositoryProps)
+const accountNameRepository = new AccountNameRepository(repositoryProps)
 
 const selectElement = (query: string): HTMLElement | null =>
   document.querySelector<HTMLElement>(query)
@@ -23,13 +38,6 @@ const getAccountMenuButtonTitle = () => {
 
 const getOriginalAccountMenuButtonBackground = () => {
   return selectElement('span[data-testid="account-menu-button__background"]')
-}
-
-const noEllipsisInAccountMenuButton = () => {
-  const accountMenuButtonTitle = getAccountMenuButtonTitle()
-  if (accountMenuButtonTitle) {
-    accountMenuButtonTitle.innerText = accountMenuButtonTitle.title
-  }
 }
 
 const getAccountId = (): string | null | undefined => {
@@ -50,9 +58,14 @@ const getAwsLogoType = () =>
       .firstChild
   )
 
-const loadConfigList = async (): Promise<ConfigList | undefined> => {
+const loadConfigList = async (): Promise<ConfigList | null> => {
   const configList = await configRepository.get()
-  return configList ? parse(configList) : undefined
+  return configList ? parse(configList) : null
+}
+
+const loadAccountNameList = async (): Promise<AccountName[] | null> => {
+  const accountNameList = await accountNameRepository.get()
+  return accountNameList ? (JSON.parse(accountNameList) as AccountName[]) : null
 }
 
 const isEnvMatch = (env: Environment, accountId: string, region: string) =>
@@ -219,23 +232,44 @@ const updateStyle = (style: Config['style']) => {
   }
 }
 
-const run = async () => {
-  noEllipsisInAccountMenuButton()
+const patchAccountNameIfAwsSso = (accountName: AccountName) => {
+  const accountMenuButtonTitle = getAccountMenuButtonTitle()
+  if (!accountMenuButtonTitle) {
+    return
+  }
 
+  const awsSsoDisplayNameRe = new RegExp(
+    `^(${
+      AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
+    }/${AWS_SSO_USR_NAME_PATTERN.source} @ )(${
+      AWS_ACCOUNT_ALIAS_PATTERN.source
+    })$`
+  )
+  const displayName = accountMenuButtonTitle.title.replace(
+    awsSsoDisplayNameRe,
+    `$1 ${accountName.accountName}`
+  )
+  accountMenuButtonTitle.innerText = displayName
+}
+
+const run = async () => {
+  const accountNameList = await loadAccountNameList()
   const configList = await loadConfigList()
   const accountId = getAccountId()
   const region = getRegion()
-  if (!(configList && accountId && region)) {
-    console.error(
-      `Properties must not be empty. configList: ${JSON.stringify(
-        configList
-      )}, accountId: ${accountId}, region: ${region}`
-    )
-    return
+  if (configList && accountId && region) {
+    const config = findConfig(configList, accountId, region)
+    if (config?.style) {
+      updateStyle(config?.style)
+    }
   }
-  const config = findConfig(configList, accountId, region)
-  if (config?.style) {
-    updateStyle(config?.style)
+  if (accountNameList && accountId) {
+    const accountName = accountNameList.find(
+      (accountName) => accountName.accountId === accountId
+    )
+    if (accountName) {
+      patchAccountNameIfAwsSso(accountName)
+    }
   }
 }
 run()

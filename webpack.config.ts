@@ -5,8 +5,9 @@ const srcDir = path.join(__dirname, 'src')
 
 const config: Configuration = {
   entry: {
-    options: path.join(srcDir, 'options.ts'),
     content: path.join(srcDir, 'content.ts'),
+    options: path.join(srcDir, 'options.ts'),
+    scraping: path.join(srcDir, 'scraping.ts'),
   },
   output: {
     path: path.join(__dirname, 'dist'),
