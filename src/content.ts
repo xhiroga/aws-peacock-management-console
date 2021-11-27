@@ -42,10 +42,9 @@ const getOriginalAccountMenuButtonBackground = () => {
 
 const getAccountId = (): string | null | undefined => {
   return (
-    selectElement('span[data-testid="aws-my-account-details"]')?.innerText ??
-    document.querySelectorAll('div[data-testid="account-menu-title"]')[1]
-      ?.nextSibling?.textContent // When Role Switched
-  )
+    selectElement('button[data-testid="awsc-copy-accountid"]')
+      ?.previousElementSibling as HTMLSpanElement
+  )?.innerText.replace(/\-/g, '')
 }
 
 const getRegion = () => {
@@ -253,12 +252,14 @@ const patchAccountNameIfAwsSso = (accountName: AccountName) => {
 }
 
 const run = async () => {
+  console.log(`start...`)
   const accountNameList = await loadAccountNameList()
   const configList = await loadConfigList()
   const accountId = getAccountId()
   const region = getRegion()
   if (configList && accountId && region) {
     const config = findConfig(configList, accountId, region)
+    console.debug(config)
     if (config?.style) {
       updateStyle(config?.style)
     }
@@ -268,6 +269,7 @@ const run = async () => {
       (accountName) => accountName.accountId === accountId
     )
     if (accountName) {
+      console.debug(accountName)
       patchAccountNameIfAwsSso(accountName)
     }
   }
