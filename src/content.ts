@@ -136,7 +136,7 @@ const insertAccountMenuButtonBackground = (
   const accountMenuButtonBackground = document.createElement('span')
   accountMenuButtonBackground.setAttribute(
     'style',
-    `background-color: ${accountMenuButtonBackgroundColor}; position: absolute; left: 0; right: 0; top: 0; bottom: 0; border-radius: 24px; height: 24px; z-index: 1;`
+    `background-color: ${accountMenuButtonBackgroundColor}; position: absolute; left: 0; right: 0; top: 0; bottom: 0; border-radius: 10px; height: 18px; z-index: 1; margin: 10px`
   )
   selectElement('[data-testid="awsc-nav-account-menu-button"]')?.prepend(
     accountMenuButtonBackground
@@ -206,12 +206,11 @@ const updateAccountMenuButtonStyle = (
     color: ${foregroundColor} !important;
     padding-top: 0;
     padding-bottom: 0;
-    height: 24px;
-    border-radius: 24px;
+    border-radius: 10px;
   }`
+  hideOriginalAccountMenuButtonBackground()
   insertStyleTag(css)
   insertAccountMenuButtonBackground(accountMenuButtonBackgroundColor)
-  hideOriginalAccountMenuButtonBackground()
 }
 
 const updateStyle = (style: Config['style']) => {
@@ -243,7 +242,6 @@ const patchAccountNameIfAwsSso = (accountName: AccountName) => {
 }
 
 const run = async () => {
-  console.log(`start...`)
   const accountNameList = await loadAccountNameList()
   const configList = await loadConfigList()
   const accountId = getAccountId()
