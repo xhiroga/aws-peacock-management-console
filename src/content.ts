@@ -127,12 +127,22 @@ const insertAccountMenuButtonBackground = (
 ) => {
   const accountMenuButtonBackground = document.createElement('span')
   accountMenuButtonBackground.setAttribute(
-    'style',
-    `background-color: ${accountMenuButtonBackgroundColor}; position: absolute; left: 0; right: 0; top: 0; bottom: 0; border-radius: 10px; height: 18px; z-index: 1; margin: 10px`
+    'peacock-id',
+    `peacock-account-menu-button__background`
   )
   selectElement('[data-testid="awsc-nav-account-menu-button"]')?.prepend(
     accountMenuButtonBackground
   )
+  const css = `
+  span[peacock-id='peacock-account-menu-button__background'] {
+    background-color: ${accountMenuButtonBackgroundColor}; position: absolute; left: 0; right: 0; top: 0; bottom: 0; border-radius: 10px; height: 18px; opacity: 0; z-index: 1; margin: 10px;
+  }
+  @media only screen and (min-width: 620px) {
+    span[peacock-id='peacock-account-menu-button__background'] {
+      opacity: 1 !important;
+    }
+  }`
+  insertStyleTag(css)
 }
 
 const hideOriginalAccountMenuButtonBackground = () => {
@@ -162,7 +172,6 @@ const updateNavigationStyle = (
   a[data-testid="awsc-nav-scallop-icon"] > svg > path,
   div[data-testid="awsc-phd__bell-icon"] *,
   span[data-testid="awsc-nav-support-menu-button"] > svg > *,
-  button[data-testid="more-menu__awsc-nav-regions-menu-button"] > span > *,
   ${
     accountMenuButtonBackgroundColorEnabled ||
     getOriginalAccountMenuButtonBackground()
@@ -171,6 +180,11 @@ const updateNavigationStyle = (
   }
   button[data-testid="awsc-nav-more-menu"] {
     color: ${foregroundColor} !important;
+  }
+  @media only screen and (min-width: 620px) {
+    button[data-testid="more-menu__awsc-nav-regions-menu-button"] > span > * {
+      color: ${foregroundColor} !important;
+    }
   }
   div#awsc-nav-footer-content {
     background-color: ${navigationBackgroundColor} !important;
