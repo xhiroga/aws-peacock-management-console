@@ -18,7 +18,6 @@ const AWSUI_COLOR_GRAY_900 = '#16191f'
 const AWS_SERVICE_ROLE_FOR_SSO_PREFIX = /AWSReservedSSO_/ // https://docs.aws.amazon.com/singlesignon/latest/userguide/using-service-linked-roles.html
 const AWS_IAM_ROLE_NAME_PATTERN = /[\w+=,.@-]+/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html
 const AWS_SSO_USR_NAME_PATTERN = /[\w+=,.@-]+/ // Username can contain alphanumeric characters, or any of the following: +=,.@-
-const AWS_ACCOUNT_ALIAS_PATTERN = /[a-z0-9](([a-z0-9]|-(?!-))*[a-z0-9])?/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccountAlias.html
 
 const repositoryProps: RepositoryProps = {
   browser: chrome,
@@ -42,21 +41,14 @@ const getOriginalAccountMenuButtonBackground = () => {
 
 const getAccountId = (): string | null | undefined => {
   return (
-    selectElement('span[data-testid="aws-my-account-details"]')?.innerText ??
-    document.querySelectorAll('div[data-testid="account-menu-title"]')[1]
-      ?.nextSibling?.textContent // When Role Switched
-  )
+    selectElement('button[data-testid="awsc-copy-accountid"]')
+      ?.previousElementSibling as HTMLSpanElement
+  )?.innerText.replace(/\-/g, '')
 }
 
 const getRegion = () => {
   return document.getElementById('awsc-mezz-region')?.getAttribute('content')
 }
-
-const getAwsLogoType = () =>
-  <SVGElement>(
-    document.getElementById('nav-home-link')?.getElementsByTagName('g')[0]
-      .firstChild
-  )
 
 const loadConfigList = async (): Promise<ConfigList | null> => {
   const configList = await configRepository.get()
@@ -117,14 +109,12 @@ const insertStyleTag = (css: string) => {
   head.appendChild(style)
 }
 
-const updateCloudShellIcon = (color: string) => {
-  const cloudShellIcon = document.getElementById('CLI_icon_white')
-  cloudShellIcon?.setAttribute('stroke', color)
-}
-
 const updateAwsLogo = (color: string) => {
-  const awsLogoType = getAwsLogoType()
-  awsLogoType?.setAttribute('fill', color)
+  const css = `
+  a[data-testid="nav-logo"] > svg > path:first-of-type{
+    fill: ${color} !important;
+  }`
+  insertStyleTag(css)
 }
 
 const whiteSearchBox = () => {
@@ -141,12 +131,22 @@ const insertAccountMenuButtonBackground = (
 ) => {
   const accountMenuButtonBackground = document.createElement('span')
   accountMenuButtonBackground.setAttribute(
-    'style',
-    `background-color: ${accountMenuButtonBackgroundColor}; position: absolute; left: 0; right: 0; top: 0; bottom: 0; border-radius: 24px; height: 24px; z-index: 1;`
+    'peacock-id',
+    `peacock-account-menu-button__background`
   )
   selectElement('[data-testid="awsc-nav-account-menu-button"]')?.prepend(
     accountMenuButtonBackground
   )
+  const css = `
+  span[peacock-id='peacock-account-menu-button__background'] {
+    background-color: ${accountMenuButtonBackgroundColor}; position: absolute; left: 0; right: 0; top: 0; bottom: 0; border-radius: 10px; height: 18px; opacity: 0; z-index: 1; margin: 10px;
+  }
+  @media only screen and (min-width: 620px) {
+    span[peacock-id='peacock-account-menu-button__background'] {
+      opacity: 1 !important;
+    }
+  }`
+  insertStyleTag(css)
 }
 
 const hideOriginalAccountMenuButtonBackground = () => {
@@ -167,22 +167,29 @@ const updateNavigationStyle = (
     : '#ffffff'
 
   const css = `
-  div[data-testid="awsc-nav-header-viewport-shelf-inner"] {
+  nav[aria-label="Navigation bar"] {
     background-color: ${navigationBackgroundColor} !important;
   }
   button[data-testid="aws-services-list-button"],
   button[data-testid="aws-services-list-button"] *,
-  button[data-testid="awsc-phd__bell-icon"] *,
-  ${
-    accountMenuButtonBackgroundColorEnabled ||
-    getOriginalAccountMenuButtonBackground()
-      ? ''
-      : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
-  }
-  button[data-testid="more-menu__awsc-nav-regions-menu-button"] *,
-  button[data-testid="more-menu__awsc-nav-support-menu-button"] *,
+  button[data-testid="awsc-concierge-open-search-button"] > svg > *,
+  a[data-testid="awsc-nav-scallop-icon"] > svg > path,
+  div[data-testid="awsc-phd__bell-icon"] *,
+  span[data-testid="awsc-nav-support-menu-button"] > svg > *,
   button[data-testid="awsc-nav-more-menu"] {
     color: ${foregroundColor} !important;
+  }
+  @media only screen and (min-width: 620px) {
+    ${
+      accountMenuButtonBackgroundColorEnabled ||
+      getOriginalAccountMenuButtonBackground()
+        ? ''
+        : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
+    }
+    button[data-testid="more-menu__awsc-nav-regions-menu-button"] > span > *
+    {
+      color: ${foregroundColor} !important;
+    }
   }
   div#awsc-nav-footer-content {
     background-color: ${navigationBackgroundColor} !important;
@@ -191,13 +198,13 @@ const updateNavigationStyle = (
   button[data-testid="awsc-footer-language-selector-button"],
   a[data-testid="awsc-footer-privacy-policy"],
   a[data-testid="awsc-footer-terms-of-use"],
-  button[data-testid="awsc-footer-cookie-preferences"] {
+  button[data-testid="awsc-footer-cookie-preferences"],
+  span[data-testid="awsc-footer-copyright"] {
     color: ${foregroundColor} !important;
   }`
   insertStyleTag(css)
   updateAwsLogo(awsLogoTypeColor)
   whiteSearchBox()
-  updateCloudShellIcon(foregroundColor)
 }
 
 const updateAccountMenuButtonStyle = (
@@ -208,16 +215,17 @@ const updateAccountMenuButtonStyle = (
     : AWSUI_COLOR_GRAY_300
 
   const css = `
-  button[data-testid="more-menu__awsc-nav-account-menu-button"] {
-    color: ${foregroundColor} !important;
-    padding-top: 0;
-    padding-bottom: 0;
-    height: 24px;
-    border-radius: 24px;
+  @media only screen and (min-width: 620px) {
+    button[data-testid="more-menu__awsc-nav-account-menu-button"] {
+      color: ${foregroundColor} !important;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-radius: 10px;
+    }
   }`
+  hideOriginalAccountMenuButtonBackground()
   insertStyleTag(css)
   insertAccountMenuButtonBackground(accountMenuButtonBackgroundColor)
-  hideOriginalAccountMenuButtonBackground()
 }
 
 const updateStyle = (style: Config['style']) => {
@@ -232,24 +240,27 @@ const updateStyle = (style: Config['style']) => {
   }
 }
 
+const isNotIamUserButAwsSsoUser = (userName: string) => {
+  const awsSsoUserNameRe = new RegExp(
+    `^${
+      AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
+    }/${AWS_SSO_USR_NAME_PATTERN.source}$`
+  )
+  return awsSsoUserNameRe.test(userName)
+}
+
 const patchAccountNameIfAwsSso = (accountName: AccountName) => {
   const accountMenuButtonTitle = getAccountMenuButtonTitle()
   if (!accountMenuButtonTitle) {
     return
   }
-
-  const awsSsoDisplayNameRe = new RegExp(
-    `^(${
-      AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
-    }/${AWS_SSO_USR_NAME_PATTERN.source} @ )(${
-      AWS_ACCOUNT_ALIAS_PATTERN.source
-    })$`
-  )
-  const displayName = accountMenuButtonTitle.title.replace(
-    awsSsoDisplayNameRe,
-    `$1 ${accountName.accountName}`
-  )
-  accountMenuButtonTitle.innerText = displayName
+  const userName = (
+    selectElement('button[data-testid="awsc-copy-username"]')
+      ?.previousElementSibling as HTMLSpanElement
+  )?.innerText
+  if (userName && isNotIamUserButAwsSsoUser(userName)) {
+    accountMenuButtonTitle.innerText = `${userName} @ ${accountName.accountName}`
+  } // else not login by user, like root user or IAM role
 }
 
 const run = async () => {
