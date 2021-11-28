@@ -105,11 +105,6 @@ const insertStyleTag = (css: string) => {
   head.appendChild(style)
 }
 
-const updateCloudShellIcon = (color: string) => {
-  const cloudShellIcon = document.getElementById('CLI_icon_white')
-  cloudShellIcon?.setAttribute('stroke', color)
-}
-
 const updateAwsLogo = (color: string) => {
   const css = `
   a[data-testid="nav-logo"] > svg > path:first-of-type{
@@ -163,15 +158,17 @@ const updateNavigationStyle = (
   }
   button[data-testid="aws-services-list-button"],
   button[data-testid="aws-services-list-button"] *,
-  button[data-testid="awsc-phd__bell-icon"] *,
+  button[data-testid="awsc-concierge-open-search-button"] > svg > *,
+  a[data-testid="awsc-nav-scallop-icon"] > svg > path,
+  div[data-testid="awsc-phd__bell-icon"] *,
+  span[data-testid="awsc-nav-support-menu-button"] > svg > *,
+  button[data-testid="more-menu__awsc-nav-regions-menu-button"] > span > *,
   ${
     accountMenuButtonBackgroundColorEnabled ||
     getOriginalAccountMenuButtonBackground()
       ? ''
       : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
   }
-  button[data-testid="more-menu__awsc-nav-regions-menu-button"] *,
-  button[data-testid="more-menu__awsc-nav-support-menu-button"] *,
   button[data-testid="awsc-nav-more-menu"] {
     color: ${foregroundColor} !important;
   }
@@ -182,13 +179,13 @@ const updateNavigationStyle = (
   button[data-testid="awsc-footer-language-selector-button"],
   a[data-testid="awsc-footer-privacy-policy"],
   a[data-testid="awsc-footer-terms-of-use"],
-  button[data-testid="awsc-footer-cookie-preferences"] {
+  button[data-testid="awsc-footer-cookie-preferences"],
+  span[data-testid="awsc-footer-copyright"] {
     color: ${foregroundColor} !important;
   }`
   insertStyleTag(css)
   updateAwsLogo(awsLogoTypeColor)
   whiteSearchBox()
-  updateCloudShellIcon(foregroundColor)
 }
 
 const updateAccountMenuButtonStyle = (
