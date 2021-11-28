@@ -211,11 +211,13 @@ const updateAccountMenuButtonStyle = (
     : AWSUI_COLOR_GRAY_300
 
   const css = `
-  button[data-testid="more-menu__awsc-nav-account-menu-button"] {
-    color: ${foregroundColor} !important;
-    padding-top: 0;
-    padding-bottom: 0;
-    border-radius: 10px;
+  @media only screen and (min-width: 620px) {
+    button[data-testid="more-menu__awsc-nav-account-menu-button"] {
+      color: ${foregroundColor} !important;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-radius: 10px;
+    }
   }`
   hideOriginalAccountMenuButtonBackground()
   insertStyleTag(css)
