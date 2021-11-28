@@ -245,7 +245,6 @@ const run = async () => {
   const region = getRegion()
   if (configList && accountId && region) {
     const config = findConfig(configList, accountId, region)
-    console.debug(config)
     if (config?.style) {
       updateStyle(config?.style)
     }
@@ -255,7 +254,6 @@ const run = async () => {
       (accountName) => accountName.accountId === accountId
     )
     if (accountName) {
-      console.debug(accountName)
       patchAccountNameIfAwsSso(accountName)
     }
   }
