@@ -46,12 +46,6 @@ const getRegion = () => {
   return document.getElementById('awsc-mezz-region')?.getAttribute('content')
 }
 
-const getAwsLogoType = () =>
-  <SVGElement>(
-    document.getElementById('nav-home-link')?.getElementsByTagName('g')[0]
-      .firstChild
-  )
-
 const loadConfigList = async (): Promise<ConfigList | null> => {
   const configList = await configRepository.get()
   return configList ? parse(configList) : null
@@ -117,8 +111,11 @@ const updateCloudShellIcon = (color: string) => {
 }
 
 const updateAwsLogo = (color: string) => {
-  const awsLogoType = getAwsLogoType()
-  awsLogoType?.setAttribute('fill', color)
+  const css = `
+  a[data-testid="nav-logo"] > svg > path:first-of-type{
+    fill: ${color} !important;
+  }`
+  insertStyleTag(css)
 }
 
 const whiteSearchBox = () => {
