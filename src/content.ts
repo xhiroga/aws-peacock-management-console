@@ -161,7 +161,7 @@ const updateNavigationStyle = (
     : '#ffffff'
 
   const css = `
-  div[data-testid="awsc-nav-header-viewport-shelf-inner"] {
+  nav[aria-label="Navigation bar"] {
     background-color: ${navigationBackgroundColor} !important;
   }
   button[data-testid="aws-services-list-button"],
