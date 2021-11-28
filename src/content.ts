@@ -172,17 +172,18 @@ const updateNavigationStyle = (
   a[data-testid="awsc-nav-scallop-icon"] > svg > path,
   div[data-testid="awsc-phd__bell-icon"] *,
   span[data-testid="awsc-nav-support-menu-button"] > svg > *,
-  ${
-    accountMenuButtonBackgroundColorEnabled ||
-    getOriginalAccountMenuButtonBackground()
-      ? ''
-      : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
-  }
   button[data-testid="awsc-nav-more-menu"] {
     color: ${foregroundColor} !important;
   }
   @media only screen and (min-width: 620px) {
-    button[data-testid="more-menu__awsc-nav-regions-menu-button"] > span > * {
+    ${
+      accountMenuButtonBackgroundColorEnabled ||
+      getOriginalAccountMenuButtonBackground()
+        ? ''
+        : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
+    }
+    button[data-testid="more-menu__awsc-nav-regions-menu-button"] > span > *
+    {
       color: ${foregroundColor} !important;
     }
   }
