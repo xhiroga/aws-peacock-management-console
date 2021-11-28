@@ -15,6 +15,10 @@ const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
 const AWSUI_COLOR_GRAY_900 = '#16191f'
 
+const AWS_SERVICE_ROLE_FOR_SSO_PREFIX = /AWSReservedSSO_/ // https://docs.aws.amazon.com/singlesignon/latest/userguide/using-service-linked-roles.html
+const AWS_IAM_ROLE_NAME_PATTERN = /[\w+=,.@-]+/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html
+const AWS_SSO_USR_NAME_PATTERN = /[\w+=,.@-]+/ // Username can contain alphanumeric characters, or any of the following: +=,.@-
+
 const repositoryProps: RepositoryProps = {
   browser: chrome,
   storageArea: 'local',
@@ -236,6 +240,15 @@ const updateStyle = (style: Config['style']) => {
   }
 }
 
+const isNotIamUserButAwsSsoUser = (userName: string) => {
+  const awsSsoUserNameRe = new RegExp(
+    `^${
+      AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
+    }/${AWS_SSO_USR_NAME_PATTERN.source}$`
+  )
+  return awsSsoUserNameRe.test(userName)
+}
+
 const patchAccountNameIfAwsSso = (accountName: AccountName) => {
   const accountMenuButtonTitle = getAccountMenuButtonTitle()
   if (!accountMenuButtonTitle) {
@@ -245,11 +258,9 @@ const patchAccountNameIfAwsSso = (accountName: AccountName) => {
     selectElement('button[data-testid="awsc-copy-username"]')
       ?.previousElementSibling as HTMLSpanElement
   )?.innerText
-  if (!userName) {
-    console.error('Cannot get username.')
-    return
-  }
-  accountMenuButtonTitle.innerText = `${userName} @ ${accountName.accountName}`
+  if (userName && isNotIamUserButAwsSsoUser(userName)) {
+    accountMenuButtonTitle.innerText = `${userName} @ ${accountName.accountName}`
+  } // else not login by user, like root user or IAM role
 }
 
 const run = async () => {
