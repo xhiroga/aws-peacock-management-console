@@ -20,7 +20,7 @@ const AWS_IAM_ROLE_NAME_PATTERN = /[\w+=,.@-]+/ // https://docs.aws.amazon.com/I
 const AWS_SSO_USR_NAME_PATTERN = /[\w+=,.@-]+/ // Username can contain alphanumeric characters, or any of the following: +=,.@-
 
 const repositoryProps: RepositoryProps = {
-  browser: chrome,
+  browser: chrome || browser,
   storageArea: 'local',
 }
 const configRepository = new ConfigRepository(repositoryProps)
