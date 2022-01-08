@@ -2,11 +2,13 @@ import {
   AccountName,
   AccountNameRepository,
 } from './lib/account-name-repository'
+import { RepositoryProps } from './lib/repository'
 
-const accountNameRepository = new AccountNameRepository({
-  browser: chrome,
+const repositoryProps: RepositoryProps = {
+  browser: chrome || browser,
   storageArea: 'local',
-})
+}
+const accountNameRepository = new AccountNameRepository(repositoryProps)
 
 type OnSubtreeUpdated = (stopObserve: () => void) => void
 

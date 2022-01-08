@@ -1,9 +1,11 @@
 import { ConfigRepository } from './lib/config-repository'
+import { RepositoryProps } from './lib/repository'
 
-const configRepository = new ConfigRepository({
-  browser: chrome,
+const repositoryProps: RepositoryProps = {
+  browser: chrome || browser,
   storageArea: 'local',
-})
+}
+const configRepository = new ConfigRepository(repositoryProps)
 
 const sampleConfig = `[
   /**
