@@ -1,6 +1,6 @@
 name: Feature Request
 description: Request a new feature
-title: "(module name): short issue description"
+title: "short issue description"
 labels: [feature-request, needs-triage]
 body:
   - type: textarea
