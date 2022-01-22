@@ -1,6 +1,7 @@
 # AWS Peacock Management Console ![Peacock](./public/icons/128.png)
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/bknjjajglapfhbdcfgmhgkgfomkkaidj.svg)](https://chrome.google.com/webstore/detail/aws-peacock-management-co/bknjjajglapfhbdcfgmhgkgfomkkaidj?utm_source=github)
+[![Firefox Add-on](https://img.shields.io/amo/v/aws-extend-switch-roles3.svg)](https://addons.mozilla.org/firefox/addon/aws-peacock-management-console/)
 
 Browser Extension to show account name or alias and change color of AWS Management Console, even if AWS SSO.
 
