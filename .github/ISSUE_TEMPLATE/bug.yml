@@ -1,6 +1,6 @@
 name: Bug Report
 description: Report a bug
-title: "(module name): short issue description"
+title: "short issue description"
 labels: [bug, needs-triage]
 body:
   - type: textarea
