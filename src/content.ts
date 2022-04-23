@@ -186,7 +186,8 @@ const updateNavigationStyle = (
         ? ''
         : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
     }
-    button[data-testid="more-menu__awsc-nav-regions-menu-button"] > span > *
+    button[data-testid="more-menu__awsc-nav-regions-menu-button"] > span > *,
+    #awsc-nav-header > nav > nav > div:nth-child(2) > div > ol > li > a > div > span
     {
       color: ${foregroundColor} !important;
     }
