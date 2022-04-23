@@ -259,7 +259,7 @@ const patchAccountNameIfAwsSso = (accountName: AccountName) => {
       ?.previousElementSibling as HTMLSpanElement
   )?.innerText
   if (userName && isNotIamUserButAwsSsoUser(userName)) {
-    accountMenuButtonTitle.innerText = `${userName} @ ${accountName.accountName}`
+    accountMenuButtonTitle.innerText = `${accountMenuButtonTitle.innerText} @ ${accountName.accountName}`
   } // else not login by user, like root user or IAM role
 }
 
