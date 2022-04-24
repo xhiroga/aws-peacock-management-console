@@ -191,7 +191,8 @@ const updateNavigationStyle = (
     {
       color: ${foregroundColor} !important;
     }
-    #awsc-nav-header > nav > nav > div:nth-child(2) > div > ol > li > a:hover
+    #awsc-nav-header > nav > nav > div:nth-child(2) > div > ol > li > a:hover,
+    #awsc-nav-header > nav > nav > div:nth-child(2) > div > ol > li > a[style*=fixed]
     {
       background-color: ${navigationBackgroundColor} !important;
     }
