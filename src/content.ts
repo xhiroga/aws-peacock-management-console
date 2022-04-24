@@ -191,6 +191,12 @@ const updateNavigationStyle = (
     {
       color: ${foregroundColor} !important;
     }
+    
+    #awsc-nav-header > nav > nav > div:nth-child(2) > div > ol > li > a:hover
+    {
+      border-color: rgb(255, 255, 255) !important;
+      background-color: rgb(255, 255, 255) !important;
+    }
   }
   div#awsc-nav-footer-content {
     background-color: ${navigationBackgroundColor} !important;
