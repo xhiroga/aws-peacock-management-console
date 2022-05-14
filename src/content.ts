@@ -64,11 +64,7 @@ const parseConfigList = (configList: string) => {
   try {
     return yaml.load(configList) as ConfigList
   } catch (e) {
-    if (e instanceof SyntaxError) {
-      return JSONC.parse(configList) as ConfigList
-    } else {
-      return []
-    }
+    return JSONC.parse(configList) as ConfigList
   }
 }
 
