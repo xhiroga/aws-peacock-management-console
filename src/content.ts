@@ -1,4 +1,5 @@
-import { parse } from 'jsonc-parser'
+import * as JSONC from 'jsonc-parser'
+import yaml from 'js-yaml'
 import {
   AccountName,
   AccountNameRepository,
@@ -50,9 +51,22 @@ const getRegion = () => {
   return document.getElementById('awsc-mezz-region')?.getAttribute('content')
 }
 
+const configListIsYaml = (configList: string) => /^\s*[#-]/.test(configList)
+const configListIsJsonc = (configList: string) => /^\s*[\/\[]/.test(configList)
+
 const loadConfigList = async (): Promise<ConfigList | null> => {
   const configList = await configRepository.get()
-  return configList ? parse(configList) : null
+  if (configList) {
+    if (configListIsYaml(configList)) {
+      return yaml.load(configList) as ConfigList
+    } else if (configListIsJsonc(configList)) {
+      return JSONC.parse(configList)
+    } else {
+      return JSON.parse(configList)
+    }
+  } else {
+    return null
+  }
 }
 
 const loadAccountNameList = async (): Promise<AccountName[] | null> => {
