@@ -74,7 +74,7 @@ const loadAccountNameList = async (): Promise<AccountName[] | null> => {
 }
 
 const isEnvMatch = (env: Environment, accountId: string, region: string) =>
-  env.account === accountId && (env.region ? env.region === region : true)
+  String(env.account) === accountId && (env.region ? env.region === region : true)
 
 const findConfig = (
   configList: ConfigList,
