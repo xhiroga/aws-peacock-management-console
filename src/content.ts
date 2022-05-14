@@ -51,21 +51,24 @@ const getRegion = () => {
   return document.getElementById('awsc-mezz-region')?.getAttribute('content')
 }
 
-const configListIsYaml = (configList: string) => /^\s*[#-]/.test(configList)
-const configListIsJsonc = (configList: string) => /^\s*[\/\[]/.test(configList)
-
 const loadConfigList = async (): Promise<ConfigList | null> => {
   const configList = await configRepository.get()
   if (configList) {
-    if (configListIsYaml(configList)) {
-      return yaml.load(configList) as ConfigList
-    } else if (configListIsJsonc(configList)) {
-      return JSONC.parse(configList)
-    } else {
-      return JSON.parse(configList)
-    }
+    return parseConfigList(configList)
   } else {
     return null
+  }
+}
+
+const parseConfigList = (configList: string) => {
+  try {
+    return yaml.load(configList) as ConfigList
+  } catch (e) {
+    if (e instanceof SyntaxError) {
+      return JSONC.parse(configList) as ConfigList
+    } else {
+      return []
+    }
   }
 }
 
@@ -194,11 +197,10 @@ const updateNavigationStyle = (
     color: ${foregroundColor} !important;
   }
   @media only screen and (min-width: 620px) {
-    ${
-      accountMenuButtonBackgroundColorEnabled ||
+    ${accountMenuButtonBackgroundColorEnabled ||
       getOriginalAccountMenuButtonBackground()
-        ? ''
-        : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
+      ? ''
+      : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
     }
     button[data-testid="more-menu__awsc-nav-regions-menu-button"] > span > *,
     #awsc-nav-header > nav > nav > div:nth-child(2) > div > ol > li > a > div > span
@@ -262,8 +264,7 @@ const updateStyle = (style: Config['style']) => {
 
 const isNotIamUserButAwsSsoUser = (userName: string) => {
   const awsSsoUserNameRe = new RegExp(
-    `^${
-      AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
+    `^${AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
     }/${AWS_SSO_USR_NAME_PATTERN.source}$`
   )
   return awsSsoUserNameRe.test(userName)
