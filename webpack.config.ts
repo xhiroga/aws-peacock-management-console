@@ -6,7 +6,7 @@ const srcDir = path.join(__dirname, 'src')
 const config: Configuration = {
   entry: {
     content: path.join(srcDir, 'content.ts'),
-    options: path.join(srcDir, 'options.ts'),
+    options: path.join(srcDir, 'options.tsx'),
     scraping: path.join(srcDir, 'scraping.ts'),
   },
   output: {
@@ -16,14 +16,14 @@ const config: Configuration = {
   module: {
     rules: [
       {
-        test: /\.ts?$/,
+        test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
       },
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.tsx'],
   },
   plugins: [
     new CopyPlugin({

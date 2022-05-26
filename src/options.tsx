@@ -46,12 +46,12 @@ const sampleConfig = `[
 `
 
 window.onload = async () => {
-  const textArea = <HTMLInputElement>(
-    document.getElementById('awsConfigTextArea')
-  )
-  const sample = <HTMLInputElement>(
-    document.getElementById('awsConfigTextAreaSample')
-  )
+  const textArea = document.getElementById(
+    'awsConfigTextArea'
+  ) as HTMLInputElement
+  const sample = document.getElementById(
+    'awsConfigTextAreaSample'
+  ) as HTMLInputElement
   const saveButton = document.getElementById('saveButton')
   const savedMessage = document.getElementById('savedMessage')
   if (textArea === null || saveButton === null || savedMessage === null) {
