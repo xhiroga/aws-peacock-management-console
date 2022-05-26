@@ -1,5 +1,18 @@
-import { ConfigRepository } from './lib/config-repository'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom/client'
+
+import Form, { IChangeEvent, ISubmitEvent } from '@rjsf/core'
+import yaml from 'js-yaml'
+import * as JSONC from 'jsonc-parser'
+
+import {
+  CONFIG_SCHEMA,
+  ConfigList,
+  ConfigRepository,
+} from './lib/config-repository'
 import { RepositoryProps } from './lib/repository'
+
+import 'bootstrap/dist/css/bootstrap.css'
 
 const repositoryProps: RepositoryProps = {
   browser: chrome || browser,
@@ -68,3 +81,57 @@ window.onload = async () => {
     savedMessage.hidden = true
   }
 }
+
+interface OptionsAppProps {
+  readonly configRepository: ConfigRepository
+  readonly initialConfig: ConfigList
+}
+
+export const OptionsApp = ({
+  configRepository,
+  initialConfig,
+}: OptionsAppProps) => {
+  const [config, setConfig] = React.useState(initialConfig)
+  const handleChange = (e: IChangeEvent<ConfigList>) => {
+    setConfig(e.formData)
+  }
+  const handleSubmit = (e: ISubmitEvent<ConfigList>) => {
+    configRepository.set(JSON.stringify(e.formData, null, 2))
+  }
+  return (
+    <Form
+      schema={CONFIG_SCHEMA}
+      formData={config}
+      onChange={handleChange}
+      onSubmit={handleSubmit}
+    ></Form>
+  )
+}
+
+export const parseConfigList = (configListString: string) => {
+  try {
+    return yaml.load(configListString) as ConfigList
+  } catch (e) {
+    return JSONC.parse(configListString) as ConfigList
+  }
+}
+
+export const normalizeConfigList = (configList: ConfigList) =>
+  configList.map((config) => {
+    const env = Array.isArray(config.env) ? config.env : Array(config.env)
+    return { ...config, env }
+  })
+
+configRepository.get().then((configList) => {
+  const config = normalizeConfigList(
+    parseConfigList(configList ?? sampleConfig)
+  )
+  const rootElement = document.getElementById('app')
+  if (rootElement === null) {
+    throw new Error('The root element was not found!')
+  }
+  const root = ReactDOM.createRoot(rootElement)
+  root.render(
+    <OptionsApp configRepository={configRepository} initialConfig={config} />
+  )
+})
