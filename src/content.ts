@@ -216,6 +216,7 @@ const updateNavigationStyle = (
   button[data-testid="awsc-footer-language-selector-button"],
   a[data-testid="awsc-footer-privacy-policy"],
   a[data-testid="awsc-footer-terms-of-use"],
+  span[data-testid="awsc-footer-unified-settings-language-link"],
   button[data-testid="awsc-footer-cookie-preferences"],
   span[data-testid="awsc-footer-copyright"] {
     color: ${foregroundColor} !important;
