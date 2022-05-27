@@ -16,6 +16,7 @@ While effort has been made to ensure the accuracy of the program, developers ass
 ## Install
 
 - [AWS Peacock Management Console \- Chrome Web Store](https://chrome.google.com/webstore/detail/aws-peacock-management-co/bknjjajglapfhbdcfgmhgkgfomkkaidj?utm_source=github)
+- [AWS Peacock Management Console – 🦊 Firefox ADD-ONS](https://addons.mozilla.org/firefox/addon/aws-peacock-management-console/)
 
 ## Development
 
