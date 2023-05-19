@@ -9,9 +9,7 @@
   "permissions": ["storage"],
   "content_scripts": [
     {
-      "js": [
-        "content.js"
-      ],
+      "js": ["content.js"],
       "matches": [
         "https://*.console.aws.amazon.com/*",
         "https://phd.aws.amazon.com/*",
@@ -21,12 +19,8 @@
       "run_at": "document_end"
     },
     {
-      "js": [
-        "scraping.js"
-      ],
-      "matches": [
-        "https://*.awsapps.com/start*"
-      ],
+      "js": ["scraping.js"],
+      "matches": ["https://*.awsapps.com/start*"],
       "run_at": "document_end"
     }
   ],
