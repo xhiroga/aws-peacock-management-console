@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "AWS Peacock Management Console",
   "description": "Browser Extension to change color of AWS Management Console, by Account ID",
   "version": "2.5",
@@ -15,11 +15,13 @@
         "https://phd.aws.amazon.com/*",
         "https://*.console.amazonaws-us-gov.com/*",
         "https://*.console.amazonaws.cn/*"
-      ]
+      ],
+      "run_at": "document_end"
     },
     {
       "js": ["scraping.js"],
-      "matches": ["https://*.awsapps.com/start*"]
+      "matches": ["https://*.awsapps.com/start*"],
+      "run_at": "document_end"
     }
   ],
   "options_ui": {

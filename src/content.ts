@@ -301,4 +301,13 @@ const run = async () => {
     }
   }
 }
-run()
+
+function waitForElementToDisplay(selector: string, time: number) {
+  var interval = setInterval(function () {
+    if (document.querySelector(selector) !== null) {
+      clearInterval(interval);
+      run();
+    }
+  }, time);
+}
+waitForElementToDisplay("#nav-usernameMenu", 100);
