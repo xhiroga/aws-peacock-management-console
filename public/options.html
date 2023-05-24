@@ -10,12 +10,12 @@
     <div class="twoColumnLayout">
       <div class="column configurationColumn">
         <h1>Configuration</h1>
-        <fieldset>
+        <div>
           <div>
             <input
               type="radio"
-              id="local"
-              name="config"
+              id="localRadio"
+              name="location"
               value="local"
               checked
             />
@@ -24,27 +24,47 @@
           <div>
             <input
               type="radio"
-              id="remote"
-              name="config"
-              value="remote"
-              checked
+              id="sharedRadio"
+              name="location"
+              value="shared"
             />
-            <label for="remote"
+            <label for="shared"
               >Load the settings shared by the your team from the web</label
             >
           </div>
-        </fieldset>
-        <textarea
-          id="awsConfigTextArea"
-          class="configuration"
-          spellcheck="false"
-        ></textarea>
-        <div class="menuBar">
-          <button id="saveButton">Save</button>
-          <span id="savedMessage" hidden>Saved!</span>
-          <a href="https://color.adobe.com/" target="_blank" rel="noopener"
-            >Color Palette
-          </a>
+        </div>
+        <div id="localConfig">
+          <label>Editor</label>
+          <textarea
+            id="awsConfigTextArea"
+            class="configuration"
+            spellcheck="false"
+          ></textarea>
+          <div class="menuBar">
+            <button id="saveButton">Save</button>
+            <span id="savedMessage" hidden>Saved!</span>
+          </div>
+        </div>
+        <div id="sharedConfig" hidden>
+          <label for="url">Enter an URL:</label>
+          <input
+            type="url"
+            name="url"
+            id="sharedConfigUrl"
+            placeholder="https://example.com"
+            pattern="https://.*"
+          />
+          <div class="menuBar">
+            <button id="sharedConfigUrlSaveButton">Save</button>
+            <span id="sharedConfigValidationMessage" hidden></span>
+          </div>
+          <label>Preview</label>
+          <textarea
+            readonly
+            id="sharedConfig"
+            class="configuration"
+            spellcheck="false"
+          ></textarea>
         </div>
       </div>
       <div class="column howToColumn">

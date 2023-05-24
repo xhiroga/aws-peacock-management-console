@@ -46,6 +46,10 @@ const sampleConfig = `[
 `
 
 window.onload = async () => {
+  const location = document.querySelectorAll<HTMLInputElement>('input[name="location"]');
+  const localConfig = <HTMLDivElement>(document.getElementById('localConfig'))
+  const sharedConfig = <HTMLDivElement>(document.getElementById('sharedConfig'))
+
   const textArea = <HTMLInputElement>(
     document.getElementById('awsConfigTextArea')
   )
@@ -57,6 +61,19 @@ window.onload = async () => {
   if (textArea === null || saveButton === null || savedMessage === null) {
     return
   }
+
+  location.forEach(radioButton => {
+    radioButton.onchange = () => {
+      if (radioButton.id === "localRadio") {
+        localConfig.hidden = false
+        sharedConfig.hidden = true
+      } else {
+        localConfig.hidden = true
+        sharedConfig.hidden = false
+      }
+    }
+  })
+
   textArea.value = (await configRepository.get()) ?? sampleConfig
   sample.value = sampleConfig
 
