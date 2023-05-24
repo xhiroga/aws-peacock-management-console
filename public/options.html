@@ -10,6 +10,30 @@
     <div class="twoColumnLayout">
       <div class="column configurationColumn">
         <h1>Configuration</h1>
+        <fieldset>
+          <div>
+            <input
+              type="radio"
+              id="local"
+              name="config"
+              value="local"
+              checked
+            />
+            <label for="local">Keep settings in the browser</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="remote"
+              name="config"
+              value="remote"
+              checked
+            />
+            <label for="remote"
+              >Load the settings shared by the your team from the web</label
+            >
+          </div>
+        </fieldset>
         <textarea
           id="awsConfigTextArea"
           class="configuration"
