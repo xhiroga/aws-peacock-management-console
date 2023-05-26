@@ -14,26 +14,21 @@
           <div>
             <input
               type="radio"
-              id="localRadio"
-              name="location"
-              value="local"
+              id="personalMode"
+              name="mode"
+              value="personal"
               checked
             />
             <label for="local">Keep settings in the browser</label>
           </div>
           <div>
-            <input
-              type="radio"
-              id="sharedRadio"
-              name="location"
-              value="shared"
-            />
-            <label for="shared"
+            <input type="radio" id="remoteRadio" name="mode" value="remote" />
+            <label for="remote"
               >Load the settings shared by the your team from the web</label
             >
           </div>
         </div>
-        <div id="localConfig">
+        <div id="personalConfig">
           <label>Editor</label>
           <textarea
             id="awsConfigTextArea"
@@ -45,23 +40,23 @@
             <span id="savedMessage" hidden>Saved!</span>
           </div>
         </div>
-        <div id="sharedConfig" hidden>
+        <div id="remoteConfig" hidden>
           <label for="url">Enter an URL:</label>
           <input
             type="url"
             name="url"
-            id="sharedConfigUrl"
+            id="remoteConfigUrl"
             placeholder="https://example.com"
             pattern="https://.*"
           />
           <div class="menuBar">
-            <button id="sharedConfigUrlSaveButton">Save</button>
-            <span id="sharedConfigValidationMessage" hidden></span>
+            <button id="remoteConfigUrlSaveButton">Save</button>
+            <span id="remoteConfigValidationMessage" hidden></span>
           </div>
           <label>Preview</label>
           <textarea
             readonly
-            id="sharedConfig"
+            id="remoteConfigTextArea"
             class="configuration"
             spellcheck="false"
           ></textarea>

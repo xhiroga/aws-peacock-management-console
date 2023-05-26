@@ -1,10 +1,12 @@
 import { ConfigRepository } from './lib/config-repository'
+import { OptionsRepository } from './lib/options-repository'
 import { RepositoryProps } from './lib/repository'
 
 const repositoryProps: RepositoryProps = {
   browser: chrome || browser,
   storageArea: 'local',
 }
+const optionsRepository = new OptionsRepository(repositoryProps)
 const configRepository = new ConfigRepository(repositoryProps)
 
 const sampleConfig = `[
@@ -46,9 +48,9 @@ const sampleConfig = `[
 `
 
 window.onload = async () => {
-  const location = document.querySelectorAll<HTMLInputElement>('input[name="location"]');
-  const localConfig = <HTMLDivElement>(document.getElementById('localConfig'))
-  const sharedConfig = <HTMLDivElement>(document.getElementById('sharedConfig'))
+  const mode = document.querySelectorAll<HTMLInputElement>('input[name="mode"]');
+  const personalConfig = <HTMLDivElement>(document.getElementById('personalConfig'))
+  const remoteConfig = <HTMLDivElement>(document.getElementById('remoteConfig'))
 
   const textArea = <HTMLInputElement>(
     document.getElementById('awsConfigTextArea')
@@ -62,14 +64,16 @@ window.onload = async () => {
     return
   }
 
-  location.forEach(radioButton => {
+  mode.forEach(radioButton => {
     radioButton.onchange = () => {
-      if (radioButton.id === "localRadio") {
-        localConfig.hidden = false
-        sharedConfig.hidden = true
+      if (radioButton.id === "personalMode") {
+        personalConfig.hidden = false
+        remoteConfig.hidden = true
+        optionsRepository.set(JSON.stringify({ mode: 'personal' }))
       } else {
-        localConfig.hidden = true
-        sharedConfig.hidden = false
+        personalConfig.hidden = true
+        remoteConfig.hidden = false
+        optionsRepository.set(JSON.stringify({ mode: 'remote' }))
       }
     }
   })
