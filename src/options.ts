@@ -1,4 +1,4 @@
-import { ConfigRepository } from './lib/config-repository'
+import { PersonalConfigRepository } from './lib/personal-config-repository'
 import { OptionsRepository } from './lib/options-repository'
 import { RepositoryProps } from './types'
 
@@ -7,7 +7,7 @@ const repositoryProps: RepositoryProps = {
   storageArea: 'local',
 }
 const optionsRepository = new OptionsRepository(repositoryProps)
-const configRepository = new ConfigRepository(repositoryProps)
+const personalConfigRepository = new PersonalConfigRepository(repositoryProps)
 
 const sampleConfig = `[
   /**
@@ -78,11 +78,11 @@ window.onload = async () => {
     }
   })
 
-  textArea.value = (await configRepository.get()) ?? sampleConfig
+  textArea.value = (await personalConfigRepository.get()) ?? sampleConfig
   sample.value = sampleConfig
 
   saveButton.onclick = () => {
-    configRepository.set(textArea.value)
+    personalConfigRepository.set(textArea.value)
     savedMessage.hidden = false
   }
   textArea.oninput = () => {

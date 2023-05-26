@@ -1,7 +1,7 @@
 import { RepositoryProps } from '../types'
 import { Repository } from './repository'
 
-export class ConfigRepository extends Repository {
+export class PersonalConfigRepository extends Repository {
   constructor(props: RepositoryProps) {
     super('config', props)
   }

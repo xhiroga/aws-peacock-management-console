@@ -4,8 +4,8 @@ import {
   AccountNameRepository,
 } from './lib/account-name-repository'
 import {
-  ConfigRepository,
-} from './lib/config-repository'
+  PersonalConfigRepository,
+} from './lib/personal-config-repository'
 
 import { AccountName, Config, ConfigList, Environment, RepositoryProps } from './types'
 
@@ -21,7 +21,7 @@ const repositoryProps: RepositoryProps = {
   browser: chrome || browser,
   storageArea: 'local',
 }
-const configRepository = new ConfigRepository(repositoryProps)
+const personalConfigRepository = new PersonalConfigRepository(repositoryProps)
 const accountNameRepository = new AccountNameRepository(repositoryProps)
 
 const selectElement = (query: string): HTMLElement | null =>
@@ -49,7 +49,7 @@ const getRegion = () => {
 }
 
 const loadConfigList = async (): Promise<ConfigList | null> => {
-  const configList = await configRepository.get()
+  const configList = await personalConfigRepository.get()
   if (configList) {
     return parseConfigList(configList)
   } else {
