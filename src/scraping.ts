@@ -1,8 +1,8 @@
 import {
-  AccountName,
   AccountNameRepository,
 } from './lib/account-name-repository'
-import { RepositoryProps } from './lib/repository'
+import { AccountName, RepositoryProps } from './types'
+
 
 const repositoryProps: RepositoryProps = {
   browser: chrome || browser,

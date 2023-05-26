@@ -1,6 +1,6 @@
 import { ConfigRepository } from './lib/config-repository'
 import { OptionsRepository } from './lib/options-repository'
-import { RepositoryProps } from './lib/repository'
+import { RepositoryProps } from './types'
 
 const repositoryProps: RepositoryProps = {
   browser: chrome || browser,

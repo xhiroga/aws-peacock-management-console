@@ -1,17 +1,5 @@
-import { Repository, RepositoryProps } from './repository'
-
-export type Environment = {
-  account: string
-  region?: string
-}
-export type Config = {
-  env: Environment | Environment[]
-  style: {
-    navigationBackgroundColor?: string
-    accountMenuButtonBackgroundColor?: string
-  }
-}
-export type ConfigList = Config[]
+import { RepositoryProps } from '../types'
+import { Repository } from './repository'
 
 export class ConfigRepository extends Repository {
   constructor(props: RepositoryProps) {

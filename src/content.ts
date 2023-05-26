@@ -1,16 +1,13 @@
-import * as JSONC from 'jsonc-parser'
 import yaml from 'js-yaml'
+import * as JSONC from 'jsonc-parser'
 import {
-  AccountName,
   AccountNameRepository,
 } from './lib/account-name-repository'
 import {
-  Config,
-  ConfigList,
   ConfigRepository,
-  Environment,
 } from './lib/config-repository'
-import { RepositoryProps } from './lib/repository'
+
+import { AccountName, Config, ConfigList, Environment, RepositoryProps } from './types'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'

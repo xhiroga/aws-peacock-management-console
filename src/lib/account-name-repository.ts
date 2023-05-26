@@ -1,9 +1,5 @@
-import { Repository, RepositoryProps } from './repository'
-
-export type AccountName = {
-  accountName: string
-  accountId: string
-}
+import { RepositoryProps } from '../types'
+import { Repository } from './repository'
 
 export class AccountNameRepository extends Repository {
   constructor(props: RepositoryProps) {
