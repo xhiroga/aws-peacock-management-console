@@ -8,6 +8,8 @@ import {
 } from './lib/personal-config-repository'
 
 import { AccountName, Config, ConfigList, Environment } from './types'
+import { OptionsRepository } from './lib/options-repository'
+import { RemoteConfigRepository } from './lib/remote-config-repository'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
@@ -17,7 +19,9 @@ const AWS_SERVICE_ROLE_FOR_SSO_PREFIX = /AWSReservedSSO_/ // https://docs.aws.am
 const AWS_IAM_ROLE_NAME_PATTERN = /[\w+=,.@-]+/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html
 const AWS_SSO_USR_NAME_PATTERN = /[\w+=,.@-]+/ // Username can contain alphanumeric characters, or any of the following: +=,.@-
 
+const optionsRepository = new OptionsRepository()
 const personalConfigRepository = new PersonalConfigRepository()
+const remoteConfigRepository = new RemoteConfigRepository()
 const accountNameRepository = new AccountNameRepository()
 
 const selectElement = (query: string): HTMLElement | null =>
@@ -45,7 +49,9 @@ const getRegion = () => {
 }
 
 const loadConfigList = async (): Promise<ConfigList | null> => {
-  const configList = await personalConfigRepository.get()
+  const options = await optionsRepository.get()
+  const mode = JSON.parse(options).mode || 'personal'
+  const configList = mode === 'personal' ? await personalConfigRepository.get() : await remoteConfigRepository.get()
   if (configList) {
     return parseConfigList(configList)
   } else {
