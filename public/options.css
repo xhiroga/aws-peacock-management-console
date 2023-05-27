@@ -1,50 +1,52 @@
-html {
-  height: 100%;
-}
-
 body {
-  background-color: #666;
-  height: 100%;
-  margin: 0px;
+  font-family: Arial, sans-serif;
 }
 
-.column {
-  padding: 10px 20px;
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-.configurationColumn {
-  background-color: #fff;
+h1 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 15px;
 }
 
+.radio-option {
+  margin-bottom: 10px;
+}
 
-.configuration {
-  box-sizing: border-box;
-  font-size: 14px;
-  font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
-  padding: 0.5ex;
-  white-space: pre;
+.config-section {
+  margin-top: 20px;
+}
+
+.config-textarea {
   width: 100%;
-  height: 75vh;
+  min-height: 200px;
+  margin-bottom: 10px;
 }
 
-.menuBar {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
+.btn-save {
+  display: inline-block;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.menuBar :last-child {
-  margin-left: auto;
+.btn-save:hover {
+  background-color: #45a049;
 }
 
-.saveButton {
-  height: 28px;
-  padding: 4px 20px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.savedMessage {
-  color: green;
+.saved-message {
+  color: #4CAF50;
+  font-style: italic;
+  display: block;
+  margin-top: 10px;
 }

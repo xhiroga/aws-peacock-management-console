@@ -62,11 +62,8 @@ window.onload = async () => {
   const remoteConfig = <HTMLDivElement>(document.getElementById('remoteConfig'))
 
   const textArea = <HTMLInputElement>(
-    document.getElementById('awsConfigTextArea')
+    document.getElementById('personalConfigTextArea')
   )
-  const saveButton = document.getElementById('saveButton')
-  const savedMessage = document.getElementById('savedMessage')
-
   const remoteConfigUrl = <HTMLInputElement>(
     document.getElementById('remoteConfigUrl')
   )
@@ -75,7 +72,7 @@ window.onload = async () => {
   )
   const remoteConfigSaveButton = document.getElementById('remoteConfigSaveButton')
 
-  if (!personalMode || !remoteMode || !textArea || !saveButton || !savedMessage || !remoteConfigUrl || !remoteConfigSaveButton || !remoteConfigTextArea) {
+  if (!personalMode || !remoteMode || !textArea || !remoteConfigUrl || !remoteConfigSaveButton || !remoteConfigTextArea) {
     return;
   }
 
@@ -109,12 +106,8 @@ window.onload = async () => {
   // Personal
   textArea.value = (await personalConfigRepository.get()) ?? sampleConfig
 
-  saveButton.onclick = () => {
-    personalConfigRepository.set(textArea.value)
-    savedMessage.hidden = false
-  }
   textArea.oninput = () => {
-    savedMessage.hidden = true
+    personalConfigRepository.set(textArea.value)
   }
 
   // Remote

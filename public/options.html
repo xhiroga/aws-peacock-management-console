@@ -4,56 +4,54 @@
     <link rel="stylesheet" type="text/css" href="options.css" media="screen" />
     <title>AWS Peacock Management Console - Configuration</title>
   </head>
-
   <body>
     <script src="options.js"></script>
-    <div class="column configurationColumn">
+    <div class="container">
       <h1>Configuration</h1>
-      <div id="mode">
-        <div>
-          <input type="radio" name="mode" value="personal" checked />
+      <form id="mode">
+        <div class="radio-option">
+          <input type="radio" id="local" name="mode" value="personal" checked />
           <label for="local">Keep settings in the browser</label>
         </div>
-        <div>
-          <input type="radio" name="mode" value="remote" />
+        <div class="radio-option">
+          <input type="radio" id="remote" name="mode" value="remote" />
           <label for="remote"
             >Load the settings shared by the your team from the web</label
           >
         </div>
+      </form>
+      <div id="personalConfig" class="config-section">
+        <div>
+          <label for="personalConfigTextArea">Editor</label>
+          <textarea
+            id="personalConfigTextArea"
+            class="config-textarea"
+            spellcheck="false"
+          ></textarea>
+        </div>
       </div>
-      <div id="personalConfig">
-        <label>Editor</label>
-        <textarea
-          id="awsConfigTextArea"
-          class="configuration"
-          spellcheck="false"
-        ></textarea>
-        <button id="saveButton" class="saveButton">Save</button>
-        <span id="savedMessage" class="savedMessage" hidden></span>
-      </div>
-      <div id="remoteConfig" hidden>
-        <label for="url">Enter an URL:</label>
-        <input
-          type="url"
-          name="url"
-          id="remoteConfigUrl"
-          placeholder="https://example.com"
-          pattern="https://.*"
-          size="80"
-        />
-        <button id="remoteConfigSaveButton" class="saveButton">Save</button>
-        <span
-          id="remoteConfigValidationMessage"
-          class="savedMessage"
-          hidden
-        ></span>
-        <label>Preview</label>
-        <textarea
-          readonly
-          id="remoteConfigTextArea"
-          class="configuration"
-          spellcheck="false"
-        ></textarea>
+      <div id="remoteConfig" class="config-section" hidden>
+        <div>
+          <label for="remoteConfigUrl">Enter an URL:</label>
+          <input
+            type="url"
+            name="url"
+            id="remoteConfigUrl"
+            placeholder="https://example.com"
+            pattern="https://.*"
+            size="80"
+          />
+          <button id="remoteConfigSaveButton" class="btn-save">Save</button>
+        </div>
+        <div>
+          <label for="remoteConfigTextArea">Preview</label>
+          <textarea
+            readonly
+            id="remoteConfigTextArea"
+            class="config-textarea"
+            spellcheck="false"
+          ></textarea>
+        </div>
       </div>
     </div>
   </body>
