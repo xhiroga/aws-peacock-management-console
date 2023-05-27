@@ -20,7 +20,7 @@
           >
         </div>
       </form>
-      <div id="personalConfig" class="config-section">
+      <div id="personalConfig">
         <div>
           <label for="personalConfigTextArea">Editor (Auto Save)</label>
           <textarea
@@ -30,17 +30,31 @@
           ></textarea>
         </div>
       </div>
-      <div id="remoteConfig" class="config-section" hidden>
+      <div id="remoteConfig" hidden>
         <div class="config-group">
-          <label for="remoteConfigUrl">Configuration URL</label>
-          <input
-            type="url"
-            name="url"
-            id="remoteConfigUrl"
-            placeholder="https://example.com"
-            pattern="https://.*"
-            size="80"
-          />
+          <div class="input-group">
+            <label for="remoteConfigUrl">Configuration URL*</label>
+            <input
+              type="url"
+              name="url"
+              id="remoteConfigUrl"
+              placeholder="https://example.com"
+              pattern="https?://.*"
+              size="80"
+            />
+          </div>
+          <div class="input-group">
+            <label for="remoteConfigUsername">
+              Username (Basic Authentication)
+            </label>
+            <input type="text" name="username" id="remoteConfigUsername" />
+          </div>
+          <div class="input-group">
+            <label for="remoteConfigPassword">
+              Password (Basic Authentication)
+            </label>
+            <input type="password" name="password" id="remoteConfigPassword" />
+          </div>
           <button id="remoteConfigSaveButton" class="btn-save">Save</button>
         </div>
         <div>
