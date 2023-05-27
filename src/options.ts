@@ -64,9 +64,6 @@ window.onload = async () => {
   const textArea = <HTMLInputElement>(
     document.getElementById('awsConfigTextArea')
   )
-  const sample = <HTMLInputElement>(
-    document.getElementById('awsConfigTextAreaSample')
-  )
   const saveButton = document.getElementById('saveButton')
   const savedMessage = document.getElementById('savedMessage')
 
@@ -82,6 +79,7 @@ window.onload = async () => {
     return;
   }
 
+  // Mode
   const showPersonalConfig = () => {
     personalConfig.hidden = false
     remoteConfig.hidden = true
@@ -108,8 +106,8 @@ window.onload = async () => {
     optionsRepository.set(JSON.stringify({ mode: "remote" }))
   }
 
+  // Personal
   textArea.value = (await personalConfigRepository.get()) ?? sampleConfig
-  sample.value = sampleConfig
 
   saveButton.onclick = () => {
     personalConfigRepository.set(textArea.value)
@@ -119,6 +117,7 @@ window.onload = async () => {
     savedMessage.hidden = true
   }
 
+  // Remote
   remoteConfigUrl.value = JSON.parse(await remoteConfigUrlRepository.get()).url
   remoteConfigTextArea.value = await remoteConfigRepository.get()
 

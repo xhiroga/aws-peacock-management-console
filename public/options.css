@@ -8,12 +8,6 @@ body {
   margin: 0px;
 }
 
-.twoColumnLayout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 100%;
-}
-
 .column {
   padding: 10px 20px;
 }
@@ -22,9 +16,6 @@ body {
   background-color: #fff;
 }
 
-.howToColumn {
-  background-color: #eee;
-}
 
 .configuration {
   box-sizing: border-box;
@@ -47,13 +38,13 @@ body {
   margin-left: auto;
 }
 
-#saveButton {
+.saveButton {
   height: 28px;
   padding: 4px 20px;
   font-size: 14px;
   font-weight: 700;
 }
 
-#savedMessage {
+.savedMessage {
   color: green;
 }
