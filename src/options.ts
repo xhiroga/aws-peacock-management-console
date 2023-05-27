@@ -46,9 +46,14 @@ const sampleConfig = `[
 ]
 `
 
-const fetchData = async (url: string): Promise<string | undefined> => {
+const fetchData = async (url: string, username?: string, password?: string): Promise<string | undefined> => {
+  console.log({ url, username, password })
   try {
-    const response = await fetch(url);
+    const headers: Record<string, string> = username && password ? {
+      'Authorization': 'Basic ' + btoa(username + ":" + password)
+    } : {};
+
+    const response = await fetch(url, { headers });
     return await response.text();
   } catch (error) {
     console.error("Fetch Error:", error);
@@ -56,23 +61,33 @@ const fetchData = async (url: string): Promise<string | undefined> => {
 }
 
 window.onload = async () => {
+  // Mode
   const personalMode = document.querySelector<HTMLInputElement>('input[name="mode"][value="personal"]');
   const remoteMode = document.querySelector<HTMLInputElement>('input[name="mode"][value="remote"]');
-  const personalConfig = <HTMLDivElement>(document.getElementById('personalConfig'))
-  const remoteConfig = <HTMLDivElement>(document.getElementById('remoteConfig'))
 
+  // Personal
+  const personalConfig = <HTMLDivElement>(document.getElementById('personalConfig'))
   const textArea = <HTMLInputElement>(
     document.getElementById('personalConfigTextArea')
   )
+
+  // Remote
+  const remoteConfig = <HTMLDivElement>(document.getElementById('remoteConfig'))
   const remoteConfigUrl = <HTMLInputElement>(
     document.getElementById('remoteConfigUrl')
   )
+  const remoteConfigUsername = <HTMLInputElement>(
+    document.getElementById('remoteConfigUsername')
+  )
+  const remoteConfigPassword = <HTMLInputElement>(
+    document.getElementById('remoteConfigPassword')
+  )
+  const remoteConfigSaveButton = document.getElementById('remoteConfigSaveButton')
   const remoteConfigTextArea = <HTMLInputElement>(
     document.getElementById('remoteConfigTextArea')
   )
-  const remoteConfigSaveButton = document.getElementById('remoteConfigSaveButton')
 
-  if (!personalMode || !remoteMode || !textArea || !remoteConfigUrl || !remoteConfigSaveButton || !remoteConfigTextArea) {
+  if (!personalMode || !remoteMode || !personalConfig || !textArea || !remoteConfig || !remoteConfigUrl || !remoteConfigSaveButton || !remoteConfigTextArea) {
     return;
   }
 
@@ -111,15 +126,20 @@ window.onload = async () => {
   }
 
   // Remote
-  remoteConfigUrl.value = JSON.parse(await remoteConfigUrlRepository.get()).url
+  const { url, username, password } = JSON.parse(await remoteConfigUrlRepository.get())
+  url && (remoteConfigUrl.value = url)
+  username && (remoteConfigUsername.value = username)
+  password && (remoteConfigPassword.value = password)
   remoteConfigTextArea.value = await remoteConfigRepository.get()
 
   remoteConfigSaveButton.onclick = async () => {
     const url = remoteConfigUrl.value
-    remoteConfigUrlRepository.set(JSON.stringify({ url }))
+    const username = remoteConfigUsername.value
+    const password = remoteConfigPassword.value
+    remoteConfigUrlRepository.set(JSON.stringify({ url, username, password }))
 
     // TODO: Error handling
-    const text = await fetchData(url)
+    const text = await fetchData(url, username, password)
     console.log(text)
     if (!text) { return }
     remoteConfigTextArea.value = text
