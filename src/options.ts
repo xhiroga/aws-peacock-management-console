@@ -56,7 +56,8 @@ const fetchData = async (url: string): Promise<string | undefined> => {
 }
 
 window.onload = async () => {
-  const mode = document.querySelectorAll<HTMLInputElement>('input[name="mode"]');
+  const personalMode = document.querySelector<HTMLInputElement>('input[name="mode"][value="personal"]');
+  const remoteMode = document.querySelector<HTMLInputElement>('input[name="mode"][value="remote"]');
   const personalConfig = <HTMLDivElement>(document.getElementById('personalConfig'))
   const remoteConfig = <HTMLDivElement>(document.getElementById('remoteConfig'))
 
@@ -76,7 +77,8 @@ window.onload = async () => {
     document.getElementById('remoteConfigTextArea')
   )
   const remoteConfigSaveButton = document.getElementById('remoteConfigSaveButton')
-  if (!textArea || !saveButton || !savedMessage || !remoteConfigUrl || !remoteConfigSaveButton || !remoteConfigTextArea) {
+
+  if (!personalMode || !remoteMode || !textArea || !saveButton || !savedMessage || !remoteConfigUrl || !remoteConfigSaveButton || !remoteConfigTextArea) {
     return;
   }
 
@@ -89,18 +91,22 @@ window.onload = async () => {
     remoteConfig.hidden = false
   }
   const options = JSON.parse(await optionsRepository.get())
-  const modeInput = <HTMLInputElement>(document.querySelector(`input[name="mode"][value="${options.mode}"]`))
-  modeInput.checked = true
-  options.mode === "personal" ? showPersonalConfig() : showRemoteConfig()
+  if (options.mode === "personal") {
+    personalMode.checked = true
+    showPersonalConfig()
+  } else if (options.mode === "remote") {
+    remoteMode.checked = true
+    showRemoteConfig()
+  }
 
-  mode.forEach(radioButton => {
-    radioButton.onchange = () => {
-      const mode = radioButton.value
-      if (!["personal", "remote"].includes(mode)) { return }
-      optionsRepository.set(JSON.stringify({ mode }))
-      mode === "personal" ? showPersonalConfig() : showRemoteConfig()
-    }
-  })
+  personalMode.onchange = () => {
+    showPersonalConfig()
+    optionsRepository.set(JSON.stringify({ mode: "personal" }))
+  }
+  remoteMode.onchange = () => {
+    showRemoteConfig()
+    optionsRepository.set(JSON.stringify({ mode: "remote" }))
+  }
 
   textArea.value = (await personalConfigRepository.get()) ?? sampleConfig
   sample.value = sampleConfig
