@@ -1,5 +1,7 @@
-import { PersonalConfigRepository } from './lib/personal-config-repository'
 import { OptionsRepository } from './lib/options-repository'
+import { PersonalConfigRepository } from './lib/personal-config-repository'
+import { RemoteConfigRepository } from './lib/remote-config-repository'
+import { RemoteConfigUrlRepository } from './lib/remote-config-url-repository'
 import { RepositoryProps } from './types'
 
 const repositoryProps: RepositoryProps = {
@@ -8,6 +10,8 @@ const repositoryProps: RepositoryProps = {
 }
 const optionsRepository = new OptionsRepository(repositoryProps)
 const personalConfigRepository = new PersonalConfigRepository(repositoryProps)
+const remoteConfigRepository = new RemoteConfigRepository(repositoryProps)
+const remoteConfigUrlRepository = new RemoteConfigUrlRepository(repositoryProps)
 
 const sampleConfig = `[
   /**
@@ -47,6 +51,15 @@ const sampleConfig = `[
 ]
 `
 
+const fetchData = async (url: string): Promise<string | undefined> => {
+  try {
+    const response = await fetch(url);
+    return await response.text();
+  } catch (error) {
+    console.error("Fetch Error:", error);
+  }
+}
+
 window.onload = async () => {
   const mode = document.querySelectorAll<HTMLInputElement>('input[name="mode"]');
   const personalConfig = <HTMLDivElement>(document.getElementById('personalConfig'))
@@ -60,8 +73,16 @@ window.onload = async () => {
   )
   const saveButton = document.getElementById('saveButton')
   const savedMessage = document.getElementById('savedMessage')
-  if (textArea === null || saveButton === null || savedMessage === null) {
-    return
+
+  const remoteConfigUrl = <HTMLInputElement>(
+    document.getElementById('remoteConfigUrl')
+  )
+  const remoteConfigTextArea = <HTMLInputElement>(
+    document.getElementById('remoteConfigTextArea')
+  )
+  const remoteConfigSaveButton = document.getElementById('remoteConfigSaveButton')
+  if (!textArea || !saveButton || !savedMessage || !remoteConfigUrl || !remoteConfigSaveButton || !remoteConfigTextArea) {
+    return;
   }
 
   mode.forEach(radioButton => {
@@ -87,5 +108,20 @@ window.onload = async () => {
   }
   textArea.oninput = () => {
     savedMessage.hidden = true
+  }
+
+  remoteConfigUrl.value = JSON.parse(await remoteConfigUrlRepository.get()).url
+  remoteConfigTextArea.value = await remoteConfigRepository.get()
+
+  remoteConfigSaveButton.onclick = async () => {
+    const url = remoteConfigUrl.value
+    remoteConfigUrlRepository.set(JSON.stringify({ url }))
+
+    // TODO: Error handling
+    const text = await fetchData(url)
+    console.log(text)
+    if (!text) { return }
+    remoteConfigTextArea.value = text
+    remoteConfigRepository.set(text)
   }
 }

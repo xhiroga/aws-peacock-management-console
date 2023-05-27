@@ -16,6 +16,11 @@ export type Config = {
 }
 export type ConfigList = Config[]
 
+export type RemoteConfig = {
+    url: string,
+    config: ConfigList
+}
+
 export type Browser = typeof chrome
 
 export type StorageArea = 'local' | 'sync'
