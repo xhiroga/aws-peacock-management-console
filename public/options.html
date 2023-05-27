@@ -22,7 +22,7 @@
       </form>
       <div id="personalConfig" class="config-section">
         <div>
-          <label for="personalConfigTextArea">Editor</label>
+          <label for="personalConfigTextArea">Editor (Auto Save)</label>
           <textarea
             id="personalConfigTextArea"
             class="config-textarea"
@@ -31,8 +31,8 @@
         </div>
       </div>
       <div id="remoteConfig" class="config-section" hidden>
-        <div>
-          <label for="remoteConfigUrl">Enter an URL:</label>
+        <div class="config-group">
+          <label for="remoteConfigUrl">Configuration URL</label>
           <input
             type="url"
             name="url"
@@ -53,6 +53,12 @@
           ></textarea>
         </div>
       </div>
+      <a
+        href="https://github.com/xhiroga/aws-peacock-management-console/blob/main/examples/shared.jsonc"
+        target="_blank"
+        rel="noopener"
+        >Example
+      </a>
     </div>
   </body>
 </html>
