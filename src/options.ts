@@ -2,16 +2,11 @@ import { OptionsRepository } from './lib/options-repository'
 import { PersonalConfigRepository } from './lib/personal-config-repository'
 import { RemoteConfigRepository } from './lib/remote-config-repository'
 import { RemoteConfigUrlRepository } from './lib/remote-config-url-repository'
-import { RepositoryProps } from './types'
 
-const repositoryProps: RepositoryProps = {
-  browser: chrome || browser,
-  storageArea: 'local',
-}
-const optionsRepository = new OptionsRepository(repositoryProps)
-const personalConfigRepository = new PersonalConfigRepository(repositoryProps)
-const remoteConfigRepository = new RemoteConfigRepository(repositoryProps)
-const remoteConfigUrlRepository = new RemoteConfigUrlRepository(repositoryProps)
+const optionsRepository = new OptionsRepository()
+const personalConfigRepository = new PersonalConfigRepository()
+const remoteConfigRepository = new RemoteConfigRepository()
+const remoteConfigUrlRepository = new RemoteConfigUrlRepository()
 
 const sampleConfig = `[
   /**

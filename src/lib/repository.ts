@@ -1,11 +1,16 @@
 import { RepositoryProps } from '../types'
 import { BrowserStorage } from './browser-storage'
 
+const repositoryProps: RepositoryProps = {
+  browser: chrome || browser,
+  storageArea: 'local',
+}
+
 export class Repository {
   storage: BrowserStorage<string>
   key: string
 
-  constructor(key: string, props: RepositoryProps) {
+  constructor(key: string, props: RepositoryProps = repositoryProps) {
     const { browser, storageArea } = props
     this.storage = new BrowserStorage<string>(browser, storageArea)
     this.key = key
