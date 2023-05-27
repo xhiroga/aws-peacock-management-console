@@ -100,7 +100,7 @@ window.onload = async () => {
     personalConfig.hidden = true
     remoteConfig.hidden = false
   }
-  const options = JSON.parse(await optionsRepository.get())
+  const options = JSON.parse(await optionsRepository.get() || "{}")
   if (options.mode === "personal") {
     personalMode.checked = true
     showPersonalConfig()
@@ -126,11 +126,11 @@ window.onload = async () => {
   }
 
   // Remote
-  const { url, username, password } = JSON.parse(await remoteConfigUrlRepository.get())
+  const { url, username, password } = JSON.parse(await remoteConfigUrlRepository.get() || "{}")
   url && (remoteConfigUrl.value = url)
   username && (remoteConfigUsername.value = username)
   password && (remoteConfigPassword.value = password)
-  remoteConfigTextArea.value = await remoteConfigRepository.get()
+  remoteConfigTextArea.value = await remoteConfigRepository.get() || ""
 
   remoteConfigSaveButton.onclick = async () => {
     const url = remoteConfigUrl.value
