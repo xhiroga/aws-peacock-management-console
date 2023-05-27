@@ -80,19 +80,25 @@ window.onload = async () => {
     return;
   }
 
+  const showPersonalConfig = () => {
+    personalConfig.hidden = false
+    remoteConfig.hidden = true
+  }
+  const showRemoteConfig = () => {
+    personalConfig.hidden = true
+    remoteConfig.hidden = false
+  }
   const options = JSON.parse(await optionsRepository.get())
+  const modeInput = <HTMLInputElement>(document.querySelector(`input[name="mode"][value="${options.mode}"]`))
+  modeInput.checked = true
+  options.mode === "personal" ? showPersonalConfig() : showRemoteConfig()
+
   mode.forEach(radioButton => {
-    radioButton.checked = radioButton.value === options.mode
     radioButton.onchange = () => {
-      if (radioButton.id === "personalMode") {
-        personalConfig.hidden = false
-        remoteConfig.hidden = true
-        optionsRepository.set(JSON.stringify({ mode: 'personal' }))
-      } else {
-        personalConfig.hidden = true
-        remoteConfig.hidden = false
-        optionsRepository.set(JSON.stringify({ mode: 'remote' }))
-      }
+      const mode = radioButton.value
+      if (!["personal", "remote"].includes(mode)) { return }
+      optionsRepository.set(JSON.stringify({ mode }))
+      mode === "personal" ? showPersonalConfig() : showRemoteConfig()
     }
   })
 
