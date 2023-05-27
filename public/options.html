@@ -4,38 +4,35 @@
     <link rel="stylesheet" type="text/css" href="options.css" media="screen" />
     <title>AWS Peacock Management Console - Configuration</title>
   </head>
-
   <body>
     <script src="options.js"></script>
-    <div class="twoColumnLayout">
-      <div class="column configurationColumn">
-        <h1>Configuration</h1>
-        <div>
-          <div>
-            <input type="radio" name="mode" value="personal" checked />
-            <label for="local">Keep settings in the browser</label>
-          </div>
-          <div>
-            <input type="radio" name="mode" value="remote" />
-            <label for="remote"
-              >Load the settings shared by the your team from the web</label
-            >
-          </div>
+    <div class="container">
+      <h1>Configuration</h1>
+      <form id="mode">
+        <div class="radio-option">
+          <input type="radio" id="local" name="mode" value="personal" checked />
+          <label for="local">Keep settings in the browser</label>
         </div>
-        <div id="personalConfig">
-          <label>Editor</label>
+        <div class="radio-option">
+          <input type="radio" id="remote" name="mode" value="remote" />
+          <label for="remote"
+            >Load the settings shared by the your team from the web</label
+          >
+        </div>
+      </form>
+      <div id="personalConfig" class="config-section">
+        <div>
+          <label for="personalConfigTextArea">Editor (Auto Save)</label>
           <textarea
-            id="awsConfigTextArea"
-            class="configuration"
+            id="personalConfigTextArea"
+            class="config-textarea"
             spellcheck="false"
           ></textarea>
-          <div class="menuBar">
-            <button id="saveButton">Save</button>
-            <span id="savedMessage" hidden>Saved!</span>
-          </div>
         </div>
-        <div id="remoteConfig" hidden>
-          <label for="url">Enter an URL:</label>
+      </div>
+      <div id="remoteConfig" class="config-section" hidden>
+        <div class="config-group">
+          <label for="remoteConfigUrl">Configuration URL</label>
           <input
             type="url"
             name="url"
@@ -44,28 +41,24 @@
             pattern="https://.*"
             size="80"
           />
-          <div class="menuBar">
-            <button id="remoteConfigSaveButton">Save</button>
-            <span id="remoteConfigValidationMessage" hidden></span>
-          </div>
-          <label>Preview</label>
+          <button id="remoteConfigSaveButton" class="btn-save">Save</button>
+        </div>
+        <div>
+          <label for="remoteConfigTextArea">Preview</label>
           <textarea
             readonly
             id="remoteConfigTextArea"
-            class="configuration"
+            class="config-textarea"
             spellcheck="false"
           ></textarea>
         </div>
       </div>
-      <div class="column howToColumn">
-        <h1>Example</h1>
-        <textarea
-          readonly
-          id="awsConfigTextAreaSample"
-          class="configuration"
-          spellcheck="false"
-        ></textarea>
-      </div>
+      <a
+        href="https://github.com/xhiroga/aws-peacock-management-console/blob/main/examples/shared.jsonc"
+        target="_blank"
+        rel="noopener"
+        >Example
+      </a>
     </div>
   </body>
 </html>

@@ -1,32 +1,46 @@
-html {
-  height: 100%;
-}
-
 body {
-  background-color: #666;
-  height: 100%;
-  margin: 0px;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.twoColumnLayout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 100%;
+.container {
+  margin: 0 auto;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-.column {
-  padding: 10px 20px;
+h1 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.configurationColumn {
-  background-color: #fff;
+#mode {
+  margin-bottom: 20px;
 }
 
-.howToColumn {
-  background-color: #eee;
+.radio-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-.configuration {
+.config-section {
+  margin-bottom: 20px;
+}
+
+.config-group {
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  font-size: 1.2em;
+}
+
+.config-textarea {
   box-sizing: border-box;
   font-size: 14px;
   font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
@@ -36,24 +50,15 @@ body {
   height: 75vh;
 }
 
-.menuBar {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
+.btn-save {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
 }
 
-.menuBar :last-child {
-  margin-left: auto;
-}
-
-#saveButton {
-  height: 28px;
-  padding: 4px 20px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-#savedMessage {
-  color: green;
+.btn-save:hover {
+  background-color: #45a049;
 }
