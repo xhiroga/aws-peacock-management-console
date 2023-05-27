@@ -80,7 +80,9 @@ window.onload = async () => {
     return;
   }
 
+  const options = JSON.parse(await optionsRepository.get())
   mode.forEach(radioButton => {
+    radioButton.checked = radioButton.value === options.mode
     radioButton.onchange = () => {
       if (radioButton.id === "personalMode") {
         personalConfig.hidden = false
