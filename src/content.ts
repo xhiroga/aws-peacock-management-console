@@ -215,26 +215,20 @@ const updateNavigationStyle = (
       : 'button[data-testid="more-menu__awsc-nav-account-menu-button"] *,'
     }
     button[data-testid="more-menu__awsc-nav-regions-menu-button"] > span > *,
-    #awsc-nav-header > nav > nav > div:nth-child(2) > div > ol > li > a > div > span
+    #awsc-nav-header > nav > div:nth-child(2) > div > ol > li > a > div > span
     {
       color: ${foregroundColor} !important;
     }
-    #awsc-nav-header > nav > nav > div:nth-child(2) > div > ol > li > a:hover,
-    #awsc-nav-header > nav > nav > div:nth-child(2) > div > ol > li > a[style*=fixed]
+    #awsc-nav-header > nav > div:nth-child(2) > div > ol > li > a:hover,
+    #awsc-nav-header > nav > div:nth-child(2) > div > ol > li > a[style*=fixed]
     {
       background-color: ${navigationBackgroundColor} !important;
     }
   }
-  div#awsc-nav-footer-content {
+  #awsc-nav-footer-content {
     background-color: ${navigationBackgroundColor} !important;
   }
-  div#awsc-feedback,
-  button[data-testid="awsc-footer-language-selector-button"],
-  a[data-testid="awsc-footer-privacy-policy"],
-  a[data-testid="awsc-footer-terms-of-use"],
-  span[data-testid="awsc-footer-unified-settings-language-link"],
-  button[data-testid="awsc-footer-cookie-preferences"],
-  span[data-testid="awsc-footer-copyright"] {
+  #awsc-nav-footer-content * {
     color: ${foregroundColor} !important;
   }`
   insertStyleTag(css)
