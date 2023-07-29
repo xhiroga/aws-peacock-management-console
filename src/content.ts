@@ -310,4 +310,4 @@ function waitForElementToDisplay(selector: string, time: number) {
     }
   }, time);
 }
-waitForElementToDisplay("#nav-usernameMenu", 100);
+waitForElementToDisplay("button[data-testid=\"awsc-copy-accountid\"]", 100);
