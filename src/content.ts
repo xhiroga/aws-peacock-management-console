@@ -30,6 +30,19 @@ const accountNameRepository = new AccountNameRepository(repositoryProps)
 const selectElement = (query: string): HTMLElement | null =>
   document.querySelector<HTMLElement>(query)
 
+const waitForElement = async (selector: string, timeout: number): Promise<HTMLElement> => {
+  let elapsedTime = 0;
+  while (elapsedTime < timeout) {
+    const element = selectElement(selector);
+    if (element !== null) {
+      return element;
+    }
+    await new Promise(resolve => setTimeout(resolve, 100));
+    elapsedTime += 100;
+  }
+  throw new Error(`Element ${selector} not found after ${timeout}ms`);
+}
+
 const getAccountMenuButtonTitle = () => {
   return selectElement(
     '[data-testid="more-menu__awsc-nav-account-menu-button"] span[title]'
@@ -40,11 +53,14 @@ const getOriginalAccountMenuButtonBackground = () => {
   return selectElement('span[data-testid="account-menu-button__background"]')
 }
 
-const getAccountId = (): string | null | undefined => {
-  return (
-    selectElement('button[data-testid="awsc-copy-accountid"]')
-      ?.previousElementSibling as HTMLSpanElement
-  )?.innerText.replace(/\-/g, '')
+const getAccountId = async (): Promise<string | null | undefined> => {
+  try {
+    const copyAccountIdButton = await waitForElement('button[data-testid="awsc-copy-accountid"]', 10000)
+    return (copyAccountIdButton?.previousElementSibling as HTMLSpanElement)?.innerText.replace(/\-/g, '')
+  } catch (e) {
+    console.error(e)
+    return null
+  }
 }
 
 const getRegion = () => {
@@ -284,7 +300,7 @@ const patchAccountNameIfAwsSso = (accountName: AccountName) => {
 const run = async () => {
   const accountNameList = await loadAccountNameList()
   const configList = await loadConfigList()
-  const accountId = getAccountId()
+  const accountId = await getAccountId()
   const region = getRegion()
   if (configList && accountId && region) {
     const config = findConfig(configList, accountId, region)
@@ -302,12 +318,4 @@ const run = async () => {
   }
 }
 
-function waitForElementToDisplay(selector: string, time: number) {
-  var interval = setInterval(function () {
-    if (document.querySelector(selector) !== null) {
-      clearInterval(interval);
-      run();
-    }
-  }, time);
-}
-waitForElementToDisplay("button[data-testid=\"awsc-copy-accountid\"]", 100);
+run()
