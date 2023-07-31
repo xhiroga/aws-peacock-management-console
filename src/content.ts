@@ -56,7 +56,7 @@ const getOriginalAccountMenuButtonBackground = () => {
 const getAccountId = async (): Promise<string | null | undefined> => {
   try {
     const copyAccountIdButton = await waitForElement('button[data-testid="awsc-copy-accountid"]', 10000)
-    return (copyAccountIdButton?.previousElementSibling as HTMLSpanElement)?.innerText.replace(/\-/g, '')
+    return (copyAccountIdButton?.previousElementSibling as HTMLSpanElement)?.innerText?.replace(/\-/g, '')
   } catch (e) {
     console.error(e)
     return null

@@ -32,7 +32,7 @@ const observeApp = (onSubtreeUpdated: OnSubtreeUpdated) => {
 const isAwsAccountSelected = (): boolean =>
   document
     .querySelector<HTMLElement>('portal-application[title="AWS Account"]')
-    ?.classList.contains('selected') ?? false
+    ?.classList?.contains('selected') ?? false
 
 const toAccountNameAndId = (
   portalInstanceSection: HTMLDivElement
