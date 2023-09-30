@@ -1,12 +1,16 @@
 name: Bug Report
 description: Report a bug
-title: "short issue description"
-labels: [bug, needs-triage]
+title: 'short issue description'
+labels: [bug]
 body:
   - type: textarea
     id: problem
     attributes:
-      label: What is the problem?
+      label: |
+        What is the problem?
+
+        * What did you expect to happen?
+        * What actually happened?
     validations:
       required: true
 
@@ -14,29 +18,7 @@ body:
     id: reproduction
     attributes:
       label: Reproduction Steps
-      description: |
-        Minimal amount of code that causes the bug (if possible) or a reference.
-
-        The code sample should be an SSCCE. See http://sscce.org/ for details.
-        In short, provide a code sample that we can copy/paste, run and reproduce.
-    validations:
-      required: true
-
-  - type: textarea
-    id: expected
-    attributes:
-      label: What did you expect to happen?
-      description: |
-        What were you trying to achieve by performing the steps above?
-    validations:
-      required: true
-
-  - type: textarea
-    id: actual
-    attributes:
-      label: What actually happened?
-      description: |
-        What is the unexpected behavior you were seeing? If you got an error, paste it here.
+      description: Minimal amount of code that causes the bug (if possible) or a reference.
     validations:
       required: true
 
@@ -44,7 +26,6 @@ body:
     id: browser
     attributes:
       label: Browser Name
-      description: Output of `cdk version`
     validations:
       required: true
 

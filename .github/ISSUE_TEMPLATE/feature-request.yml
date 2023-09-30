@@ -1,7 +1,7 @@
 name: Feature Request
 description: Request a new feature
-title: "short issue description"
-labels: [feature-request, needs-triage]
+title: 'short issue description'
+labels: [feature-request]
 body:
   - type: textarea
     id: description
