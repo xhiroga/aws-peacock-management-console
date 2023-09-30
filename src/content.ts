@@ -195,6 +195,12 @@ const updateNavigationStyle = (
     ? AWS_SQUID_INK
     : '#ffffff'
 
+  // Selector specification policy
+  // 1. Use `id` or `data-testid`
+  // 2. To minimize the impact of layout disruptions, set up CSS selectors for each UI's smallest elements (Atoms). 
+  // 3. Use the `data-testid` of the closest parent element of the element you want to change the color of.
+  // 4. Conversely, within Atoms, use the Descendent Selector to avoid the effects of AWS refactoring.
+  // 5. Instead of specifying `path`, `g`, `circle` individually, use `svg > *`.
   const css = `
   header[data-testid="awsc-nav-header"] nav {
     background-color: ${navigationBackgroundColor} !important;
@@ -202,9 +208,10 @@ const updateNavigationStyle = (
   button[data-testid="aws-services-list-button"],
   button[data-testid="aws-services-list-button"] *,
   button[data-testid="awsc-concierge-open-search-button"] > svg > *,
-  a[data-testid="awsc-nav-scallop-icon"] > svg > path,
-  div[data-testid="awsc-phd__bell-icon"] *,
-  span[data-testid="awsc-nav-support-menu-button"] > svg > *,
+  a[data-testid="awsc-nav-scallop-icon"] svg > *,
+  div[data-testid="awsc-phd__bell-icon"] svg > *,
+  span[data-testid="awsc-nav-support-menu-button"] svg > *,
+  span[data-testid="awsc-nav-quick-settings-button"] svg > *,
   button[data-testid="awsc-nav-more-menu"] {
     color: ${foregroundColor} !important;
   }
