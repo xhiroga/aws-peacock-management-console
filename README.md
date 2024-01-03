@@ -15,7 +15,7 @@ While effort has been made to ensure the accuracy of the program, developers ass
 
 ## Install
 
-- [AWS Peacock Management Console \- Chrome Web Store](https://chrome.google.com/webstore/detail/aws-peacock-management-co/bknjjajglapfhbdcfgmhgkgfomkkaidj?utm_source=github)
+- [AWS Peacock Management Console - Chrome Web Store](https://chrome.google.com/webstore/detail/aws-peacock-management-co/bknjjajglapfhbdcfgmhgkgfomkkaidj?utm_source=github)
 - [AWS Peacock Management Console – 🦊 Firefox ADD-ONS](https://addons.mozilla.org/firefox/addon/aws-peacock-management-console/)
 
 ## Development
@@ -33,6 +33,6 @@ Icons made by [Freepik](https://www.flaticon.com/authors/freepik) from [www.flat
 
 ## References and Inspiration
 
-- [Peacock \- Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=johnpapa.vscode-peacock)
-- [tilfinltd/aws\-extend\-switch\-roles: Extend your AWS IAM switching roles by Chrome extension, Firefox add\-on, or Edge add\-on](https://github.com/tilfinltd/aws-extend-switch-roles)
-- [yaggytter/chrome\-extension\-awssso: Chrome Extension for AWS SSO](https://github.com/yaggytter/chrome-extension-awssso)
+- [Peacock - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=johnpapa.vscode-peacock)
+- [tilfinltd/aws-extend-switch-roles: Extend your AWS IAM switching roles by Chrome extension, Firefox add-on, or Edge add-on](https://github.com/tilfinltd/aws-extend-switch-roles)
+- [yaggytter/chrome-extension-awssso: Chrome Extension for AWS SSO](https://github.com/yaggytter/chrome-extension-awssso)
