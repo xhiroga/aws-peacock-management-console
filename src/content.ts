@@ -53,10 +53,30 @@ const getOriginalAccountMenuButtonBackground = () => {
   return selectElement('span[data-testid="account-menu-button__background"]')
 }
 
+const getAccountIdFromDescendantByDataTestidEqualsAwscCopyAccountId = (accountDetailMenu: HTMLElement): string | null => {
+  const copyAccountIdButton = accountDetailMenu.querySelector<HTMLElement>('button[data-testid="awsc-copy-accountid"]')
+  return (copyAccountIdButton?.previousElementSibling as HTMLSpanElement)?.innerText?.replace(/-/g, '')
+}
+
+const getAccountIdByRegex = (accountDetailMenu: HTMLElement) => {
+  let accountId = null;
+  const regex = /^\d{4}-\d{4}-\d{4}$/; // Regular expression to match the pattern ****-****-****
+  const spans = accountDetailMenu.querySelectorAll('span');
+
+  spans.forEach(span => {
+    const spanText = span.textContent ? span.textContent.trim() : '';
+    if (regex.test(spanText)) {
+        accountId = spanText.replace(/-/g, '');
+    }
+  });
+
+  return accountId;
+}
+
 const getAccountId = async (): Promise<string | null | undefined> => {
   try {
-    const copyAccountIdButton = await waitForElement('button[data-testid="awsc-copy-accountid"]', 10000)
-    return (copyAccountIdButton?.previousElementSibling as HTMLSpanElement)?.innerText?.replace(/\-/g, '')
+    const accountDetailMenu = await waitForElement('div[data-testid="account-detail-menu"]', 10000)
+    return getAccountIdFromDescendantByDataTestidEqualsAwscCopyAccountId(accountDetailMenu) || getAccountIdByRegex(accountDetailMenu);
   } catch (e) {
     console.error(e)
     return null
