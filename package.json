@@ -9,7 +9,8 @@
     "clean": "node -e 'fs.rmSync(`dist`, {recursive:true, force:true})'",
     "lint": "eslint . --ignore-path .gitignore",
     "archive": "mkdir -p packages && cd dist && zip -r ../packages/aws-peacock-management-console.zip *",
-    "package": "yarn clean && yarn build && yarn archive"
+    "show-developer-dashboard": "echo \"Chrome Web Store Developer Dashboard: https://chrome.google.com/webstore/devconsole/\nFirefox Add-on Developer Hub: https://addons.mozilla.org/ja/developers/\"",
+    "package": "yarn clean && yarn build && yarn archive && yarn show-developer-dashboard"
   },
   "license": "MIT",
   "dependencies": {
