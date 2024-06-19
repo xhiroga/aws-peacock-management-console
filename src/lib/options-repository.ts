@@ -1,8 +1,8 @@
 import { RepositoryProps } from '../types'
 import { Repository } from './repository'
 
-export class AccountNameRepository extends Repository {
+export class OptionsRepository extends Repository {
   constructor(props?: RepositoryProps) {
-    super('account-name', props)
+    super('options', props)
   }
 }

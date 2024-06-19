@@ -1,5 +1,4 @@
-export type Browser = typeof chrome
-export type StorageArea = 'local' | 'sync'
+import { Browser, StorageArea } from "../types"
 
 export class BrowserStorage<T> {
   runtime: typeof chrome.runtime

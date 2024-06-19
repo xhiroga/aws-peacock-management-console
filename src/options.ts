@@ -1,11 +1,12 @@
-import { ConfigRepository } from './lib/config-repository'
-import { RepositoryProps } from './lib/repository'
+import { OptionsRepository } from './lib/options-repository'
+import { PersonalConfigRepository } from './lib/personal-config-repository'
+import { RemoteConfigRepository } from './lib/remote-config-repository'
+import { RemoteConfigUrlRepository } from './lib/remote-config-url-repository'
 
-const repositoryProps: RepositoryProps = {
-  browser: chrome || browser,
-  storageArea: 'local',
-}
-const configRepository = new ConfigRepository(repositoryProps)
+const optionsRepository = new OptionsRepository()
+const personalConfigRepository = new PersonalConfigRepository()
+const remoteConfigRepository = new RemoteConfigRepository()
+const remoteConfigUrlRepository = new RemoteConfigUrlRepository()
 
 const sampleConfig = `[
   /**
@@ -45,26 +46,83 @@ const sampleConfig = `[
 ]
 `
 
-window.onload = async () => {
-  const textArea = <HTMLInputElement>(
-    document.getElementById('awsConfigTextArea')
-  )
-  const sample = <HTMLInputElement>(
-    document.getElementById('awsConfigTextAreaSample')
-  )
-  const saveButton = document.getElementById('saveButton')
-  const savedMessage = document.getElementById('savedMessage')
-  if (textArea === null || saveButton === null || savedMessage === null) {
-    return
+const fetchData = async (url: string): Promise<string | undefined> => {
+  try {
+    const response = await fetch(url);
+    return await response.text();
+  } catch (error) {
+    console.error("Fetch Error:", error);
   }
-  textArea.value = (await configRepository.get()) ?? sampleConfig
-  sample.value = sampleConfig
+}
 
-  saveButton.onclick = () => {
-    configRepository.set(textArea.value)
-    savedMessage.hidden = false
+window.onload = async () => {
+  const personalMode = document.querySelector<HTMLInputElement>('input[name="mode"][value="personal"]');
+  const remoteMode = document.querySelector<HTMLInputElement>('input[name="mode"][value="remote"]');
+  const personalConfig = <HTMLDivElement>(document.getElementById('personalConfig'))
+  const remoteConfig = <HTMLDivElement>(document.getElementById('remoteConfig'))
+
+  const textArea = <HTMLInputElement>(
+    document.getElementById('personalConfigTextArea')
+  )
+  const remoteConfigUrl = <HTMLInputElement>(
+    document.getElementById('remoteConfigUrl')
+  )
+  const remoteConfigTextArea = <HTMLInputElement>(
+    document.getElementById('remoteConfigTextArea')
+  )
+  const remoteConfigSaveButton = document.getElementById('remoteConfigSaveButton')
+
+  if (!personalMode || !remoteMode || !textArea || !remoteConfigUrl || !remoteConfigSaveButton || !remoteConfigTextArea) {
+    return;
   }
+
+  // Mode
+  const showPersonalConfig = () => {
+    personalConfig.hidden = false
+    remoteConfig.hidden = true
+  }
+  const showRemoteConfig = () => {
+    personalConfig.hidden = true
+    remoteConfig.hidden = false
+  }
+  const options = JSON.parse(await optionsRepository.get())
+  if (options.mode === "personal") {
+    personalMode.checked = true
+    showPersonalConfig()
+  } else if (options.mode === "remote") {
+    remoteMode.checked = true
+    showRemoteConfig()
+  }
+
+  personalMode.onchange = () => {
+    showPersonalConfig()
+    optionsRepository.set(JSON.stringify({ mode: "personal" }))
+  }
+  remoteMode.onchange = () => {
+    showRemoteConfig()
+    optionsRepository.set(JSON.stringify({ mode: "remote" }))
+  }
+
+  // Personal
+  textArea.value = (await personalConfigRepository.get()) ?? sampleConfig
+
   textArea.oninput = () => {
-    savedMessage.hidden = true
+    personalConfigRepository.set(textArea.value)
+  }
+
+  // Remote
+  remoteConfigUrl.value = JSON.parse(await remoteConfigUrlRepository.get()).url
+  remoteConfigTextArea.value = await remoteConfigRepository.get()
+
+  remoteConfigSaveButton.onclick = async () => {
+    const url = remoteConfigUrl.value
+    remoteConfigUrlRepository.set(JSON.stringify({ url }))
+
+    // TODO: Error handling
+    const text = await fetchData(url)
+    console.log(text)
+    if (!text) { return }
+    remoteConfigTextArea.value = text
+    remoteConfigRepository.set(text)
   }
 }
