@@ -19,7 +19,7 @@
       "run_at": "document_end"
     },
     {
-      "js": ["scraping.js"],
+      "js": ["awsapps.js"],
       "matches": ["https://*.awsapps.com/start*"],
       "run_at": "document_end"
     }

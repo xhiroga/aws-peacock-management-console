@@ -1,12 +1,13 @@
 import { Repository, RepositoryProps } from './repository'
 
-export type AccountName = {
+export type Account = {
   accountName: string
   accountId: string
 }
 
-export class AccountNameRepository extends Repository {
+export class AccountsRepository extends Repository {
   constructor(props: RepositoryProps) {
+    // For compatibility, key is `account-name`, regardless of its functionality.
     super('account-name', props)
   }
 }
