@@ -3,6 +3,7 @@ import {
   AccountsRepository,
 } from './lib/account-name-repository'
 import { RepositoryProps } from './lib/repository'
+import { toAccountNameAndId } from './lib/scraping'
 
 let accounts: Account[] = []
 
@@ -42,16 +43,6 @@ const mergeAccounts = (accounts1: Account[], accounts2: Account[]): Account[] =>
     }
   })
   return merged
-}
-
-const toAccountNameAndId = (
-  accountListCell: HTMLButtonElement
-): Account | null => {
-  const accountName =
-    accountListCell.querySelector<HTMLElement>('strong')?.textContent
-  const divs = accountListCell.querySelectorAll<HTMLDivElement>('div')
-  const accountId = Array.from(divs).map(div => div.textContent?.match(/^\d{12}/)?.[0]?.trim()).find(id => id != null);
-  return accountName && accountId ? { accountName, accountId } : null
 }
 
 const saveAccountNameIfAwsAccountSelected = (callback: () => void) => {

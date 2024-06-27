@@ -11,14 +11,11 @@ import {
   Environment,
 } from './lib/config-repository'
 import { RepositoryProps } from './lib/repository'
+import { patchAccountNameIfAwsSso, selectElement } from './lib/scraping'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
 const AWSUI_COLOR_GRAY_900 = '#16191f'
-
-const AWS_SERVICE_ROLE_FOR_SSO_PREFIX = /AWSReservedSSO_/ // https://docs.aws.amazon.com/singlesignon/latest/userguide/using-service-linked-roles.html
-const AWS_IAM_ROLE_NAME_PATTERN = /[\w+=,.@-]+/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html
-const AWS_SSO_USR_NAME_PATTERN = /[\w+=,.@-]+/ // Username can contain alphanumeric characters, or any of the following: +=,.@-
 
 const repositoryProps: RepositoryProps = {
   browser: chrome || browser,
@@ -26,9 +23,6 @@ const repositoryProps: RepositoryProps = {
 }
 const configRepository = new ConfigRepository(repositoryProps)
 const accountsRepository = new AccountsRepository(repositoryProps)
-
-const selectElement = (query: string): HTMLElement | null =>
-  document.querySelector<HTMLElement>(query)
 
 const waitForElement = async (selector: string, timeout: number): Promise<HTMLElement> => {
   let elapsedTime = 0;
@@ -41,12 +35,6 @@ const waitForElement = async (selector: string, timeout: number): Promise<HTMLEl
     elapsedTime += 100;
   }
   throw new Error(`Element ${selector} not found after ${timeout}ms`);
-}
-
-const getAccountMenuButtonTitle = () => {
-  return selectElement(
-    '[data-testid="more-menu__awsc-nav-account-menu-button"] span[title]'
-  )
 }
 
 const getOriginalAccountMenuButtonBackground = () => {
@@ -294,28 +282,6 @@ const updateStyle = (style: Config['style']) => {
       style.accountMenuButtonBackgroundColor !== undefined
     )
   }
-}
-
-const isNotIamUserButAwsSsoUser = (userName: string) => {
-  const awsSsoUserNameRe = new RegExp(
-    `^${AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
-    }/${AWS_SSO_USR_NAME_PATTERN.source}$`
-  )
-  return awsSsoUserNameRe.test(userName)
-}
-
-const patchAccountNameIfAwsSso = (accountName: Account) => {
-  const accountMenuButtonTitle = getAccountMenuButtonTitle()
-  if (!accountMenuButtonTitle) {
-    return
-  }
-  const userName = (
-    selectElement('button[data-testid="awsc-copy-username"]')
-      ?.previousElementSibling as HTMLSpanElement
-  )?.innerText
-  if (userName && isNotIamUserButAwsSsoUser(userName)) {
-    accountMenuButtonTitle.innerText = `${accountMenuButtonTitle.innerText} @ ${accountName.accountName}`
-  } // else not login by user, like root user or IAM role
 }
 
 const run = async () => {
