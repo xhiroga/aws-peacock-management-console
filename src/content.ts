@@ -1,8 +1,8 @@
 import * as JSONC from 'jsonc-parser'
 import yaml from 'js-yaml'
 import {
-  AccountName,
-  AccountNameRepository,
+  Account,
+  AccountsRepository,
 } from './lib/account-name-repository'
 import {
   Config,
@@ -25,7 +25,7 @@ const repositoryProps: RepositoryProps = {
   storageArea: 'local',
 }
 const configRepository = new ConfigRepository(repositoryProps)
-const accountNameRepository = new AccountNameRepository(repositoryProps)
+const accountsRepository = new AccountsRepository(repositoryProps)
 
 const selectElement = (query: string): HTMLElement | null =>
   document.querySelector<HTMLElement>(query)
@@ -66,7 +66,7 @@ const getAccountIdByRegex = (accountDetailMenu: HTMLElement) => {
   spans.forEach(span => {
     const spanText = span.textContent ? span.textContent.trim() : '';
     if (regex.test(spanText)) {
-        accountId = spanText.replace(/-/g, '');
+      accountId = spanText.replace(/-/g, '');
     }
   });
 
@@ -104,9 +104,9 @@ const parseConfigList = (configList: string) => {
   }
 }
 
-const loadAccountNameList = async (): Promise<AccountName[] | null> => {
-  const accountNameList = await accountNameRepository.get()
-  return accountNameList ? (JSON.parse(accountNameList) as AccountName[]) : null
+const loadAccounts = async (): Promise<Account[] | null> => {
+  const accounts = await accountsRepository.get()
+  return accounts ? (JSON.parse(accounts) as Account[]) : null
 }
 
 const isEnvMatch = (env: Environment, accountId: string, region: string) =>
@@ -304,7 +304,7 @@ const isNotIamUserButAwsSsoUser = (userName: string) => {
   return awsSsoUserNameRe.test(userName)
 }
 
-const patchAccountNameIfAwsSso = (accountName: AccountName) => {
+const patchAccountNameIfAwsSso = (accountName: Account) => {
   const accountMenuButtonTitle = getAccountMenuButtonTitle()
   if (!accountMenuButtonTitle) {
     return
@@ -319,7 +319,7 @@ const patchAccountNameIfAwsSso = (accountName: AccountName) => {
 }
 
 const run = async () => {
-  const accountNameList = await loadAccountNameList()
+  const accounts = await loadAccounts()
   const configList = await loadConfigList()
   const accountId = await getAccountId()
   const region = getRegion()
@@ -329,12 +329,12 @@ const run = async () => {
       updateStyle(config?.style)
     }
   }
-  if (accountNameList && accountId) {
-    const accountName = accountNameList.find(
-      (accountName) => accountName.accountId === accountId
+  if (accounts && accountId) {
+    const account = accounts.find(
+      (account) => account.accountId === accountId
     )
-    if (accountName) {
-      patchAccountNameIfAwsSso(accountName)
+    if (account) {
+      patchAccountNameIfAwsSso(account)
     }
   }
 }
