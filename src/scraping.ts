@@ -4,6 +4,8 @@ import {
 } from './lib/account-name-repository'
 import { RepositoryProps } from './lib/repository'
 
+let accounts: AccountName[] = []
+
 const repositoryProps: RepositoryProps = {
   browser: chrome || browser,
   storageArea: 'local',
@@ -13,9 +15,9 @@ const accountNameRepository = new AccountNameRepository(repositoryProps)
 type OnSubtreeUpdated = (stopObserve: () => void) => void
 
 const observeApp = (onSubtreeUpdated: OnSubtreeUpdated) => {
-  const app = document.querySelector<HTMLElement>('app')
-  if (!app) {
-    console.error('AWS SSO page has no <app>.')
+  const root = document.getElementById('root') as HTMLDivElement
+  if (!root) {
+    console.error('AWS SSO page has no <div id ="root">.')
     return
   }
   const mutationCallback = (
@@ -26,44 +28,42 @@ const observeApp = (onSubtreeUpdated: OnSubtreeUpdated) => {
   }
   const config = { attributes: false, childList: true, subtree: true }
   const observer = new MutationObserver(mutationCallback)
-  observer.observe(app, config)
+  observer.observe(root, config)
 }
 
-const isAwsAccountSelected = (): boolean =>
-  document
-    .querySelector<HTMLElement>('portal-application[title="AWS Account"]')
-    ?.classList?.contains('selected') ?? false
+const mergeAccounts = (accounts1: AccountName[], accounts2: AccountName[]): AccountName[] => {
+  const accountIds = accounts1.map(account => account.accountId).concat(accounts2.map(account => account.accountId))
+  const merged = accountIds.map(accountId => {
+    const account = accounts2.find(account => account.accountId == accountId)
+    if (account) {
+      return account
+    } else {
+      return accounts1.find(account => account.accountId == accountId) as AccountName
+    }
+  })
+  return merged
+}
 
 const toAccountNameAndId = (
-  portalInstanceSection: HTMLDivElement
+  accountListCell: HTMLButtonElement
 ): AccountName | null => {
   const accountName =
-    portalInstanceSection.querySelector<HTMLDivElement>('div.name')?.textContent
-  const accountId = portalInstanceSection
-    .querySelector<HTMLSpanElement>('span.accountId')
-    ?.textContent?.replace('#', '')
+    accountListCell.querySelector<HTMLElement>('strong')?.textContent
+  const divs = accountListCell.querySelectorAll<HTMLDivElement>('div')
+  const accountId = Array.from(divs).map(div => div.textContent?.match(/^\d{12}/)?.[0]?.trim()).find(id => id != null);
   return accountName && accountId ? { accountName, accountId } : null
 }
 
-const saveAccountName = () => {
-  const portalInstanceSection = document.querySelectorAll<HTMLDivElement>(
-    'div.portal-instance-section'
-  )
-  if (!portalInstanceSection) {
-    console.error('portal-instance-section is not detected.')
-    return
-  }
-  accountNameRepository.set(
-    JSON.stringify(Array.from(portalInstanceSection).map(toAccountNameAndId))
-  )
-}
-
 const saveAccountNameIfAwsAccountSelected = (callback: () => void) => {
-  if (!isAwsAccountSelected()) {
-    return
+  try {
+    const accountListCells = document.querySelectorAll<HTMLButtonElement>('[data-testid="account-list-cell"]');
+    const queriedAccounts = Array.from(accountListCells).map(toAccountNameAndId).filter(account => account !== null) as AccountName[];
+    accounts = mergeAccounts(accounts, queriedAccounts)
+    accountNameRepository.set(JSON.stringify(accounts))
+  } catch (error) {
+    console.error(error)
+    callback()
   }
-  saveAccountName()
-  callback()
 }
 
 observeApp(saveAccountNameIfAwsAccountSelected)
