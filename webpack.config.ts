@@ -7,7 +7,7 @@ const config: Configuration = {
   entry: {
     content: path.join(srcDir, 'content.ts'),
     options: path.join(srcDir, 'options.ts'),
-    scraping: path.join(srcDir, 'scraping.ts'),
+    awsapps: path.join(srcDir, 'awsapps.ts'),
   },
   output: {
     path: path.join(__dirname, 'dist'),

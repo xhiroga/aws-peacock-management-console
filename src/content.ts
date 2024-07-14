@@ -1,8 +1,8 @@
 import * as JSONC from 'jsonc-parser'
 import yaml from 'js-yaml'
 import {
-  AccountName,
-  AccountNameRepository,
+  Account,
+  AccountsRepository,
 } from './lib/account-name-repository'
 import {
   Config,
@@ -11,24 +11,18 @@ import {
   Environment,
 } from './lib/config-repository'
 import { RepositoryProps } from './lib/repository'
+import { patchAccountNameIfAwsSso, selectElement } from './lib/scraping'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
 const AWSUI_COLOR_GRAY_900 = '#16191f'
-
-const AWS_SERVICE_ROLE_FOR_SSO_PREFIX = /AWSReservedSSO_/ // https://docs.aws.amazon.com/singlesignon/latest/userguide/using-service-linked-roles.html
-const AWS_IAM_ROLE_NAME_PATTERN = /[\w+=,.@-]+/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html
-const AWS_SSO_USR_NAME_PATTERN = /[\w+=,.@-]+/ // Username can contain alphanumeric characters, or any of the following: +=,.@-
 
 const repositoryProps: RepositoryProps = {
   browser: chrome || browser,
   storageArea: 'local',
 }
 const configRepository = new ConfigRepository(repositoryProps)
-const accountNameRepository = new AccountNameRepository(repositoryProps)
-
-const selectElement = (query: string): HTMLElement | null =>
-  document.querySelector<HTMLElement>(query)
+const accountsRepository = new AccountsRepository(repositoryProps)
 
 const waitForElement = async (selector: string, timeout: number): Promise<HTMLElement> => {
   let elapsedTime = 0;
@@ -41,12 +35,6 @@ const waitForElement = async (selector: string, timeout: number): Promise<HTMLEl
     elapsedTime += 100;
   }
   throw new Error(`Element ${selector} not found after ${timeout}ms`);
-}
-
-const getAccountMenuButtonTitle = () => {
-  return selectElement(
-    '[data-testid="more-menu__awsc-nav-account-menu-button"] span[title]'
-  )
 }
 
 const getOriginalAccountMenuButtonBackground = () => {
@@ -66,7 +54,7 @@ const getAccountIdByRegex = (accountDetailMenu: HTMLElement) => {
   spans.forEach(span => {
     const spanText = span.textContent ? span.textContent.trim() : '';
     if (regex.test(spanText)) {
-        accountId = spanText.replace(/-/g, '');
+      accountId = spanText.replace(/-/g, '');
     }
   });
 
@@ -104,9 +92,9 @@ const parseConfigList = (configList: string) => {
   }
 }
 
-const loadAccountNameList = async (): Promise<AccountName[] | null> => {
-  const accountNameList = await accountNameRepository.get()
-  return accountNameList ? (JSON.parse(accountNameList) as AccountName[]) : null
+const loadAccounts = async (): Promise<Account[] | null> => {
+  const accounts = await accountsRepository.get()
+  return accounts ? (JSON.parse(accounts) as Account[]) : null
 }
 
 const isEnvMatch = (env: Environment, accountId: string, region: string) =>
@@ -296,30 +284,8 @@ const updateStyle = (style: Config['style']) => {
   }
 }
 
-const isNotIamUserButAwsSsoUser = (userName: string) => {
-  const awsSsoUserNameRe = new RegExp(
-    `^${AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
-    }/${AWS_SSO_USR_NAME_PATTERN.source}$`
-  )
-  return awsSsoUserNameRe.test(userName)
-}
-
-const patchAccountNameIfAwsSso = (accountName: AccountName) => {
-  const accountMenuButtonTitle = getAccountMenuButtonTitle()
-  if (!accountMenuButtonTitle) {
-    return
-  }
-  const userName = (
-    selectElement('button[data-testid="awsc-copy-username"]')
-      ?.previousElementSibling as HTMLSpanElement
-  )?.innerText
-  if (userName && isNotIamUserButAwsSsoUser(userName)) {
-    accountMenuButtonTitle.innerText = `${accountMenuButtonTitle.innerText} @ ${accountName.accountName}`
-  } // else not login by user, like root user or IAM role
-}
-
 const run = async () => {
-  const accountNameList = await loadAccountNameList()
+  const accounts = await loadAccounts()
   const configList = await loadConfigList()
   const accountId = await getAccountId()
   const region = getRegion()
@@ -329,12 +295,12 @@ const run = async () => {
       updateStyle(config?.style)
     }
   }
-  if (accountNameList && accountId) {
-    const accountName = accountNameList.find(
-      (accountName) => accountName.accountId === accountId
+  if (accounts && accountId) {
+    const account = accounts.find(
+      (account) => account.accountId === accountId
     )
-    if (accountName) {
-      patchAccountNameIfAwsSso(accountName)
+    if (account) {
+      patchAccountNameIfAwsSso(account)
     }
   }
 }
