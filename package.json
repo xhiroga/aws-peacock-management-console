@@ -1,6 +1,6 @@
 {
   "name": "aws-peacock-management-console",
-  "version": "2.10",
+  "version": "2.11",
   "repository": "https://github.com/xhiroga/aws-peacock-management-console",
   "author": "Hiroaki Ogasawara <13391129+xhiroga@users.noreply.github.com>",
   "scripts": {
