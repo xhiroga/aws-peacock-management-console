@@ -1,6 +1,14 @@
 import { getAccountMenuButtonSpan, updateAccounts, patchAccountNameIfAwsSso, toAccountNameAndId } from "./util";
 
 test('updateAccounts works', () => {
+  const expected = [{
+    "accountName": "Dev",
+    "accountId": "111111111111"
+  }, {
+    "accountName": "Prod",
+    "accountId": "222222222222"
+  }]
+
   const previous = [{
     "accountName": "Development",
     "accountId": "111111111111"
@@ -12,18 +20,17 @@ test('updateAccounts works', () => {
     "accountName": "Dev",
     "accountId": "111111111111"
   }]
-  const updated = updateAccounts(previous, current)
-  const expected = [{
-    "accountName": "Dev",
-    "accountId": "111111111111"
-  }, {
-    "accountName": "Prod",
-    "accountId": "222222222222"
-  }]
-  expect(expected).toEqual(updated);
+  const actual = updateAccounts(previous, current)
+
+  expect(expected).toEqual(actual);
 })
 
 test('toAccountNameAndId works', () => {
+  const expected = {
+    accountName: 'Dev',
+    accountId: '123456789012',
+  }
+
   const element = document.createElement('div');
   element.innerHTML = `
 <button class="" data-testid="account-list-cell" aria-expanded="false">
@@ -34,25 +41,23 @@ test('toAccountNameAndId works', () => {
       <path></path><path></path><path></path>
     </svg>
   </span>
+  <div>
     <div>
-      <div>
-        <strong>Dev</strong>
-      </div>
-      <div>
-        <div>123456789012  |  test@example.com</div>
-      </div>
+      <strong>Dev</strong>
     </div>
-  </button>`;
+    <div>
+      <div>123456789012  |  test@example.com</div>
+    </div>
+  </div>
+</button>`;
+  const actual = toAccountNameAndId(element.querySelector<HTMLButtonElement>('button') as HTMLButtonElement);
 
-  const account = toAccountNameAndId(element.querySelector<HTMLButtonElement>('button') as HTMLButtonElement);
-
-  expect(account).toEqual({
-    accountName: 'Dev',
-    accountId: '123456789012',
-  });
+  expect(expected).toEqual(actual);
 });
 
 test('patchAccountNameIfAwsSso works: AWS SSO, Account Name', () => {
+  const expected = "AWSReadOnlyAccess/hiroga @ Dev"
+
   document.body.innerHTML = `
 <button aria-controls="menu--account" aria-label="AWSReadOnlyAccess/hiroga" aria-expanded="false" data-testid="more-menu__awsc-nav-account-menu-button" id="nav-usernameMenu">
   <span data-testid="awsc-nav-account-menu-button">
@@ -62,6 +67,7 @@ test('patchAccountNameIfAwsSso works: AWS SSO, Account Name', () => {
   <span></span>
 </button>`
   patchAccountNameIfAwsSso({ accountId: '123456789012', accountName: 'Dev' })
-  const accountMenuButtonSpan = getAccountMenuButtonSpan()
-  expect(accountMenuButtonSpan?.innerText).toEqual("AWSReadOnlyAccess/hiroga @ Dev");
+  const actual = getAccountMenuButtonSpan()?.innerText
+
+  expect(expected).toEqual(actual);
 })
