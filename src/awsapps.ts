@@ -37,7 +37,10 @@ const saveAccountNameIfAwsAccountSelected = (callback: () => void) => {
     const accountListCells = document.querySelectorAll<HTMLButtonElement>('[data-testid="account-list-cell"]');
     const queriedAccounts = Array.from(accountListCells).map(toAccountNameAndId).filter(account => account !== null) as Account[];
     accounts = updateAccounts(accounts, queriedAccounts)
-    accountsRepository.set(JSON.stringify(accounts))
+    // When opening the Management Console from the AWS access portal, it navigates to https://*.awsapps.com/start/#/console. This condition ensures that accounts are not reset.
+    if (accounts.length > 0) {
+      accountsRepository.setAccounts(accounts)
+    }
   } catch (error) {
     console.error(error)
     callback()
