@@ -3,7 +3,7 @@ import {
   AccountsRepository,
 } from './lib/account-name-repository'
 import { RepositoryProps } from './lib/repository'
-import { toAccountNameAndId } from './lib/scraping'
+import { updateAccounts, toAccountNameAndId } from './lib/util'
 
 let accounts: Account[] = []
 
@@ -32,25 +32,15 @@ const observeApp = (onSubtreeUpdated: OnSubtreeUpdated) => {
   observer.observe(root, config)
 }
 
-const mergeAccounts = (accounts1: Account[], accounts2: Account[]): Account[] => {
-  const accountIds = accounts1.map(account => account.accountId).concat(accounts2.map(account => account.accountId))
-  const merged = accountIds.map(accountId => {
-    const account = accounts2.find(account => account.accountId == accountId)
-    if (account) {
-      return account
-    } else {
-      return accounts1.find(account => account.accountId == accountId) as Account
-    }
-  })
-  return merged
-}
-
 const saveAccountNameIfAwsAccountSelected = (callback: () => void) => {
   try {
     const accountListCells = document.querySelectorAll<HTMLButtonElement>('[data-testid="account-list-cell"]');
     const queriedAccounts = Array.from(accountListCells).map(toAccountNameAndId).filter(account => account !== null) as Account[];
-    accounts = mergeAccounts(accounts, queriedAccounts)
-    accountsRepository.set(JSON.stringify(accounts))
+    accounts = updateAccounts(accounts, queriedAccounts)
+    // When opening the Management Console from the AWS access portal, it navigates to https://*.awsapps.com/start/#/console. This condition ensures that accounts are not reset.
+    if (accounts.length > 0) {
+      accountsRepository.setAccounts(accounts)
+    }
   } catch (error) {
     console.error(error)
     callback()

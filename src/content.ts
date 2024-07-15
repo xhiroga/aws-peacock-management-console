@@ -1,7 +1,6 @@
 import * as JSONC from 'jsonc-parser'
 import yaml from 'js-yaml'
 import {
-  Account,
   AccountsRepository,
 } from './lib/account-name-repository'
 import {
@@ -11,7 +10,7 @@ import {
   Environment,
 } from './lib/config-repository'
 import { RepositoryProps } from './lib/repository'
-import { patchAccountNameIfAwsSso, selectElement } from './lib/scraping'
+import { patchAccountNameIfAwsSso, selectElement } from './lib/util'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
@@ -90,11 +89,6 @@ const parseConfigList = (configList: string) => {
   } catch (e) {
     return JSONC.parse(configList) as ConfigList
   }
-}
-
-const loadAccounts = async (): Promise<Account[] | null> => {
-  const accounts = await accountsRepository.get()
-  return accounts ? (JSON.parse(accounts) as Account[]) : null
 }
 
 const isEnvMatch = (env: Environment, accountId: string, region: string) =>
@@ -285,7 +279,7 @@ const updateStyle = (style: Config['style']) => {
 }
 
 const run = async () => {
-  const accounts = await loadAccounts()
+  const accounts = await accountsRepository.getAccounts()
   const configList = await loadConfigList()
   const accountId = await getAccountId()
   const region = getRegion()

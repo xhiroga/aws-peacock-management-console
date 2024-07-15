@@ -10,4 +10,14 @@ export class AccountsRepository extends Repository {
     // For compatibility, key is `account-name`, regardless of its functionality.
     super('account-name', props)
   }
+
+  getAccounts = async (): Promise<Account[] | null> => {
+    const accounts = await this.get()
+    return accounts ? (JSON.parse(accounts) as Account[]) : null
+  }
+
+  setAccounts = async (accounts: Account[]): Promise<void> => {
+    const accountsString = JSON.stringify(accounts)
+    return this.set(accountsString)
+  }
 }
