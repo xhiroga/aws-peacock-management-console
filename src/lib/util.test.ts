@@ -1,5 +1,27 @@
-import { getAccountMenuButtonSpan, patchAccountNameIfAwsSso, toAccountNameAndId } from "./scraping";
+import { getAccountMenuButtonSpan, updateAccounts, patchAccountNameIfAwsSso, toAccountNameAndId } from "./util";
 
+test('updateAccounts works', () => {
+  const previous = [{
+    "accountName": "Development",
+    "accountId": "111111111111"
+  }, {
+    "accountName": "Prod",
+    "accountId": "222222222222"
+  }]
+  const current = [{
+    "accountName": "Dev",
+    "accountId": "111111111111"
+  }]
+  const updated = updateAccounts(previous, current)
+  const expected = [{
+    "accountName": "Dev",
+    "accountId": "111111111111"
+  }, {
+    "accountName": "Prod",
+    "accountId": "222222222222"
+  }]
+  expect(expected).toEqual(updated);
+})
 
 test('toAccountNameAndId works', () => {
   const element = document.createElement('div');
