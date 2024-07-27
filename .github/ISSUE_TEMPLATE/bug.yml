@@ -21,6 +21,18 @@ body:
     validations:
       required: true
 
+  - type: checkboxes
+    id: sign-in-method
+    attributes:
+      label: Sign in Method
+      description: How did you sign in to AWS? (Select all that apply)
+      options:
+        - label: 'Direct login to target account via AWS SSO'
+        - label: 'Direct login to target account via IAM user'
+        - label: 'Login to a jump account via AWS SSO, then switch role to target account'
+        - label: 'Login to a jump account via IAM user, then switch role to target account'
+        - label: 'Sign in as the root user'
+
   - type: input
     id: browser
     attributes:
@@ -43,10 +55,3 @@ body:
         e.g. detailed explanation, stacktraces, related issues, suggestions how to fix, links for us to have context, eg. associated pull-request, stackoverflow, slack, etc
     validations:
       required: false
-
-  - type: markdown
-    attributes:
-      value: |
-        ---
-
-        This is :bug: Bug Report
