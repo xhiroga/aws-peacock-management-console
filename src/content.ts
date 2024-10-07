@@ -74,6 +74,10 @@ const getRegion = () => {
   return document.getElementById('awsc-mezz-region')?.getAttribute('content')
 }
 
+const getUsername = () => {
+  return document.getElementById('nav-usernameMenu')?.getAttribute('aria-label')
+}
+
 const loadConfigList = async (): Promise<ConfigList | null> => {
   const configList = await configRepository.get()
   if (configList) {
@@ -91,19 +95,20 @@ const parseConfigList = (configList: string) => {
   }
 }
 
-const isEnvMatch = (env: Environment, accountId: string, region: string) =>
-  String(env.account) === accountId && (env.region ? env.region === region : true)
+const isEnvMatch = (env: Environment, accountId: string, region: string, username: string) =>
+  String(env.account) === accountId && (env.region ? env.region === region : true) && (env.username ? env.username == username : true)
 
 const findConfig = (
   configList: ConfigList,
   accountId: string,
-  region: string
+  region: string,
+  username: string
 ): Config | undefined =>
   configList.find((config: Config) => {
     if (Array.isArray(config.env)) {
-      return config.env.some((e) => isEnvMatch(e, accountId, region))
+      return config.env.some((e) => isEnvMatch(e, accountId, region, username))
     } else {
-      return isEnvMatch(config.env, accountId, region)
+      return isEnvMatch(config.env, accountId, region, username)
     }
   })
 
@@ -283,8 +288,9 @@ const run = async () => {
   const configList = await loadConfigList()
   const accountId = await getAccountId()
   const region = getRegion()
-  if (configList && accountId && region) {
-    const config = findConfig(configList, accountId, region)
+  const username = getUsername()
+  if (configList && accountId && region && username) {
+    const config = findConfig(configList, accountId, region, username)
     if (config?.style) {
       updateStyle(config?.style)
     }
