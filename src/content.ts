@@ -157,6 +157,17 @@ const whiteSearchBox = () => {
   insertStyleTag(css)
 }
 
+const insertFederatedUserStyleTag = (
+  accountMenuButtonBackgroundColor: string
+) => {
+  const css = `
+  [data-testid="awsc-account-info-tile"] > div:nth-child(2) > span  {
+    color: ${accountMenuButtonBackgroundColor} !important;
+    border: 1px solid ${accountMenuButtonBackgroundColor} !important;
+  }`
+  insertStyleTag(css)
+}
+
 const insertAccountMenuButtonBackground = (
   accountMenuButtonBackgroundColor: string
 ) => {
@@ -214,7 +225,8 @@ const updateNavigationStyle = (
   div[data-testid="awsc-phd__bell-icon"] svg > *,
   span[data-testid="awsc-nav-support-menu-button"] svg > *,
   span[data-testid="awsc-nav-quick-settings-button"] svg > *,
-  button[data-testid="awsc-nav-more-menu"] {
+  button[data-testid="awsc-nav-more-menu"],
+  div[data-testid="awsc-account-info-tile"] * {
     color: ${foregroundColor} !important;
   }
   @media only screen and (min-width: 620px) {
@@ -263,7 +275,12 @@ const updateAccountMenuButtonStyle = (
   }`
   hideOriginalAccountMenuButtonBackground()
   insertStyleTag(css)
-  insertAccountMenuButtonBackground(accountMenuButtonBackgroundColor)
+  const isMultiSessionSupportEnabled = selectElement('[data-testid="awsc-account-info-tile"]') !== null
+  if (isMultiSessionSupportEnabled) {
+    insertFederatedUserStyleTag(accountMenuButtonBackgroundColor)
+  } else {
+    insertAccountMenuButtonBackground(accountMenuButtonBackgroundColor)
+  }
 }
 
 const updateStyle = (style: Config['style']) => {
