@@ -142,7 +142,7 @@ const insertStyleTag = (css: string) => {
 
 const updateAwsLogo = (color: string) => {
   const css = `
-  a[data-testid="nav-logo"] > svg > path:first-of-type{
+  a[data-testid="nav-logo"] > svg > path{
     fill: ${color} !important;
   }`
   insertStyleTag(css)
