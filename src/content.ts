@@ -135,6 +135,7 @@ const isLuminant = (color: string): boolean | undefined => {
 const insertStyleTag = (css: string) => {
   const style = document.createElement('style')
   style.setAttribute('type', 'text/css')
+  style.setAttribute('data-testid', 'aws-peacock-management-console')
   style.appendChild(document.createTextNode(css))
   const head = document.head || document.getElementsByTagName('head')[0]
   head.appendChild(style)
