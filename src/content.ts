@@ -216,7 +216,7 @@ const updateNavigationStyle = (
   // 4. Conversely, within Atoms, use the Descendent Selector to avoid the effects of AWS refactoring.
   // 5. Instead of specifying `path`, `g`, `circle` individually, use `svg > *`.
   const css = `
-  header[data-testid="awsc-nav-header"] nav[aria-label="Global"] {
+  header[data-testid="awsc-nav-header"] > nav {
     background-color: ${navigationBackgroundColor} !important;
   }
   button[data-testid="aws-services-list-button"],
