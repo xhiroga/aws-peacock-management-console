@@ -215,6 +215,7 @@ const updateNavigationStyle = (
   // 3. Use the `data-testid` of the closest parent element of the element you want to change the color of.
   // 4. Conversely, within Atoms, use the Descendent Selector to avoid the effects of AWS refactoring.
   // 5. Instead of specifying `path`, `g`, `circle` individually, use `svg > *`.
+  // 6. DO NOT USE `area-label`as a selector. Its value is NOT stable and may change depending on the user's language settings.
   const css = `
   header[data-testid="awsc-nav-header"] > nav {
     background-color: ${navigationBackgroundColor} !important;
