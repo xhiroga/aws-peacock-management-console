@@ -65,6 +65,7 @@ const getAccountId = async (): Promise<string | null | undefined> => {
     const accountDetailMenu = await waitForElement('div[data-testid="account-detail-menu"]', 10000)
     return getAccountIdFromDescendantByDataTestidEqualsAwscCopyAccountId(accountDetailMenu) || getAccountIdByRegex(accountDetailMenu);
   } catch (e) {
+    // Known issue: `Region Unsupported` page does not have `account-detail-menu` element.
     console.error(e)
     return null
   }
@@ -285,62 +286,76 @@ const updateAccountMenuButtonStyle = (
   }
 }
 
-const updatedFaviconWithBadge = async (link: HTMLLinkElement, badgeColor: string): Promise<HTMLLinkElement | null> => {
-  const faviconUrl = link.href;
-
-  try {
-    const response = await fetch(faviconUrl);
-    const blob = await response.blob();
+const readFileAsDataURL = (blob: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
+    reader.onloadend = () => {
+      if (reader.error) {
+        reject(reader.error);
+      } else {
+        resolve(reader.result as string);
+      }
+    };
+    reader.readAsDataURL(blob);
+  });
+}
 
-    return new Promise<HTMLLinkElement>((resolve, reject) => {
-      reader.onloadend = () => {
-        const base64EncodedOriginalFavicon = reader.result as string;
+const createFaviconWithBadge = async (
+  href: string,
+  badgeColor: string
+): Promise<HTMLLinkElement | null> => {
+  try {
+    const response = await fetch(href);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch favicon: ${response.status} ${response.statusText}`);
+    }
 
-        const updated = document.createElement('link');
-        updated.setAttribute('type', 'image/x-icon');
-        updated.setAttribute('rel', 'icon');
+    const blob = await response.blob();
+    const base64EncodedOriginalFavicon = await readFileAsDataURL(blob);
 
-        const updatedFavicon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <image href="${base64EncodedOriginalFavicon}" width="24" height="24"/>
-          <polygon points="0,12 0,24 12,24" fill="${badgeColor}"/>
-        </svg>`;
-        const base64EncodedUpdatedFavicon = window.btoa(updatedFavicon);
-        const dataUri = `data:image/svg+xml;base64,${base64EncodedUpdatedFavicon}`;
-        updated.setAttribute('href', dataUri);
-        resolve(updated);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+    const updatedFavicon = `
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <image href="${base64EncodedOriginalFavicon}" width="24" height="24"/>
+        <polygon points="0,12 0,24 12,24" fill="${badgeColor}"/>
+      </svg>
+    `;
+    const base64EncodedUpdatedFavicon = window.btoa(updatedFavicon);
+    const dataUri = `data:image/svg+xml;base64,${base64EncodedUpdatedFavicon}`;
 
+    const link = document.createElement('link');
+    link.setAttribute('type', 'image/x-icon');
+    link.setAttribute('rel', 'icon');
+    link.setAttribute('href', dataUri);
+    return link;
   } catch (error) {
+    console.error(error);
     return null;
   }
-}
+};
 
 const updateFavicon = async (badgeColor: string) => {
   const faviconLinks = document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]');
   faviconLinks.forEach(async (link) => {
-    const updatedLink = await updatedFaviconWithBadge(link, badgeColor);
-    if (updatedLink) {
-      link.replaceWith(updatedLink);
+    if (!link.href) return;
+    const faviconWithBadge = await createFaviconWithBadge(link.href, badgeColor);
+    if (faviconWithBadge) {
+      link.replaceWith(faviconWithBadge);
     }
   });
 };
 
 const updateStyle = (style: Config['style']) => {
   if (style.accountMenuButtonBackgroundColor) {
-    updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor)
+    updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor);
   }
   if (style.navigationBackgroundColor) {
     updateNavigationStyle(
       style.navigationBackgroundColor,
       style.accountMenuButtonBackgroundColor !== undefined
-    )
+    );
     updateFavicon(style.navigationBackgroundColor);
   }
-}
+};
 
 const run = async () => {
   const accounts = await accountsRepository.getAccounts()
