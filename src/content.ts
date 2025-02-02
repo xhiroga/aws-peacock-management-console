@@ -285,23 +285,30 @@ const updateAccountMenuButtonStyle = (
   }
 }
 
-const updateFaviconSVG = async (overlayColor: string): Promise<string | null> => {
-  const faviconLink = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
-  const faviconUrl = faviconLink?.href || '/favicon.ico';
+const updatedFaviconWithBadge = async (link: HTMLLinkElement, badgeColor: string): Promise<HTMLLinkElement | null> => {
+  const faviconUrl = link.href;
 
   try {
     const response = await fetch(faviconUrl);
     const blob = await response.blob();
     const reader = new FileReader();
 
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<HTMLLinkElement>((resolve, reject) => {
       reader.onloadend = () => {
-        const base64Data = reader.result as string;
-        const svg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <image href="${base64Data}" width="24" height="24"/>
-          <polygon points="0,12 0,24 12,24" fill="${overlayColor}"/>
+        const base64EncodedOriginalFavicon = reader.result as string;
+
+        const updated = document.createElement('link');
+        updated.setAttribute('type', 'image/x-icon');
+        updated.setAttribute('rel', 'icon');
+
+        const updatedFavicon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <image href="${base64EncodedOriginalFavicon}" width="24" height="24"/>
+          <polygon points="0,12 0,24 12,24" fill="${badgeColor}"/>
         </svg>`;
-        resolve(svg);
+        const base64EncodedUpdatedFavicon = window.btoa(updatedFavicon);
+        const dataUri = `data:image/svg+xml;base64,${base64EncodedUpdatedFavicon}`;
+        updated.setAttribute('href', dataUri);
+        resolve(updated);
       };
       reader.onerror = reject;
       reader.readAsDataURL(blob);
@@ -310,23 +317,16 @@ const updateFaviconSVG = async (overlayColor: string): Promise<string | null> =>
   } catch (error) {
     return null;
   }
-};
+}
 
-const updateFavicon = async (navigationBackgroundColor: string) => {
-  const svgData = await updateFaviconSVG(navigationBackgroundColor);
-  if (!svgData) {
-    return;
-  }
-  const base64Svg = window.btoa(svgData);
-  const dataUri = `data:image/svg+xml;base64,${base64Svg}`;
-
-  let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
-  if (!link) {
-    link = document.createElement('link');
-    link.setAttribute('rel', 'icon');
-    document.head.appendChild(link);
-  }
-  link.setAttribute('href', dataUri);
+const updateFavicon = async (badgeColor: string) => {
+  const faviconLinks = document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]');
+  faviconLinks.forEach(async (link) => {
+    const updatedLink = await updatedFaviconWithBadge(link, badgeColor);
+    if (updatedLink) {
+      link.replaceWith(updatedLink);
+    }
+  });
 };
 
 const updateStyle = (style: Config['style']) => {
@@ -338,8 +338,6 @@ const updateStyle = (style: Config['style']) => {
       style.navigationBackgroundColor,
       style.accountMenuButtonBackgroundColor !== undefined
     )
-  }
-  if (style.navigationBackgroundColor) {
     updateFavicon(style.navigationBackgroundColor);
   }
 }
@@ -365,4 +363,7 @@ const run = async () => {
   }
 }
 
-run()
+// Some AWS services dynamically rewrite favicons, so need to wait.
+window.addEventListener('load', () => {
+  run();
+});
