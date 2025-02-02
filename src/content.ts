@@ -285,6 +285,51 @@ const updateAccountMenuButtonStyle = (
   }
 }
 
+const updateFaviconSVG = async (overlayColor: string): Promise<string | null> => {
+  const faviconLink = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+  const faviconUrl = faviconLink?.href || '/favicon.ico';
+
+  try {
+    const response = await fetch(faviconUrl);
+    const blob = await response.blob();
+    const reader = new FileReader();
+
+    return new Promise<string>((resolve, reject) => {
+      reader.onloadend = () => {
+        const base64Data = reader.result as string;
+
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+          <image href="${base64Data}" width="16" height="16"/>
+          <rect x="10" y="10" width="6" height="6" fill="${overlayColor}" />
+        </svg>`;
+        resolve(svg);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+
+  } catch (error) {
+    return null;
+  }
+};
+
+const updateFavicon = async (navigationBackgroundColor: string) => {
+  const svgData = await updateFaviconSVG(navigationBackgroundColor);
+  if (!svgData) {
+    return;
+  }
+  const base64Svg = window.btoa(svgData);
+  const dataUri = `data:image/svg+xml;base64,${base64Svg}`;
+
+  let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', 'icon');
+    document.head.appendChild(link);
+  }
+  link.setAttribute('href', dataUri);
+};
+
 const updateStyle = (style: Config['style']) => {
   if (style.accountMenuButtonBackgroundColor) {
     updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor)
@@ -294,6 +339,9 @@ const updateStyle = (style: Config['style']) => {
       style.navigationBackgroundColor,
       style.accountMenuButtonBackgroundColor !== undefined
     )
+  }
+  if (style.navigationBackgroundColor) {
+    updateFavicon(style.navigationBackgroundColor);
   }
 }
 
