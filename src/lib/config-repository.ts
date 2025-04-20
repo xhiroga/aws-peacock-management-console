@@ -3,6 +3,7 @@ import { Repository, RepositoryProps } from './repository'
 export type Environment = {
   account: string
   region?: string
+  permissionSet?: string
 }
 export type Config = {
   env: Environment | Environment[]

@@ -41,6 +41,34 @@ const sampleConfig = `[
       "navigationBackgroundColor": "#3399ff",
       "accountMenuButtonBackgroundColor": "#bf0060"
     }
+  },
+  // AWS SSO PermissionSet based configuration
+  {
+    "env": {
+      "account": "444444444444",
+      "permissionSet": "AdministratorAccess" // permissionSet is optional property
+    },
+    "style": {
+      "navigationBackgroundColor": "#ff5733",
+      "accountMenuButtonBackgroundColor": "#33ff57"
+    }
+  },
+  // Multiple PermissionSets in the same account
+  {
+    "env": [
+      {
+        "account": "555555555555",
+        "permissionSet": "AdministratorAccess"
+      },
+      {
+        "account": "555555555555",
+        "permissionSet": "ReadOnlyAccess"
+      }
+    ],
+    "style": {
+      "navigationBackgroundColor": "#3357ff",
+      "accountMenuButtonBackgroundColor": "#ff33a8"
+    }
   }
 ]
 `

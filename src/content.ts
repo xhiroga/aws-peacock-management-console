@@ -10,7 +10,7 @@ import {
   Environment,
 } from './lib/config-repository'
 import { RepositoryProps } from './lib/repository'
-import { patchAccountNameIfAwsSso, selectElement } from './lib/util'
+import { extractPermissionSetName, patchAccountNameIfAwsSso, selectElement } from './lib/util'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
@@ -75,6 +75,15 @@ const getRegion = () => {
   return document.getElementById('awsc-mezz-region')?.getAttribute('content')
 }
 
+const getPermissionSetName = (): string | null => {
+  const accountMenuButtonSpan = selectElement('[data-testid="more-menu__awsc-nav-account-menu-button"] span[title]')
+  if (!accountMenuButtonSpan) {
+    return null
+  }
+  const title = accountMenuButtonSpan.getAttribute('title')
+  return title ? extractPermissionSetName(title) : null
+}
+
 const loadConfigList = async (): Promise<ConfigList | null> => {
   const configList = await configRepository.get()
   if (configList) {
@@ -92,19 +101,37 @@ const parseConfigList = (configList: string) => {
   }
 }
 
-const isEnvMatch = (env: Environment, accountId: string, region: string) =>
-  String(env.account) === accountId && (env.region ? env.region === region : true)
+const isEnvMatch = (env: Environment, accountId: string, region: string, permissionSet: string | null) => {
+  // アカウントIDは必須一致
+  if (String(env.account) !== accountId) {
+    return false
+  }
+  
+  // リージョンが指定されている場合は一致チェック
+  if (env.region && env.region !== region) {
+    return false
+  }
+  
+  // PermissionSetが指定されている場合は一致チェック
+  if (env.permissionSet && permissionSet) {
+    return env.permissionSet === permissionSet
+  }
+  
+  // PermissionSetが指定されていない場合は、アカウントIDとリージョンのみで一致
+  return true
+}
 
 const findConfig = (
   configList: ConfigList,
   accountId: string,
-  region: string
+  region: string,
+  permissionSet: string | null
 ): Config | undefined =>
   configList.find((config: Config) => {
     if (Array.isArray(config.env)) {
-      return config.env.some((e) => isEnvMatch(e, accountId, region))
+      return config.env.some((e) => isEnvMatch(e, accountId, region, permissionSet))
     } else {
-      return isEnvMatch(config.env, accountId, region)
+      return isEnvMatch(config.env, accountId, region, permissionSet)
     }
   })
 
@@ -362,8 +389,10 @@ const run = async () => {
   const configList = await loadConfigList()
   const accountId = await getAccountId()
   const region = getRegion()
+  const permissionSet = getPermissionSetName()
+  
   if (configList && accountId && region) {
-    const config = findConfig(configList, accountId, region)
+    const config = findConfig(configList, accountId, region, permissionSet)
     if (config?.style) {
       updateStyle(config?.style)
     }
