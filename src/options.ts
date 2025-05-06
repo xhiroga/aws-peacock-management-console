@@ -10,7 +10,7 @@ const configRepository = new ConfigRepository(repositoryProps)
 
 const sampleConfig = `[
   /**
-   * JSON with comment format
+   * JSON with comment or YAML
    *
    * When multiple rules match, the first matching rule will be applied.
    *
@@ -22,7 +22,7 @@ const sampleConfig = `[
       // "username" can be one of the following:
       // 1. IAM username. Ex: "Administrator"
       // 2. Active role name after role switching. Ex: "PowerUserRole" or "PowerUserRole/john"
-      // 3. Federated username during SSO login. Ex: "AWSReservedSSO_AWSReadOnlyAccess_123456/john"
+      // 3. Federated username during SSO login. Ex: "AWSReservedSSO_AWSReadOnlyAccess_1a2b3c4d5e6f7g8h/john"
       "usernamePattern": "AWSReservedSSO_AWSAdministratorAccess_[,-z]+"
     },
     "style": {
