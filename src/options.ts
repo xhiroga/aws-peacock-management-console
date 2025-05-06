@@ -17,12 +17,23 @@ const sampleConfig = `[
   // prod
   {
     "env": {
-      "account": "111111111111"
+      "account": "111111111111",
+      "usernamePattern": "AWSReservedSSO_AWSAdministratorAccess_[,-z]+"
     },
     "style": {
-      "navigationBackgroundColor": "#65c89b",
-      "accountMenuButtonBackgroundColor": "#945bc4"
+      "navigationBackgroundColor": "#57eb81", // green
+      "accountMenuButtonBackgroundColor": "#eb5757" // red
     }
+  },
+  {
+      "account": "111111111111",
+      // usernamePattern is Optional.
+    },
+    "style": {
+      "navigationBackgroundColor": "#57eb81",
+      // accountMenuButtonBackgroundColor and navigationBackgroundColor are both optional properties.
+    }
+
   },
   // dev
   {
@@ -30,44 +41,15 @@ const sampleConfig = `[
     "env": [
       {
         "account": "222222222222",
-        "region": "us-east-1" // region is optional property
       },
       {
-        "account": "333333333333"
+        "account": "333333333333",
+        "region": "us-east-1" // region is Optional.
       }
     ],
     "style": {
-      // navigationBackgroundColor and accountMenuButtonBackgroundColor are optional properties.
-      "navigationBackgroundColor": "#3399ff",
-      "accountMenuButtonBackgroundColor": "#bf0060"
-    }
-  },
-  // AWS SSO PermissionSet based configuration
-  {
-    "env": {
-      "account": "444444444444",
-      "permissionSet": "AdministratorAccess" // permissionSet is optional property
-    },
-    "style": {
-      "navigationBackgroundColor": "#ff5733",
-      "accountMenuButtonBackgroundColor": "#33ff57"
-    }
-  },
-  // Multiple PermissionSets in the same account
-  {
-    "env": [
-      {
-        "account": "555555555555",
-        "permissionSet": "AdministratorAccess"
-      },
-      {
-        "account": "555555555555",
-        "permissionSet": "ReadOnlyAccess"
-      }
-    ],
-    "style": {
-      "navigationBackgroundColor": "#3357ff",
-      "accountMenuButtonBackgroundColor": "#ff33a8"
+      "navigationBackgroundColor": "#5763eb",
+      "accountMenuButtonBackgroundColor": "#ebcb57"
     }
   }
 ]
