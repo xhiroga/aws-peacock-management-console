@@ -5,12 +5,13 @@ export type Environment = {
   region?: string
   usernamePattern?: string
 }
+export type Style = {
+  navigationBackgroundColor?: string
+  accountMenuButtonBackgroundColor?: string
+}
 export type Config = {
   env: Environment | Environment[]
-  style: {
-    navigationBackgroundColor?: string
-    accountMenuButtonBackgroundColor?: string
-  }
+  style: Style
 }
 export type ConfigList = Config[]
 

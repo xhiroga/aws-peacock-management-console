@@ -1,5 +1,4 @@
-import * as JSONC from 'jsonc-parser'
-import yaml from 'js-yaml'
+
 import {
   AccountsRepository,
 } from './lib/account-name-repository'
@@ -10,7 +9,7 @@ import {
   Environment,
 } from './lib/config-repository'
 import { RepositoryProps } from './lib/repository'
-import { AWS_IAM_ROLE_NAME_PATTERN, patchAccountNameIfAwsSso, selectElement } from './lib/util'
+import { AWS_IAM_ROLE_NAME_PATTERN, parseConfigList, patchAccountNameIfAwsSso, selectElement } from './lib/util'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
@@ -91,14 +90,6 @@ const loadConfigList = async (): Promise<ConfigList | null> => {
     return parseConfigList(configList)
   } else {
     return null
-  }
-}
-
-const parseConfigList = (configList: string) => {
-  try {
-    return yaml.load(configList) as ConfigList
-  } catch (e) {
-    return JSONC.parse(configList) as ConfigList
   }
 }
 

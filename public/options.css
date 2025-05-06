@@ -57,3 +57,8 @@ body {
 #savedMessage {
   color: green;
 }
+
+#errorMessage {
+  color: red;
+  white-space: pre-line;
+}

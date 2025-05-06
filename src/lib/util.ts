@@ -1,8 +1,19 @@
 import { Account } from "./account-name-repository";
+import * as JSONC from 'jsonc-parser'
+import yaml from 'js-yaml'
+import { ConfigList } from "./config-repository";
 
 const AWS_SERVICE_ROLE_FOR_SSO_PREFIX = /AWSReservedSSO_/ // https://docs.aws.amazon.com/singlesignon/latest/userguide/using-service-linked-roles.html
 export const AWS_IAM_ROLE_NAME_PATTERN = /[\w+=,.@-]+/ // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html
 const AWS_SSO_USR_NAME_PATTERN = /[\w+=,.@-]+/ // Username can contain alphanumeric characters, or any of the following: +=,.@-
+
+export const parseConfigList = (configList: string) => {
+    try {
+        return yaml.load(configList) as ConfigList
+    } catch (e) {
+        return JSONC.parse(configList) as ConfigList
+    }
+}
 
 export const updateAccounts = (previous: Account[], current: Account[]): Account[] => {
     const accountMap = new Map<string, Account>();
@@ -40,7 +51,7 @@ export const extractPermissionSetName = (title: string): string | null => {
     if (!isNotIamUserButAwsSsoUser(title)) {
         return null
     }
-    
+
     // Format is typically: AWSReservedSSO_PermissionSetName_hash/username
     const match = title.match(new RegExp(`^${AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source}([^/]+)`))
     if (match && match[1]) {
