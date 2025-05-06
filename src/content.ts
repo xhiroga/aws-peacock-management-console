@@ -238,7 +238,8 @@ const updateNavigationStyle = (
   button[data-testid="awsc-nav-more-menu"],
   div[data-testid="awsc-account-info-tile"] *,
   /* Since the favorite bar has no id or data-testid, specify the sibling element */
-  #awsc-top-level-nav ~ > * {
+  #awsc-top-level-nav ~ div *
+  {
     color: ${foregroundColor} !important;
   }
   @media only screen and (min-width: 620px) {
