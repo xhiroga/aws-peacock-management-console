@@ -47,22 +47,6 @@ const isNotIamUserButAwsSsoUser = (userName: string) => {
     return awsSsoUserNameRe.test(userName)
 }
 
-export const extractPermissionSetName = (title: string): string | null => {
-    if (!isNotIamUserButAwsSsoUser(title)) {
-        return null
-    }
-
-    // Format is typically: AWSReservedSSO_PermissionSetName_hash/username
-    const match = title.match(new RegExp(`^${AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source}([^/]+)`))
-    if (match && match[1]) {
-        // Extract the PermissionSet name without the hash part
-        const permissionSetWithHash = match[1]
-        const permissionSetMatch = permissionSetWithHash.match(/^(.+?)(_[a-f0-9]+)?$/)
-        return permissionSetMatch ? permissionSetMatch[1] : permissionSetWithHash
-    }
-    return null
-}
-
 export const patchAccountNameIfAwsSso = (accountName: Account) => {
     const accountMenuButtonSpan = getAccountMenuButtonSpan()
     if (!accountMenuButtonSpan) {
