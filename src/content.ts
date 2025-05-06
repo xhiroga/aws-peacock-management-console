@@ -138,10 +138,12 @@ const isLuminant = (color: string): boolean | undefined => {
   return undefined
 }
 
-const insertStyleTag = (css: string) => {
+const insertStyleTag = (css: string, peacockId?: string) => {
   const style = document.createElement('style')
   style.setAttribute('type', 'text/css')
-  style.setAttribute('data-testid', 'aws-peacock-management-console')
+  if (peacockId) {
+    style.setAttribute('peacock-id', peacockId)
+  }
   style.appendChild(document.createTextNode(css))
   const head = document.head || document.getElementsByTagName('head')[0]
   head.appendChild(style)
@@ -152,7 +154,7 @@ const updateAwsLogo = (color: string) => {
   a[data-testid="nav-logo"] > svg > path{
     fill: ${color} !important;
   }`
-  insertStyleTag(css)
+  insertStyleTag(css, 'update-aws-logo')
 }
 
 const whiteSearchBox = () => {
@@ -161,7 +163,7 @@ const whiteSearchBox = () => {
     color: ${AWSUI_COLOR_GRAY_900} !important;
     background-color: #ffffff !important;
   }`
-  insertStyleTag(css)
+  insertStyleTag(css, 'white-search-box')
 }
 
 const insertFederatedUserStyleTag = (
@@ -172,7 +174,7 @@ const insertFederatedUserStyleTag = (
     color: ${accountMenuButtonBackgroundColor} !important;
     border: 1px solid ${accountMenuButtonBackgroundColor} !important;
   }`
-  insertStyleTag(css)
+  insertStyleTag(css, 'insert-federated-user-style-tag')
 }
 
 const insertAccountMenuButtonBackground = (
@@ -195,7 +197,7 @@ const insertAccountMenuButtonBackground = (
       opacity: 1 !important;
     }
   }`
-  insertStyleTag(css)
+  insertStyleTag(css, 'insert-account-menu-button-background')
 }
 
 const hideOriginalAccountMenuButtonBackground = () => {
@@ -234,7 +236,9 @@ const updateNavigationStyle = (
   span[data-testid="awsc-nav-support-menu-button"] svg > *,
   span[data-testid="awsc-nav-quick-settings-button"] svg > *,
   button[data-testid="awsc-nav-more-menu"],
-  div[data-testid="awsc-account-info-tile"] * {
+  div[data-testid="awsc-account-info-tile"] *,
+  /* Since the favorite bar has no id or data-testid, specify the sibling element */
+  #awsc-top-level-nav ~ > * {
     color: ${foregroundColor} !important;
   }
   @media only screen and (min-width: 620px) {
@@ -260,7 +264,7 @@ const updateNavigationStyle = (
   #awsc-nav-footer-content * {
     color: ${foregroundColor} !important;
   }`
-  insertStyleTag(css)
+  insertStyleTag(css, 'update-navigation-style')
   updateAwsLogo(awsLogoTypeColor)
   whiteSearchBox()
 }
