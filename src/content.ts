@@ -10,7 +10,7 @@ import {
   Environment,
 } from './lib/config-repository'
 import { RepositoryProps } from './lib/repository'
-import { extractPermissionSetName, patchAccountNameIfAwsSso, selectElement } from './lib/util'
+import { AWS_IAM_ROLE_NAME_PATTERN, patchAccountNameIfAwsSso, selectElement } from './lib/util'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
@@ -40,30 +40,20 @@ const getOriginalAccountMenuButtonBackground = () => {
   return selectElement('span[data-testid="account-menu-button__background"]')
 }
 
-const getAccountIdFromDescendantByDataTestidEqualsAwscCopyAccountId = (accountDetailMenu: HTMLElement): string | null => {
-  const copyAccountIdButton = accountDetailMenu.querySelector<HTMLElement>('button[data-testid="awsc-copy-accountid"]')
-  return (copyAccountIdButton?.previousElementSibling as HTMLSpanElement)?.innerText?.replace(/-/g, '')
-}
-
-const getAccountIdByRegex = (accountDetailMenu: HTMLElement) => {
-  let accountId = null;
-  const regex = /^\d{4}-\d{4}-\d{4}$/; // Regular expression to match the pattern ****-****-****
-  const spans = accountDetailMenu.querySelectorAll('span');
-
-  spans.forEach(span => {
-    const spanText = span.textContent ? span.textContent.trim() : '';
-    if (regex.test(spanText)) {
-      accountId = spanText.replace(/-/g, '');
-    }
-  });
-
-  return accountId;
-}
-
-const getAccountId = async (): Promise<string | null | undefined> => {
+const getAccountId = async (): Promise<string | null> => {
   try {
     const accountDetailMenu = await waitForElement('div[data-testid="account-detail-menu"]', 10000)
-    return getAccountIdFromDescendantByDataTestidEqualsAwscCopyAccountId(accountDetailMenu) || getAccountIdByRegex(accountDetailMenu);
+    const copyAccountIdButton = accountDetailMenu.querySelector<HTMLElement>('button[data-testid="awsc-copy-accountid"]')
+    const spans = copyAccountIdButton?.closest('div')?.querySelectorAll('span');
+
+    for (const span of Array.from(spans ?? [])) {
+      const spanText = span.textContent ? span.textContent.trim() : '';
+      // Regular expression to match the pattern ****-****-****
+      if (/^\d{4}-\d{4}-\d{4}$/.test(spanText)) {
+        return spanText.replace(/-/g, '');
+      }
+    }
+    return null
   } catch (e) {
     // Known issue: `Region Unsupported` page does not have `account-detail-menu` element.
     console.error(e)
@@ -75,13 +65,24 @@ const getRegion = () => {
   return document.getElementById('awsc-mezz-region')?.getAttribute('content')
 }
 
-const getPermissionSetName = (): string | null => {
-  const accountMenuButtonSpan = selectElement('[data-testid="more-menu__awsc-nav-account-menu-button"] span[title]')
-  if (!accountMenuButtonSpan) {
+const getUsername = async (): Promise<string | null> => {
+  try {
+    const accountDetailMenu = await waitForElement('div[data-testid="account-detail-menu"]', 10000)
+    const copyUsernameButton = accountDetailMenu.querySelector<HTMLElement>('button[data-testid="awsc-copy-username"]')
+    const spans = copyUsernameButton?.closest('div')?.querySelectorAll('span');
+
+    for (const span of Array.from(spans ?? [])) {
+      const spanText = span.textContent ? span.textContent.trim() : '';
+      if (AWS_IAM_ROLE_NAME_PATTERN.test(spanText)) {
+        return spanText.replace(/-/g, '');
+      }
+    }
+    return null
+  } catch (e) {
+    // Known issue: `Region Unsupported` page does not have `account-detail-menu` element.
+    console.error(e)
     return null
   }
-  const title = accountMenuButtonSpan.getAttribute('title')
-  return title ? extractPermissionSetName(title) : null
 }
 
 const loadConfigList = async (): Promise<ConfigList | null> => {
@@ -101,37 +102,24 @@ const parseConfigList = (configList: string) => {
   }
 }
 
-const isEnvMatch = (env: Environment, accountId: string, region: string, permissionSet: string | null) => {
-  // アカウントIDは必須一致
-  if (String(env.account) !== accountId) {
-    return false
-  }
-  
-  // リージョンが指定されている場合は一致チェック
-  if (env.region && env.region !== region) {
-    return false
-  }
-  
-  // PermissionSetが指定されている場合は一致チェック
-  if (env.permissionSet && permissionSet) {
-    return env.permissionSet === permissionSet
-  }
-  
-  // PermissionSetが指定されていない場合は、アカウントIDとリージョンのみで一致
-  return true
+const isEnvMatch = (env: Environment, accountId: string, region: string, username: string | null) => {
+  const isAccountMatch = String(env.account) === accountId
+  const isRegionMatch = env.region ? env.region === region : true
+  const isUsernameMatch = env.usernamePattern ? username && new RegExp(env.usernamePattern).test(username) : true
+  return isAccountMatch && isRegionMatch && isUsernameMatch
 }
 
 const findConfig = (
   configList: ConfigList,
   accountId: string,
   region: string,
-  permissionSet: string | null
+  username: string | null
 ): Config | undefined =>
   configList.find((config: Config) => {
     if (Array.isArray(config.env)) {
-      return config.env.some((e) => isEnvMatch(e, accountId, region, permissionSet))
+      return config.env.some((e) => isEnvMatch(e, accountId, region, username))
     } else {
-      return isEnvMatch(config.env, accountId, region, permissionSet)
+      return isEnvMatch(config.env, accountId, region, username)
     }
   })
 
@@ -389,10 +377,9 @@ const run = async () => {
   const configList = await loadConfigList()
   const accountId = await getAccountId()
   const region = getRegion()
-  const permissionSet = getPermissionSetName()
-  
-  if (configList && accountId && region) {
-    const config = findConfig(configList, accountId, region, permissionSet)
+  const username = await getUsername()
+  if (configList && accountId && region && username) {
+    const config = findConfig(configList, accountId, region, username)
     if (config?.style) {
       updateStyle(config?.style)
     }
