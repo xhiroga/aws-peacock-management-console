@@ -2,6 +2,10 @@
 
 ## Motivation
 
+## Unit Test
+
+- [ ] `yarn test` passes
+
 ## Manual Test
 
 - [ ] Works correctly with English and Multi-session enabled
