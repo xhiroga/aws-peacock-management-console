@@ -19,11 +19,15 @@ const sampleConfig = `[
   {
     "env": {
       "account": "111111111111",
+      // "username" can be one of the following:
+      // 1. IAM username. Ex: "Administrator"
+      // 2. Active role name after role switching. Ex: "PowerUserRole" or "PowerUserRole/john"
+      // 3. Federated username during SSO login. Ex: "AWSReservedSSO_AWSReadOnlyAccess_123456/john"
       "usernamePattern": "AWSReservedSSO_AWSAdministratorAccess_[,-z]+"
     },
     "style": {
-      "navigationBackgroundColor": "#57eb81", // green
-      "accountMenuButtonBackgroundColor": "#eb5757" // red
+      "navigationBackgroundColor": "#57eb81",
+      "accountMenuButtonBackgroundColor": "#eb5757"
     }
   },
   {
