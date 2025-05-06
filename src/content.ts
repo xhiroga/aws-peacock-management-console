@@ -238,7 +238,8 @@ const updateNavigationStyle = (
   button[data-testid="awsc-nav-more-menu"],
   div[data-testid="awsc-account-info-tile"] *,
   /* Since the favorite bar has no id or data-testid, specify the sibling element */
-  #awsc-top-level-nav ~ div *
+  /* Specify <span> to avoid side effects since text in tooltip is specified with <h5> <p> */
+  #awsc-top-level-nav ~ div span
   {
     color: ${foregroundColor} !important;
   }
