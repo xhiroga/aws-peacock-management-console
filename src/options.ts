@@ -150,7 +150,7 @@ window.onload = async () => {
       savedMessage.hidden = false
       errorMessage.hidden = true
     } else {
-      errorMessage.innerHTML = errors.join('\n')
+      errorMessage.innerText = errors.join('\n')
       errorMessage.hidden = false
       savedMessage.hidden = true
     }
