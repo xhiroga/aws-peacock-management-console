@@ -13,9 +13,9 @@ You can flexibly set the header and footer colors of the AWS Management Console 
 ✅ Display a colored badge ◣ at the bottom left of the favicon to make it instantly recognizable even when multiple sessions are open  
 ✅ Display account names to make the current account clear even without setting account aliases  
 
-| Change color                             | Colored favicon                              | Show account names                             |
-| ---------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
-| ![Change color](images/header-color.png) | ![Colored favicon](images/favicon-badge.png) | ![Show account names](images/account-name.png) |
+| Change color                        | Colored favicon                              | Show account names                             |
+| ----------------------------------- | -------------------------------------------- | ---------------------------------------------- |
+| ![Change color](images/headers.png) | ![Colored favicon](images/favicon-badge.png) | ![Show account names](images/account-name.png) |
 
 ## Disclaimer
 
