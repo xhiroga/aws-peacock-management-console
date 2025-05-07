@@ -12,7 +12,7 @@
   - [ ] navigationBackgroundColor is applied
     - [ ] Background color ◣ is displayed at the bottom left of the favicon
   - [ ] accountMenuButtonBackgroundColor is applied
-  - [ ] accountName is displayed as TODO
+  - [ ] accountName is displayed as `accountName (accountId)`
   - [ ] No errors are displayed in the console
 - [ ] Works correctly with SSO user, Multi-session disabled, English
   - [ ] accountName is displayed as `userName @ accountName`
