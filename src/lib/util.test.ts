@@ -1,4 +1,4 @@
-import { getAccountMenuButtonSpan, updateAccounts, patchAccountNameIfAwsSso, toAccountNameAndId } from "./util";
+import { updateAccounts, patchAccountNameIfAwsSso, toAccountNameAndId } from "./util";
 
 test('updateAccounts works', () => {
   const expected = [{
@@ -22,7 +22,7 @@ test('updateAccounts works', () => {
   }]
   const actual = updateAccounts(previous, current)
 
-  expect(expected).toEqual(actual);
+  expect(actual).toEqual(expected);
 })
 
 test('toAccountNameAndId works', () => {
@@ -52,7 +52,7 @@ test('toAccountNameAndId works', () => {
 </button>`;
   const actual = toAccountNameAndId(element.querySelector<HTMLButtonElement>('button') as HTMLButtonElement);
 
-  expect(expected).toEqual(actual);
+  expect(actual).toEqual(expected);
 });
 
 test('patchAccountNameIfAwsSso works: AWS SSO, Account Name', () => {
@@ -66,8 +66,8 @@ test('patchAccountNameIfAwsSso works: AWS SSO, Account Name', () => {
   </span>
   <span></span>
 </button>`
-  patchAccountNameIfAwsSso({ accountId: '123456789012', accountName: 'Dev' })
-  const actual = getAccountMenuButtonSpan()?.innerText
+  patchAccountNameIfAwsSso({ accountId: '123456789012', accountName: 'Dev' }, false)
+  const actual = document.querySelector<HTMLSpanElement>('span[title]')?.innerText
 
-  expect(expected).toEqual(actual);
+  expect(actual).toEqual(expected);
 })

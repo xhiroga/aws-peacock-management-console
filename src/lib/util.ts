@@ -36,25 +36,26 @@ export const toAccountNameAndId = (
     return accountName && accountId ? { accountName, accountId } : null
 }
 
-const getUserName = () => selectElement('[data-testid="more-menu__awsc-nav-account-menu-button"]')?.getAttribute('aria-label')
-export const getAccountMenuButtonSpan = () => selectElement('[data-testid="more-menu__awsc-nav-account-menu-button"] span[title]')
-
 const isNotIamUserButAwsSsoUser = (userName: string) => {
     const awsSsoUserNameRe = new RegExp(
-        `^${AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source + AWS_IAM_ROLE_NAME_PATTERN.source
-        }/${AWS_SSO_USR_NAME_PATTERN.source}`
+        `^(${AWS_SERVICE_ROLE_FOR_SSO_PREFIX.source}${AWS_IAM_ROLE_NAME_PATTERN.source}|${AWS_IAM_ROLE_NAME_PATTERN.source})/${AWS_SSO_USR_NAME_PATTERN.source}`
     )
     return awsSsoUserNameRe.test(userName)
 }
 
-export const patchAccountNameIfAwsSso = (accountName: Account) => {
-    const accountMenuButtonSpan = getAccountMenuButtonSpan()
-    if (!accountMenuButtonSpan) {
+export const patchAccountNameIfAwsSso = (accountName: Account, multiSessionSupportEnabled: boolean) => {
+    const accountMenuButton = selectElement('button[id="nav-usernameMenu"]')
+    if (!accountMenuButton) {
         return
     }
-    const userName = getUserName()
-    const title = accountMenuButtonSpan.getAttribute('title')
-    if (userName && title && isNotIamUserButAwsSsoUser(title)) {
-        accountMenuButtonSpan.innerText = `${userName} @ ${accountName.accountName}`
-    } // else not login by user, like root user or IAM role
+    if (multiSessionSupportEnabled) {
+        // TODO
+    } else {
+        const userName = accountMenuButton?.getAttribute('aria-label')
+        const titleSpan = accountMenuButton?.querySelector<HTMLSpanElement>('span[title]')
+        const title = titleSpan?.getAttribute('title')
+        if (userName && titleSpan && title && isNotIamUserButAwsSsoUser(title)) {
+            titleSpan.innerText = `${userName} @ ${accountName.accountName}`
+        } // else not login by user, like root user or IAM role
+    }
 }

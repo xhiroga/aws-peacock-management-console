@@ -391,7 +391,7 @@ const run = async () => {
       (account) => account.accountId === accountId
     )
     if (accountNameAndId) {
-      patchAccountNameIfAwsSso(accountNameAndId)
+      patchAccountNameIfAwsSso(accountNameAndId, multiSessionSupportEnabled)
     }
   }
 }
