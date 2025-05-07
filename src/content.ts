@@ -21,6 +21,15 @@ const repositoryProps: RepositoryProps = {
 const configRepository = new ConfigRepository(repositoryProps)
 const accountsRepository = new AccountsRepository(repositoryProps)
 
+const loadConfigList = async (): Promise<ConfigList | null> => {
+  const configList = await configRepository.get()
+  if (configList) {
+    return parseConfigList(configList)
+  } else {
+    return null
+  }
+}
+
 const waitForElement = async (selector: string, timeout: number): Promise<HTMLElement> => {
   let elapsedTime = 0;
   while (elapsedTime < timeout) {
@@ -83,13 +92,8 @@ const getUsername = async (): Promise<string | null> => {
   }
 }
 
-const loadConfigList = async (): Promise<ConfigList | null> => {
-  const configList = await configRepository.get()
-  if (configList) {
-    return parseConfigList(configList)
-  } else {
-    return null
-  }
+const isMultiSessionSupportEnabled = () => {
+  return selectElement('[data-testid="awsc-account-info-tile"]') !== null
 }
 
 const isEnvMatch = (env: Environment, accountId: string, region: string, username: string | null) => {
@@ -272,7 +276,8 @@ const updateNavigationStyle = (
 }
 
 const updateAccountMenuButtonStyle = (
-  accountMenuButtonBackgroundColor: string
+  accountMenuButtonBackgroundColor: string,
+  multiSessionSupportEnabled: boolean
 ) => {
   const foregroundColor = isLuminant(accountMenuButtonBackgroundColor)
     ? AWSUI_COLOR_GRAY_900
@@ -288,9 +293,8 @@ const updateAccountMenuButtonStyle = (
     }
   }`
   hideOriginalAccountMenuButtonBackground()
-  insertStyleTag(css)
-  const isMultiSessionSupportEnabled = selectElement('[data-testid="awsc-account-info-tile"]') !== null
-  if (isMultiSessionSupportEnabled) {
+  insertStyleTag(css, 'update-account-menu-button-style')
+  if (multiSessionSupportEnabled) {
     insertFederatedUserStyleTag(accountMenuButtonBackgroundColor)
   } else {
     insertAccountMenuButtonBackground(accountMenuButtonBackgroundColor)
@@ -355,10 +359,7 @@ const updateFavicon = async (badgeColor: string) => {
   });
 };
 
-const updateStyle = (style: Config['style']) => {
-  if (style.accountMenuButtonBackgroundColor) {
-    updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor);
-  }
+const updateStyle = (style: Config['style'], multiSessionSupportEnabled: boolean) => {
   if (style.navigationBackgroundColor) {
     updateNavigationStyle(
       style.navigationBackgroundColor,
@@ -366,26 +367,31 @@ const updateStyle = (style: Config['style']) => {
     );
     updateFavicon(style.navigationBackgroundColor);
   }
+  if (style.accountMenuButtonBackgroundColor) {
+    updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor, multiSessionSupportEnabled);
+  }
 };
 
 const run = async () => {
-  const accounts = await accountsRepository.getAccounts()
   const configList = await loadConfigList()
   const accountId = await getAccountId()
   const region = getRegion()
   const username = await getUsername()
+  const multiSessionSupportEnabled = isMultiSessionSupportEnabled()
   if (configList && accountId && region && username) {
     const config = findConfig(configList, accountId, region, username)
     if (config?.style) {
-      updateStyle(config?.style)
+      updateStyle(config?.style, multiSessionSupportEnabled)
     }
   }
-  if (accounts && accountId) {
-    const account = accounts.find(
+
+  const accountNameAndIds = await accountsRepository.getAccounts()
+  if (accountId && accountNameAndIds) {
+    const accountNameAndId = accountNameAndIds.find(
       (account) => account.accountId === accountId
     )
-    if (account) {
-      patchAccountNameIfAwsSso(account)
+    if (accountNameAndId) {
+      patchAccountNameIfAwsSso(accountNameAndId)
     }
   }
 }
