@@ -3,11 +3,19 @@
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/bknjjajglapfhbdcfgmhgkgfomkkaidj.svg)](https://chrome.google.com/webstore/detail/aws-peacock-management-co/bknjjajglapfhbdcfgmhgkgfomkkaidj?utm_source=github)
 [![Firefox Add-on](https://img.shields.io/amo/v/aws-extend-switch-roles3.svg)](https://addons.mozilla.org/firefox/addon/aws-peacock-management-console/)
 
-Browser Extension to show account name or alias and change color of AWS Management Console, even if AWS SSO.
+You can flexibly set the header and footer colors of the AWS Management Console based on Account ID, Role name, Permission Set, and Region.
 
-![Screenshot](images/aws-peacock-mc.png)
+## Features
 
-AWS Peacock Management Console store configuration which maps environment(Account ID and Region) to style(color). In AWS Management Console, it modify HTML tags to change color and show account alias. If logged in by AWS SSO, show account name than account name.
+- [x] Set header and footer colors based on Account ID, Role name, Permission Set, and Region
+- [x] Full support for AWS SSO
+- [x] Full support for Multi-session
+- [x] Display a colored badge ◣ at the bottom left of the favicon to make it instantly recognizable even when multiple sessions are open
+- [x] Display account names to make the current account clear even without setting account aliases
+
+| Change color                             | Colored favicon                              | Show account names                             |
+| ---------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
+| ![Change color](images/header-color.png) | ![Colored favicon](images/favicon-badge.png) | ![Show account names](images/account-name.png) |
 
 ## Disclaimer
 

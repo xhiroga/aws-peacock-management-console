@@ -21,6 +21,15 @@ const repositoryProps: RepositoryProps = {
 const configRepository = new ConfigRepository(repositoryProps)
 const accountsRepository = new AccountsRepository(repositoryProps)
 
+const loadConfigList = async (): Promise<ConfigList | null> => {
+  const configList = await configRepository.get()
+  if (configList) {
+    return parseConfigList(configList)
+  } else {
+    return null
+  }
+}
+
 const waitForElement = async (selector: string, timeout: number): Promise<HTMLElement> => {
   let elapsedTime = 0;
   while (elapsedTime < timeout) {
@@ -83,13 +92,8 @@ const getUsername = async (): Promise<string | null> => {
   }
 }
 
-const loadConfigList = async (): Promise<ConfigList | null> => {
-  const configList = await configRepository.get()
-  if (configList) {
-    return parseConfigList(configList)
-  } else {
-    return null
-  }
+const isMultiSessionSupportEnabled = () => {
+  return selectElement('[data-testid="awsc-account-info-tile"]') !== null
 }
 
 const isEnvMatch = (env: Environment, accountId: string, region: string, username: string | null) => {
@@ -138,10 +142,10 @@ const isLuminant = (color: string): boolean | undefined => {
   return undefined
 }
 
-const insertStyleTag = (css: string) => {
+const insertStyleTag = (css: string, peacockId: string) => {
   const style = document.createElement('style')
   style.setAttribute('type', 'text/css')
-  style.setAttribute('data-testid', 'aws-peacock-management-console')
+  style.setAttribute('peacock-id', peacockId)
   style.appendChild(document.createTextNode(css))
   const head = document.head || document.getElementsByTagName('head')[0]
   head.appendChild(style)
@@ -152,7 +156,7 @@ const updateAwsLogo = (color: string) => {
   a[data-testid="nav-logo"] > svg > path{
     fill: ${color} !important;
   }`
-  insertStyleTag(css)
+  insertStyleTag(css, 'update-aws-logo')
 }
 
 const whiteSearchBox = () => {
@@ -161,7 +165,7 @@ const whiteSearchBox = () => {
     color: ${AWSUI_COLOR_GRAY_900} !important;
     background-color: #ffffff !important;
   }`
-  insertStyleTag(css)
+  insertStyleTag(css, 'white-search-box')
 }
 
 const insertFederatedUserStyleTag = (
@@ -172,7 +176,7 @@ const insertFederatedUserStyleTag = (
     color: ${accountMenuButtonBackgroundColor} !important;
     border: 1px solid ${accountMenuButtonBackgroundColor} !important;
   }`
-  insertStyleTag(css)
+  insertStyleTag(css, 'insert-federated-user-style-tag')
 }
 
 const insertAccountMenuButtonBackground = (
@@ -195,7 +199,7 @@ const insertAccountMenuButtonBackground = (
       opacity: 1 !important;
     }
   }`
-  insertStyleTag(css)
+  insertStyleTag(css, 'insert-account-menu-button-background')
 }
 
 const hideOriginalAccountMenuButtonBackground = () => {
@@ -234,7 +238,11 @@ const updateNavigationStyle = (
   span[data-testid="awsc-nav-support-menu-button"] svg > *,
   span[data-testid="awsc-nav-quick-settings-button"] svg > *,
   button[data-testid="awsc-nav-more-menu"],
-  div[data-testid="awsc-account-info-tile"] * {
+  div[data-testid="awsc-account-info-tile"] *,
+  /* Since the favorite bar has no id or data-testid, specify the sibling element */
+  /* Specify <span> to avoid side effects since text in tooltip is specified with <h5> <p> */
+  #awsc-top-level-nav ~ div span
+  {
     color: ${foregroundColor} !important;
   }
   @media only screen and (min-width: 620px) {
@@ -260,13 +268,14 @@ const updateNavigationStyle = (
   #awsc-nav-footer-content * {
     color: ${foregroundColor} !important;
   }`
-  insertStyleTag(css)
+  insertStyleTag(css, 'update-navigation-style')
   updateAwsLogo(awsLogoTypeColor)
   whiteSearchBox()
 }
 
 const updateAccountMenuButtonStyle = (
-  accountMenuButtonBackgroundColor: string
+  accountMenuButtonBackgroundColor: string,
+  multiSessionSupportEnabled: boolean
 ) => {
   const foregroundColor = isLuminant(accountMenuButtonBackgroundColor)
     ? AWSUI_COLOR_GRAY_900
@@ -282,9 +291,8 @@ const updateAccountMenuButtonStyle = (
     }
   }`
   hideOriginalAccountMenuButtonBackground()
-  insertStyleTag(css)
-  const isMultiSessionSupportEnabled = selectElement('[data-testid="awsc-account-info-tile"]') !== null
-  if (isMultiSessionSupportEnabled) {
+  insertStyleTag(css, 'update-account-menu-button-style')
+  if (multiSessionSupportEnabled) {
     insertFederatedUserStyleTag(accountMenuButtonBackgroundColor)
   } else {
     insertAccountMenuButtonBackground(accountMenuButtonBackgroundColor)
@@ -349,10 +357,7 @@ const updateFavicon = async (badgeColor: string) => {
   });
 };
 
-const updateStyle = (style: Config['style']) => {
-  if (style.accountMenuButtonBackgroundColor) {
-    updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor);
-  }
+const updateStyle = (style: Config['style'], multiSessionSupportEnabled: boolean) => {
   if (style.navigationBackgroundColor) {
     updateNavigationStyle(
       style.navigationBackgroundColor,
@@ -360,26 +365,31 @@ const updateStyle = (style: Config['style']) => {
     );
     updateFavicon(style.navigationBackgroundColor);
   }
+  if (style.accountMenuButtonBackgroundColor) {
+    updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor, multiSessionSupportEnabled);
+  }
 };
 
 const run = async () => {
-  const accounts = await accountsRepository.getAccounts()
   const configList = await loadConfigList()
   const accountId = await getAccountId()
   const region = getRegion()
   const username = await getUsername()
+  const multiSessionSupportEnabled = isMultiSessionSupportEnabled()
   if (configList && accountId && region && username) {
     const config = findConfig(configList, accountId, region, username)
     if (config?.style) {
-      updateStyle(config?.style)
+      updateStyle(config?.style, multiSessionSupportEnabled)
     }
   }
-  if (accounts && accountId) {
-    const account = accounts.find(
+
+  const accountNameAndIds = await accountsRepository.getAccounts()
+  if (accountId && accountNameAndIds) {
+    const accountNameAndId = accountNameAndIds.find(
       (account) => account.accountId === accountId
     )
-    if (account) {
-      patchAccountNameIfAwsSso(account)
+    if (accountNameAndId) {
+      patchAccountNameIfAwsSso(accountNameAndId, multiSessionSupportEnabled)
     }
   }
 }
