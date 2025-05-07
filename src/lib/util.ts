@@ -43,7 +43,7 @@ const isNotIamUserButAwsSsoUser = (userName: string) => {
   return awsSsoUserNameRe.test(userName)
 }
 
-export const patchAccountNameIfAwsSso = (accountName: Account, multiSessionSupportEnabled: boolean) => {
+export const patchAccountName = (accountName: Account, multiSessionSupportEnabled: boolean) => {
   const accountMenuButton = selectElement('button[id="nav-usernameMenu"]')
   if (!accountMenuButton) {
     return

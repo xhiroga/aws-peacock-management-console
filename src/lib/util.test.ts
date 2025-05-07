@@ -1,4 +1,4 @@
-import { updateAccounts, patchAccountNameIfAwsSso, toAccountNameAndId } from "./util";
+import { updateAccounts, patchAccountName, toAccountNameAndId } from "./util";
 
 test('updateAccounts works', () => {
   const expected = [{
@@ -66,7 +66,7 @@ test('patchAccountNameIfAwsSso works: AWS SSO, Account Name', () => {
   </span>
   <span></span>
 </button>`
-  patchAccountNameIfAwsSso({ accountId: '123456789012', accountName: 'Dev' }, false)
+  patchAccountName({ accountId: '123456789012', accountName: 'Dev' }, false)
   const actual = document.querySelector<HTMLSpanElement>('span[title]')?.innerText
 
   expect(actual).toEqual(expected);

@@ -8,7 +8,7 @@ import {
   Environment,
 } from './lib/config-repository'
 import { RepositoryProps } from './lib/repository'
-import { AWS_IAM_ROLE_NAME_PATTERN, parseConfigList, patchAccountNameIfAwsSso, selectElement } from './lib/util'
+import { AWS_IAM_ROLE_NAME_PATTERN, parseConfigList, patchAccountName, selectElement } from './lib/util'
 
 const AWS_SQUID_INK = '#232f3e'
 const AWSUI_COLOR_GRAY_300 = '#d5dbdb'
@@ -389,7 +389,7 @@ const run = async () => {
       (account) => account.accountId === accountId
     )
     if (accountNameAndId) {
-      patchAccountNameIfAwsSso(accountNameAndId, multiSessionSupportEnabled)
+      patchAccountName(accountNameAndId, multiSessionSupportEnabled)
     }
   }
 }
