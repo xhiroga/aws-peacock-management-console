@@ -142,12 +142,10 @@ const isLuminant = (color: string): boolean | undefined => {
   return undefined
 }
 
-const insertStyleTag = (css: string, peacockId?: string) => {
+const insertStyleTag = (css: string, peacockId: string) => {
   const style = document.createElement('style')
   style.setAttribute('type', 'text/css')
-  if (peacockId) {
-    style.setAttribute('peacock-id', peacockId)
-  }
+  style.setAttribute('peacock-id', peacockId)
   style.appendChild(document.createTextNode(css))
   const head = document.head || document.getElementsByTagName('head')[0]
   head.appendChild(style)
