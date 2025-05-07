@@ -8,20 +8,20 @@
 
 ## Manual Test
 
-- [ ] Works correctly with SSO user, Multi-session enabled, English
+- [ ] Works correctly with Multi-session enabled, SSO user, English
   - [ ] navigationBackgroundColor is applied
     - [ ] Background color ◣ is displayed at the bottom left of the favicon
   - [ ] accountMenuButtonBackgroundColor is applied
   - [ ] accountName is displayed as `accountName (accountId)`
   - [ ] No errors are displayed in the console
-- [ ] Works correctly with SSO user, Multi-session disabled, English
+- [ ] Works correctly with Multi-session enabled, IAM user, English
+- [ ] Works correctly with Multi-session enabled, switched role from IAM user, English
+- [ ] Works correctly with Multi-session enabled, root user, English
+- [ ] Works correctly with Multi-session disabled, SSO user, English
   - [ ] accountName is displayed as `userName @ accountName`
-- [ ] Works correctly with IAM user, Multi-session enabled, English
-- [ ] Works correctly with IAM user, Multi-session disabled, English
-- [ ] Works correctly with switched role from IAM user, Multi-session enabled, English
-- [ ] Works correctly with switched role from IAM user, Multi-session disabled, English
-- [ ] Works correctly with root user, Multi-session enabled, English
-- [ ] Works correctly with root user, Multi-session disabled, English
+- [ ] Works correctly with Multi-session disabled, IAM user, English
+- [ ] Works correctly with Multi-session disabled, switched role from IAM user, English
+- [ ] Works correctly with Multi-session disabled, root user, English
 - [ ] Works correctly with Japanese (= non-English) language
 - [ ] Options settings screen works correctly when modified
   - [ ] Error messages are displayed for incorrect account ID, regex, and color code
