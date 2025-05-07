@@ -18,7 +18,7 @@
   - [ ] accountName is displayed as `userName @ accountName`
 - [ ] Works correctly with IAM user, Multi-session enabled, English
 - [ ] Works correctly with IAM user, Multi-session disabled, English
-- [ ] Works correctly with switched role from SSO user, Multi-session disabled, English
+- [ ] Works correctly with switched role from IAM user, Multi-session enabled, English
 - [ ] Works correctly with switched role from IAM user, Multi-session disabled, English
 - [ ] Works correctly with root user, Multi-session enabled, English
 - [ ] Works correctly with root user, Multi-session disabled, English

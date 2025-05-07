@@ -50,7 +50,8 @@ export const patchAccountNameIfAwsSso = (accountName: Account, multiSessionSuppo
   }
   if (multiSessionSupportEnabled) {
     const spans = accountMenuButton?.querySelectorAll<HTMLSpanElement>('span:not(:has(span))')
-    const accountIdWithoutAliasSpan = Array.from(spans || []).find(span => span.textContent?.includes('Account ID:'));
+    // `Account ID:` part varies by language, so use regex to find it
+    const accountIdWithoutAliasSpan = Array.from(spans || []).find(span => span.textContent?.match(/\d{4}-\d{4}-\d{4}/));
     if (accountIdWithoutAliasSpan) {
       accountIdWithoutAliasSpan.innerText = `${accountName.accountName} (${accountName.accountId})`
     }
