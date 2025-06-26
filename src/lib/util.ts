@@ -57,7 +57,7 @@ export const patchAccountName = (accountName: Account, multiSessionSupportEnable
     }
   } else {
     const userName = accountMenuButton?.getAttribute('aria-label')
-    const targetSpan = accountMenuButton?.querySelector<HTMLSpanElement>('*[class*="_more-menu__button"] span')
+    const targetSpan = accountMenuButton?.querySelector<HTMLSpanElement>('[data-testid="awsc-nav-account-menu-button"] span:nth-child(2)')
     const title = accountMenuButton?.getAttribute('title')
     if (userName && targetSpan && title && isNotIamUserButAwsSsoUser(title)) {
       targetSpan.innerText = `${userName} @ ${accountName.accountName}`
