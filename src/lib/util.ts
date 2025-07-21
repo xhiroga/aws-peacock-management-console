@@ -57,10 +57,10 @@ export const patchAccountName = (accountName: Account, multiSessionSupportEnable
     }
   } else {
     const userName = accountMenuButton?.getAttribute('aria-label')
-    const titleSpan = accountMenuButton?.querySelector<HTMLSpanElement>('span[title]')
-    const title = titleSpan?.getAttribute('title')
-    if (userName && titleSpan && title && isNotIamUserButAwsSsoUser(title)) {
-      titleSpan.innerText = `${userName} @ ${accountName.accountName}`
+    const targetSpan = accountMenuButton?.querySelector<HTMLSpanElement>('[data-testid="awsc-nav-account-menu-button"] span:nth-child(2)')
+    const title = accountMenuButton?.getAttribute('title')
+    if (userName && targetSpan && title && isNotIamUserButAwsSsoUser(title)) {
+      targetSpan.innerText = `${userName} @ ${accountName.accountName}`
     } // else not login by user, like root user or IAM role
   }
 }
