@@ -59,15 +59,15 @@ test('patchAccountNameIfAwsSso works: AWS SSO, Account Name', () => {
   const expected = "AWSReadOnlyAccess/hiroga @ Dev"
 
   document.body.innerHTML = `
-<button aria-controls="menu--account" aria-label="AWSReadOnlyAccess/hiroga" aria-expanded="false" data-testid="more-menu__awsc-nav-account-menu-button" id="nav-usernameMenu">
+<button aria-controls="menu--account" aria-label="AWSReadOnlyAccess/hiroga" aria-expanded="false" data-testid="more-menu__awsc-nav-account-menu-button" id="nav-usernameMenu" title="AWSReservedSSO_AWSReadOnlyAccess_aaaaaaaa00000000/hiroga">
   <span data-testid="awsc-nav-account-menu-button">
-      <span title="AWSReservedSSO_AWSReadOnlyAccess_aaaaaaaa00000000/hiroga @ 1234-5678-9012">AWSReadOnlyAccess/hiroga</span>
+      <span>AWSReadOnlyAccess/hiroga</span>
       <span></span>
   </span>
   <span></span>
 </button>`
   patchAccountName({ accountId: '123456789012', accountName: 'Dev' }, false)
-  const actual = document.querySelector<HTMLSpanElement>('span[title]')?.innerText
+  const actual = document.querySelector<HTMLSpanElement>('[data-testid="awsc-nav-account-menu-button"] span:nth-child(2)')?.innerText
 
   expect(actual).toEqual(expected);
 })
