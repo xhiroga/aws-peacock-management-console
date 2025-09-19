@@ -245,6 +245,9 @@ const updateNavigationStyle = (
   {
     color: ${foregroundColor} !important;
   }
+  div[data-testid="awsc-account-info-tile"] div[data-testid] span {
+    background: transparent !important;
+  }
   @media only screen and (min-width: 620px) {
     ${accountMenuButtonBackgroundColorEnabled ||
       getOriginalAccountMenuButtonBackground()
