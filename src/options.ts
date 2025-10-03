@@ -18,7 +18,7 @@ const sampleConfig = `[
   // prod
   {
     "env": {
-      "account": "111111111111",
+      "account": "000000000000",
       // "username" can be one of the following:
       // 1. IAM username. Ex: "Administrator"
       // 2. Active role name after role switching. Ex: "PowerUserRole" or "PowerUserRole/john"
