@@ -10,7 +10,7 @@ const AWS_SSO_USR_NAME_PATTERN = /[\w+=,.@-]+/ // Username can contain alphanume
 export const parseConfigList = (configList: string) => {
   try {
     return yaml.load(configList) as ConfigList
-  } catch (e) {
+  } catch {
     return JSONC.parse(configList) as ConfigList
   }
 }
