@@ -92,10 +92,6 @@ const getUsername = async (): Promise<string | null> => {
   }
 }
 
-const isMultiSessionSupportEnabled = () => {
-  return selectElement('[data-testid="awsc-account-info-tile"]') !== null
-}
-
 const isEnvMatch = (env: Environment, accountId: string, region: string, username: string | null) => {
   const isAccountMatch = String(env.account) === accountId
   const isRegionMatch = env.region ? env.region === region : true
@@ -168,45 +164,6 @@ const whiteSearchBox = () => {
   insertStyleTag(css, 'white-search-box')
 }
 
-const insertFederatedUserStyleTag = (
-  accountMenuButtonBackgroundColor: string
-) => {
-  const css = `
-  [data-testid="awsc-account-info-tile"] > div:nth-child(2) > span  {
-    color: ${accountMenuButtonBackgroundColor} !important;
-    border: 1px solid ${accountMenuButtonBackgroundColor} !important;
-  }`
-  insertStyleTag(css, 'insert-federated-user-style-tag')
-}
-
-const insertAccountMenuButtonBackground = (
-  accountMenuButtonBackgroundColor: string
-) => {
-  const accountMenuButtonBackground = document.createElement('span')
-  accountMenuButtonBackground.setAttribute(
-    'peacock-id',
-    `peacock-account-menu-button__background`
-  )
-  selectElement('[data-testid="awsc-nav-account-menu-button"]')?.prepend(
-    accountMenuButtonBackground
-  )
-  const css = `
-  span[peacock-id='peacock-account-menu-button__background'] {
-    background-color: ${accountMenuButtonBackgroundColor}; position: absolute; left: 0; right: 0; top: 0; bottom: 0; border-radius: 10px; height: 18px; opacity: 0; z-index: 1; margin: 10px;
-  }
-  @media only screen and (min-width: 620px) {
-    span[peacock-id='peacock-account-menu-button__background'] {
-      opacity: 1 !important;
-    }
-  }`
-  insertStyleTag(css, 'insert-account-menu-button-background')
-}
-
-const hideOriginalAccountMenuButtonBackground = () => {
-  const originalAccountMenuBackground = getOriginalAccountMenuButtonBackground()
-  originalAccountMenuBackground?.setAttribute('hidden', 'true')
-}
-
 const updateNavigationStyle = (
   navigationBackgroundColor: string,
   accountMenuButtonBackgroundColorEnabled: boolean
@@ -245,7 +202,7 @@ const updateNavigationStyle = (
   {
     color: ${foregroundColor} !important;
   }
-  div[data-testid="awsc-account-info-tile"] div[data-testid] span {
+  div[data-testid="awsc-account-info-tile"] > div > div[data-testid] span {
     background: transparent !important;
   }
   @media only screen and (min-width: 620px) {
@@ -277,29 +234,20 @@ const updateNavigationStyle = (
 }
 
 const updateAccountMenuButtonStyle = (
-  accountMenuButtonBackgroundColor: string,
-  multiSessionSupportEnabled: boolean
+  accountMenuButtonBackgroundColor: string
 ) => {
   const foregroundColor = isLuminant(accountMenuButtonBackgroundColor)
     ? AWSUI_COLOR_GRAY_900
     : AWSUI_COLOR_GRAY_300
 
-  const css = `
-  @media only screen and (min-width: 620px) {
-    button[data-testid="more-menu__awsc-nav-account-menu-button"] {
-      color: ${foregroundColor} !important;
-      padding-top: 0;
-      padding-bottom: 0;
-      border-radius: 10px;
-    }
+  const css = `  
+  div[data-testid="awsc-account-info-tile"] > div > div[data-testid] span {
+    color: ${foregroundColor} !important;
+    padding: 0 4px !important;
+    background: ${accountMenuButtonBackgroundColor} !important;
+    border-radius: 4px;
   }`
-  hideOriginalAccountMenuButtonBackground()
   insertStyleTag(css, 'update-account-menu-button-style')
-  if (multiSessionSupportEnabled) {
-    insertFederatedUserStyleTag(accountMenuButtonBackgroundColor)
-  } else {
-    insertAccountMenuButtonBackground(accountMenuButtonBackgroundColor)
-  }
 }
 
 const readFileAsDataURL = (blob: Blob): Promise<string> => {
@@ -360,7 +308,7 @@ const updateFavicon = async (badgeColor: string) => {
   });
 };
 
-const updateStyle = (style: Config['style'], multiSessionSupportEnabled: boolean) => {
+const updateStyle = (style: Config['style']) => {
   if (style.navigationBackgroundColor) {
     updateNavigationStyle(
       style.navigationBackgroundColor,
@@ -368,8 +316,9 @@ const updateStyle = (style: Config['style'], multiSessionSupportEnabled: boolean
     );
     updateFavicon(style.navigationBackgroundColor);
   }
+  console.warn(`style.accountMenuButtonBackgroundColor: ${style.accountMenuButtonBackgroundColor}`)
   if (style.accountMenuButtonBackgroundColor) {
-    updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor, multiSessionSupportEnabled);
+    updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor);
   }
 };
 
@@ -378,11 +327,10 @@ const run = async () => {
   const accountId = await getAccountId()
   const region = getRegion()
   const username = await getUsername()
-  const multiSessionSupportEnabled = isMultiSessionSupportEnabled()
   if (configList && accountId && region && username) {
     const config = findConfig(configList, accountId, region, username)
     if (config?.style) {
-      updateStyle(config?.style, multiSessionSupportEnabled)
+      updateStyle(config?.style)
     }
   }
 
@@ -392,7 +340,7 @@ const run = async () => {
       (account) => account.accountId === accountId
     )
     if (accountNameAndId) {
-      patchAccountName(accountNameAndId, multiSessionSupportEnabled)
+      patchAccountName(accountNameAndId)
     }
   }
 }
