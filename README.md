@@ -11,7 +11,7 @@ You can flexibly set the header and footer colors of the AWS Management Console 
 ✅ Full support for AWS SSO  
 ✅ Full support for Multi-session  
 ✅ Display a colored badge ◣ at the bottom left of the favicon to make it instantly recognizable even when multiple sessions are open  
-✅ Display account names to make the current account clear even without setting account aliases  
+✅ Display account names to make the current account clear even without setting account aliases
 
 | Change color                        | Colored favicon                              | Show account names                             |
 | ----------------------------------- | -------------------------------------------- | ---------------------------------------------- |
@@ -29,8 +29,8 @@ While effort has been made to ensure the accuracy of the program, developers ass
 ## Development
 
 ```shell
-yarn
-yarn watch
+pnpm
+pnpm watch
 # Click `Load Unpacked` from chrome://extensions and select .`/dist`
 ```
 
