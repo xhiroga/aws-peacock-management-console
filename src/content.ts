@@ -316,7 +316,6 @@ const updateStyle = (style: Config['style']) => {
     );
     updateFavicon(style.navigationBackgroundColor);
   }
-  console.warn(`style.accountMenuButtonBackgroundColor: ${style.accountMenuButtonBackgroundColor}`)
   if (style.accountMenuButtonBackgroundColor) {
     updateAccountMenuButtonStyle(style.accountMenuButtonBackgroundColor);
   }
@@ -327,7 +326,7 @@ const run = async () => {
   const accountId = await getAccountId()
   const region = getRegion()
   const username = await getUsername()
-  if (configList && accountId && region && username) {
+  if (configList && accountId && region) {
     const config = findConfig(configList, accountId, region, username)
     if (config?.style) {
       updateStyle(config?.style)
