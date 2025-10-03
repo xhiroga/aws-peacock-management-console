@@ -4,7 +4,7 @@
 
 ## Unit Test
 
-- [ ] `yarn test` passes
+- [ ] `pnpm test` passes
 
 ## Manual Test
 
