@@ -15,7 +15,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "js-yaml": "^4.2.0",
+    "js-yaml": "^4.3.0",
     "jsonc-parser": "^3.0.0"
   },
   "devDependencies": {
